@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="Wizard" load_steps=2 format=3 uid="uid://cv1rkrrp7kgns"]
+
+[ext_resource type="Script" path="res://wizards.gd" id="1_tbxl2"]
+
+[resource]
+script = ExtResource("1_tbxl2")
+id = 0
+name = "Wizard Two"
+pronouns = ["they", "them", "their"]
+is_wizard = true
+is_monster = false
+hp = 15
+max_hp = 15
+left_hand_gestures = []
+right_hand_gestures = []

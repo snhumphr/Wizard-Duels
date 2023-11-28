@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=2 format=3 uid="uid://c2qsn34kk7x1s"]
+
+[ext_resource type="Script" path="res://spells.gd" id="1_c33as"]
+
+[resource]
+resource_name = "Missile"
+script = ExtResource("1_c33as")
+name = "Missile"
+gestures = PackedStringArray("S", "D")
+id = 0
+is_spell = true
+once_per_turn = false
+once_per_wizard = false
+once_per_duel = false
+mandatory = false
+hex = false
+fire_spell = false
+ice_spell = false
+dispellable = true
+reflectable = true
+targetable = true
+blockable = true
+hostile = true
+requires_target = false
+can_target_corpses = false
+permanency_valid = false
+effect = 4
+effect_name = "struck"
+intensity = 1

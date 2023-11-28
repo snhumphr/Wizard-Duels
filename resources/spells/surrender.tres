@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=2 format=3 uid="uid://cflaq5m301v80"]
+
+[ext_resource type="Script" path="res://spells.gd" id="1_mfo1s"]
+
+[resource]
+resource_name = "Surrender"
+script = ExtResource("1_mfo1s")
+name = "Surrender"
+gestures = PackedStringArray("PP")
+id = 0
+is_spell = false
+once_per_turn = false
+once_per_wizard = false
+once_per_duel = false
+mandatory = true
+hex = false
+fire_spell = false
+ice_spell = false
+dispellable = false
+counterable = false
+reflectable = false
+targetable = false
+blockable = false
+hostile = false
+requires_target = false
+can_target_corpses = false
+permanency_valid = false
+effect = 7
+effect_name = "Surrender"
+intensity = 0

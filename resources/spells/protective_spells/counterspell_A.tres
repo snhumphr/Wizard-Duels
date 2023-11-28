@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=2 format=3 uid="uid://dr25fk0rc0fwy"]
+
+[ext_resource type="Script" path="res://spells.gd" id="1_tjnfg"]
+
+[resource]
+resource_name = "Counterspell A"
+script = ExtResource("1_tjnfg")
+name = "Counterspell"
+gestures = PackedStringArray("W", "W", "S")
+id = 0
+is_spell = true
+once_per_turn = false
+once_per_wizard = false
+once_per_duel = false
+mandatory = false
+hex = false
+fire_spell = false
+ice_spell = false
+dispellable = true
+counterable = false
+reflectable = false
+targetable = true
+blockable = false
+hostile = true
+requires_target = false
+can_target_corpses = false
+permanency_valid = false
+effect = 1
+effect_name = "Counterspell"
+intensity = 0

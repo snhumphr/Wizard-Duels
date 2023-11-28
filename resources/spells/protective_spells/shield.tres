@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=2 format=3 uid="uid://cd7wa62m16va8"]
+
+[ext_resource type="Script" path="res://spells.gd" id="1_bjho6"]
+
+[resource]
+resource_name = "Shield"
+script = ExtResource("1_bjho6")
+name = "Shield"
+gestures = PackedStringArray("P")
+id = 0
+is_spell = true
+once_per_turn = false
+once_per_wizard = false
+once_per_duel = false
+mandatory = false
+hex = false
+fire_spell = false
+ice_spell = false
+dispellable = true
+reflectable = true
+targetable = true
+blockable = false
+hostile = false
+requires_target = false
+can_target_corpses = false
+permanency_valid = false
+effect = 3
+effect_name = "Shield"
+intensity = 0
