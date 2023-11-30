@@ -154,7 +154,7 @@ func process_turn():
 					if effect[0].reflect:
 						reflected = true
 						break
-				if spell.reflectable and reflected:
+				if reflected and spell.reflectable:
 					turnLogQueue.append(target.pronouns[2].capitalize() + " spell reflects back at " + target.pronouns[1] + "!")
 					targets.append(caster)
 				else:

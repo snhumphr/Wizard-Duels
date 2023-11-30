@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="Monster" load_steps=2 format=3 uid="uid://7cal2fpfvx4h"]
+
+[ext_resource type="Script" path="res://monster.gd" id="1_4gk4u"]
+
+[resource]
+script = ExtResource("1_4gk4u")
+id = -1
+name = "Fire Elemental"
+summoner_id = -1
+pronouns = ["they", "them", "their"]
+adjectives = PackedStringArray("hot", "spicy", "fiery", "flame-wreathed", "incandescent", "warm")
+is_wizard = false
+is_monster = true
+fire = true
+ice = false
+hp = 3
+max_hp = 3
+aoe = true
+effects = []
