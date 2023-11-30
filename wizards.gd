@@ -30,9 +30,9 @@ func take_damage(amount):
 	elif hp > max_hp:
 		hp = max_hp
 
-func addEffect(effectName, effectDuration):
+func addEffect(effectName, effectDuration, effectDict):
 	if not hasEffect(effectName):
-		effects.append([effectName, effectDuration])
+		effects.append([effectDict[effectName], effectDuration])
 	
 func removeEffect(effectName):
 	var index = 0
@@ -43,6 +43,6 @@ func removeEffect(effectName):
 	
 func hasEffect(effectName):
 	for effect in effects:
-		if effect[0] == effectName:
+		if effect[0].name == effectName:
 			return true
 	return false

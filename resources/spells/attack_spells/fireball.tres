@@ -17,6 +17,7 @@ hex = false
 fire_spell = true
 ice_spell = false
 dispellable = true
+counterable = true
 reflectable = true
 targetable = true
 blockable = false

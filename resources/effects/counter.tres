@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="Effect" load_steps=2 format=3 uid="uid://ttwdru0y0ikc"]
+
+[ext_resource type="Script" path="res://effect.gd" id="1_pa64c"]
+
+[resource]
+script = ExtResource("1_pa64c")
+name = "Counterspell"
+shield = true
+counterspell = true
+fire_res = false
+cold_res = false
+invisibility = false
+fatal = false
+curable = 0
+hex = false
+dispellable = false
+charm_person = false
+fear = false
+paralysis = false
+maladroit = false
+amnesia = false

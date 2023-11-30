@@ -6,6 +6,8 @@ extends Node2D
 var spellArray = Array()
 var entityArray = Array()
 
+var effectDict = Dictionary()
+
 var gestureQueue = Array()
 var spellQueue = Array()
 var targetQueue = Array()
@@ -26,6 +28,8 @@ func _ready():
 	spellArray.sort_custom(spellSort)
 	
 	self.get_node("UI/SpellList").init(spellArray)
+	
+	loadEffects("res://resources/effects", effectDict)
 	
 	# TODO: Sort the wizardarray?
 	
@@ -145,7 +149,12 @@ func process_turn():
 					if entity.is_wizard and entity.is_active() or entity.is_monster and entity.is_alive():
 						targets.append(entity)
 			else:
-				if target.hasEffect("Reflect") and spell.reflectable:
+				var reflected = false
+				for effect in target.effects:
+					if effect[0].reflect:
+						reflected = true
+						break
+				if spell.reflectable and reflected:
 					turnLogQueue.append(target.pronouns[2].capitalize() + " spell reflects back at " + target.pronouns[1] + "!")
 					targets.append(caster)
 				else:
@@ -182,8 +191,10 @@ func process_turn():
 					magicDispelled = true
 					for t in targets:
 						if t.is_wizard:
-							t.effects = []
-							t.addEffect("Shield", 0)
+							for e in t.effects.size():
+								if t.effects[e].dispellable:
+									t.effects.remove_at(e)
+							t.addEffect("Shield", 0, effectDict)
 						elif t.is_monster:
 							t.take_damage(99)
 					print("dispel magic")
@@ -191,8 +202,7 @@ func process_turn():
 					for t in targets:
 						var spellCheck = checkSpellInterference(spell, t)
 						if spellCheck == "":
-							t.addEffect("Shield", 0)
-							t.addEffect("Counterspell", 0)
+							t.addEffect("Counterspell", 0, effectDict)
 						else:
 							turnLogQueue.append(spellCheck)
 				Spell.SpellEffect.Summon:
@@ -202,7 +212,7 @@ func process_turn():
 					for t in targets:
 						var spellCheck = checkSpellInterference(spell, t)
 						if spellCheck == "":
-							t.addEffect(spell.effect_name, spell.intensity)
+							t.addEffect(spell.effect_name, spell.intensity, effectDict)
 						else:
 							turnLogQueue.append(spellCheck)
 				Spell.SpellEffect.dealDamage:
@@ -297,17 +307,25 @@ func spellOrderSort(spellA, spellB):
 
 func checkSpellInterference(spell, target):
 	
-	if spell.blockable and target.hasEffect("Shield"):
-		return target.name + "'s shield protects them!"
+	if spell.blockable:
+		for effect in target.effects:
+			if effect[0].shield:
+				return target.name + "'s shield protects them!"
 		
-	if spell.counterable and target.hasEffect("Counterspell"):
-		return target.name +  "'s counterspell protects them!"
+	if spell.counterable:
+		for effect in target.effects:
+			if effect[0].counterspell:
+				return target.name +  "'s counterspell protects them!"
 		
-	if spell.fire_spell and target.hasEffect("Resist Fire"): #TODO: Add elemental innate resistance here
-		return target.name +  " resists the fire!"
+	if spell.fire_spell: #TODO: Add elemental innate resistance here
+		for effect in target.effects:
+			if effect[0].fire_res:
+				return target.name +  " resists the fire!"
 		
-	if spell.ice_spell and target.hasEffect("Resist Cold"):
-		return target.name +  " resists the cold!"
+	if spell.ice_spell:
+		for effect in target.effects:
+			if effect[0].cold_res:
+				return target.name +  " resists the cold!"
 		
 	return ""
 
@@ -327,6 +345,18 @@ func loadSpells(path, array):
 	else:
 		print("An error occurred when trying to access the path.")
 
+func loadEffects(path, dict):
+	var dir = DirAccess.open(path)
+	if dir:
+		dir.list_dir_begin()
+		var file_name = dir.get_next()
+		while file_name != "":
+			if not dir.current_is_dir():
+				var effect = load(path + "/" + file_name)
+				dict[effect.name] = effect
+			file_name = dir.get_next()
+		dir.list_dir_end()
+
 func spellSort(spellA, spellB):
 	if spellA.id < spellB.id:
 		return true
@@ -342,7 +372,6 @@ func spellSearch(targetID):
 		return spell
 	else:
 		return null
-	#TODO: make this return -1 if the target ID wasn't in the array!!!!
 
 func analyzeGestures(wizard_index, isLeft):
 	
@@ -397,6 +426,7 @@ func onGestureChange(isLeft):
 	
 	# TODO: Make it so that clapping with one hand automatically claps with both
 	# TODO: And also that unclapping with one hand turns the other hand into the NULL gesture
+	# ^ Maybe don't actually do the above things
 	
 	if spellOptions.get_selectable_item() != -1:
 		spellOptions.set_disabled(false)
@@ -437,7 +467,16 @@ func onSpellChange(isLeft):
 
 func onTargetChange(isLeft):
 	# TODO: if casting a two-handed spell, changing the target with one hand also changes target of the other
-	pass
+	var rightSpell = spellSearch(self.get_node("UI/RightHand/RightHandSpellOptions").get_selected_id())
+	
+	var rightTarget = self.get_node("UI/RightHand/RightHandTargetingOptions")
+	var leftTarget = self.get_node("UI/LeftHand/LeftHandTargetingOptions")
+	
+	if rightSpell.is_two_handed():
+		if isLeft:
+			rightTarget.select(rightTarget.get_item_index(leftTarget.get_selected_id()))
+		else:
+			leftTarget.select(leftTarget.get_item_index(rightTarget.get_selected_id()))
 
 func recalculateTarget(isLeft):
 	
@@ -466,6 +505,7 @@ func recalculateTarget(isLeft):
 		mainTarget.clear()
 		mainTarget.set_disabled(true)
 	else:
+		mainTarget.clear()
 		mainTarget.set_disabled(false)
 		mainSpell = spellSearch(mainHand.get_selected_id())
 		var validTargets = findValidTargets(mainSpell)
@@ -551,13 +591,24 @@ func _on_end_turn_button_pressed():
 			renderWizardSection()
 
 func _on_right_hand_gesture_options_item_selected(index):
-	gestureQueue[player][0] = validGestures[self.get_node("UI/RightHand/RightHandGestureOptions").get_item_id(index)]
+	var gesture_ID = self.get_node("UI/RightHand/RightHandGestureOptions").get_item_id(index)
+	gestureQueue[player][0] = validGestures[gesture_ID]
+	
+	if gestureQueue[player][0] == "C":
+		var leftHand = self.get_node("UI/LeftHand/LeftHandGestureOptions")
+		#leftHand.select(index)
+		#TODO: make sure to change this so that it doesn't break with fear, charm, etc
 	
 	onGestureChange(false)
 	onGestureChange(true)
 
 func _on_left_hand_gesture_options_item_selected(index):
-	gestureQueue[player][1] = validGestures[self.get_node("UI/LeftHand/LeftHandGestureOptions").get_item_id(index)]
+	var gesture_ID = self.get_node("UI/LeftHand/LeftHandGestureOptions").get_item_id(index)
+	gestureQueue[player][1] = validGestures[gesture_ID]
+	
+	if gestureQueue[player][1] == "C":
+		var rightHand = self.get_node("UI/RightHand/RightHandGestureOptions")
+		#rightHand.select(index)
 	
 	onGestureChange(true)
 	onGestureChange(false)
