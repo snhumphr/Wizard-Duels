@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=2 format=3 uid="uid://ccpufcqugoled"]
+
+[ext_resource type="Script" path="res://spells.gd" id="1_hav3k"]
+
+[resource]
+script = ExtResource("1_hav3k")
+name = ""
+gestures = PackedStringArray("W", "F", "P", "S", "F", "W")
+id = 0
+is_spell = true
+once_per_turn = false
+once_per_wizard = false
+once_per_duel = false
+mandatory = false
+hex = false
+fire_spell = false
+ice_spell = false
+dispellable = true
+counterable = true
+reflectable = true
+targetable = true
+blockable = false
+hostile = false
+requires_target = false
+can_target_corpses = false
+permanency_valid = false
+effect = 2
+effect_name = "Giant"
+intensity = 4
