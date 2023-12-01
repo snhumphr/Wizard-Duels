@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_am072")
-name = ""
+name = "Summon Troll"
 gestures = PackedStringArray("F", "P", "S", "F", "W")
 id = 0
 is_spell = true

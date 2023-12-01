@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_hav3k")
-name = ""
+name = "Summon Giant"
 gestures = PackedStringArray("W", "F", "P", "S", "F", "W")
 id = 0
 is_spell = true
