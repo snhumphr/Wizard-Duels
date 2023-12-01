@@ -251,24 +251,40 @@ func process_turn():
 		else:
 			turnLogQueue.append(caster.name + "'s spell fizzles!")
 	
+	var activePlayer = 0
+	numPlayers = 0
 		
 	for i in range(1, entityArray.size()):
 		
 		#TODO: resolve anti spells in this step
-			
+		
 		if entityArray[i].is_wizard and entityArray[i].is_active():
 			entityArray[i].right_hand_gestures.append(gestureQueue[i][0])
 			entityArray[i].left_hand_gestures.append(gestureQueue[i][1])
-	
+			numPlayers += 1
+			activePlayer = i
+			
 		gestureQueue[i] = ["N", "N"]
 		spellQueue[i] = [null, null]
 		targetQueue[i] = [-1, -1]
 		
-	turn += 1
-	player = 1
-	
-	while not entityArray[player].is_active():
-		player += 1
+		
+	if numPlayers == 1:
+		turnLogQueue.append(entityArray[activePlayer].name + " has won the duel!")
+		self.get_node("UI/EndTurnButton").hide()
+		self.get_node("UI/RightHand").hide()
+		self.get_node("UI/LeftHand").hide()
+	elif numPlayers == 0:
+		turnLogQueue.append("All wizards have perished. The dead claim no victory.")
+		self.get_node("UI/EndTurnButton").hide()
+		self.get_node("UI/RightHand").hide()
+		self.get_node("UI/LeftHand").hide()
+	else:
+		turn += 1
+		player = 1
+		
+		while not entityArray[player].is_active():
+			player += 1
 	
 	self.get_node("UI/TurnReport").render(turnLogQueue)
 	
