@@ -275,7 +275,7 @@ func process_turn():
 		self.get_node("UI/RightHand").hide()
 		self.get_node("UI/LeftHand").hide()
 	elif numPlayers == 0:
-		turnLogQueue.append("All wizards have perished. The dead claim no victory.")
+		turnLogQueue.append("All wizards have been eliminated. The duel ends in a draw.")
 		self.get_node("UI/EndTurnButton").hide()
 		self.get_node("UI/RightHand").hide()
 		self.get_node("UI/LeftHand").hide()
