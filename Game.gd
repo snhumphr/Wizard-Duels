@@ -10,6 +10,7 @@ var effectDict = Dictionary()
 
 var monsterTemplate
 var adjectiveCount = 0
+var stabID
 
 var gestureQueue = Array()
 var spellQueue = Array()
@@ -30,6 +31,8 @@ func _ready():
 	
 	for i in spellArray.size():
 		spellArray[i].id = i
+		if spellArray[i].name == "Stab":
+			stabID = i
 	spellArray.sort_custom(spellSort)
 	
 	self.get_node("Scroll/UI/SpellList").init(spellArray)
@@ -222,7 +225,6 @@ func process_turn():
 								summoner = t.id
 							elif t.is_monster:
 								summoner = t.summoner_id
-								
 							if summoner != -1:
 								var monster = monsterTemplate.duplicate()
 								monster.summoner_id = summoner
@@ -575,7 +577,7 @@ func recalculateTarget(isLeft):
 		mainTarget.clear()
 		mainTarget.set_disabled(false)
 		mainSpell = spellSearch(mainHand.get_selected_id())
-		var validTargets = findValidTargets(mainSpell)
+		var validTargets = findValidTargets(mainSpell, entityArray[player])
 		for target in validTargets[0]:
 			mainTarget.add_item(target.name, target.id)
 		
@@ -583,13 +585,12 @@ func recalculateTarget(isLeft):
 		if validTargets[1] == -1:
 			mainTarget.set_disabled(true)
 
-func findValidTargets(spell):
+func findValidTargets(spell, caster):
 	
 	var startIndex = 0
 	var validTargets = []
 	var preferredTargets = []
 	var defaultTarget = 0
-	var caster = entityArray[player]
 	
 	if not spell.targetable:
 		return [[],-1]
@@ -635,6 +636,8 @@ func renderWizardSection():
 	self.get_node("Scroll/UI/RightHand/RightHandTargetingOptions").clear()
 	self.get_node("Scroll/UI/LeftHand/LeftHandTargetingOptions").set_disabled(true)
 	self.get_node("Scroll/UI/RightHand/RightHandTargetingOptions").set_disabled(true)
+	
+	self.get_node("Scroll/UI/SummonControlPanel").render(entityArray, player)
 
 func _on_end_turn_button_pressed():
 	
@@ -691,3 +694,16 @@ func _on_right_hand_targeting_options_item_selected(index):
 
 func _on_left_hand_targeting_options_item_selected(index):
 	onTargetChange(true)
+
+func _on_summon_control_panel_request_valid_targets(monster, button):
+	var attack = spellSearch(stabID)
+	var targets = findValidTargets(attack, entityArray[monster.summoner_id])
+	
+	button.clear()
+	
+	for target in targets[0]:
+		button.add_item(target.name, target.id)
+	button.select(button.get_item_index(targets[1]))
+	if targets[1] == -1:
+		button.set_disabled(true)
+		

@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://yrv8myggdj1h"]
+[gd_scene load_steps=6 format=3 uid="uid://yrv8myggdj1h"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_3r2fk"]
 [ext_resource type="Script" path="res://SpellList.gd" id="2_cadle"]
 [ext_resource type="Script" path="res://TurnReport.gd" id="3_dgo7r"]
 [ext_resource type="Script" path="res://WizardList.gd" id="3_laiom"]
+[ext_resource type="Script" path="res://SummonControlPanel.gd" id="5_p744m"]
 
 [node name="Game" type="CanvasLayer"]
 follow_viewport_enabled = true
@@ -75,6 +76,10 @@ layout_mode = 2
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 
+[node name="SummonControlPanel" type="VBoxContainer" parent="Scroll/UI"]
+layout_mode = 2
+script = ExtResource("5_p744m")
+
 [node name="EndTurnButton" type="Button" parent="Scroll/UI"]
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
@@ -87,4 +92,5 @@ text = "Submit Turn"
 [connection signal="item_selected" from="Scroll/UI/LeftHand/LeftHandGestureOptions" to="." method="_on_left_hand_gesture_options_item_selected"]
 [connection signal="item_selected" from="Scroll/UI/LeftHand/LeftHandSpellOptions" to="." method="_on_left_hand_spell_options_item_selected"]
 [connection signal="item_selected" from="Scroll/UI/LeftHand/LeftHandTargetingOptions" to="." method="_on_left_hand_targeting_options_item_selected"]
+[connection signal="requestValidTargets" from="Scroll/UI/SummonControlPanel" to="." method="_on_summon_control_panel_request_valid_targets"]
 [connection signal="pressed" from="Scroll/UI/EndTurnButton" to="." method="_on_end_turn_button_pressed"]
