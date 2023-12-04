@@ -22,7 +22,7 @@ func render(entityArray, player):
 			self.add_text("    Right Hand: ")
 			self.add_text("-".join(wizard.right_hand_gestures))
 			self.newline()
-			self.add_text("    Left Hand: ")
+			self.add_text("    Left Hand:  ")
 			self.add_text("-".join(wizard.left_hand_gestures))
 			self.newline()
 	self.newline()

@@ -1,4 +1,4 @@
-extends Node2D
+extends CanvasLayer
 
 #TODO: FIX TARGETING BEING RESET TO DEFAULT WHEN YOU CHANGE THE TARGET(?) OF YOUR OTHER HAND
 #TODO: MAKE IT SO THAT BEING TARGETED BY A FIREBALL PROTECTS FROM ICE STORM AND VICE VERSA
@@ -27,7 +27,7 @@ func _ready():
 		spellArray[i].id = i
 	spellArray.sort_custom(spellSort)
 	
-	self.get_node("UI/SpellList").init(spellArray)
+	self.get_node("Scroll/UI/SpellList").init(spellArray)
 	
 	loadEffects("res://resources/effects", effectDict)
 	
@@ -50,8 +50,8 @@ func _ready():
 	
 	for i in validGestures.size(): #TODO: make this also add the ID, to support fear, charm, etc
 		var gesture = validGestures[i]
-		self.get_node("UI/LeftHand/LeftHandGestureOptions").add_item(gesture, i)
-		self.get_node("UI/RightHand/RightHandGestureOptions").add_item(gesture, i)
+		self.get_node("Scroll/UI/LeftHand/LeftHandGestureOptions").add_item(gesture, i)
+		self.get_node("Scroll/UI/RightHand/RightHandGestureOptions").add_item(gesture, i)
 	
 	for i in range(0, entityArray.size()):
 		gestureQueue.append(["N", "N"])
@@ -278,14 +278,14 @@ func process_turn():
 		
 	if numPlayers == 1:
 		turnLogQueue.append(entityArray[activePlayer].name + " has won the duel!")
-		self.get_node("UI/EndTurnButton").hide()
-		self.get_node("UI/RightHand").hide()
-		self.get_node("UI/LeftHand").hide()
+		self.get_node("Scroll/UI/EndTurnButton").hide()
+		self.get_node("Scroll/UI/RightHand").hide()
+		self.get_node("Scroll/UI/LeftHand").hide()
 	elif numPlayers == 0:
 		turnLogQueue.append("All wizards have been eliminated. The duel ends in a draw.")
-		self.get_node("UI/EndTurnButton").hide()
-		self.get_node("UI/RightHand").hide()
-		self.get_node("UI/LeftHand").hide()
+		self.get_node("Scroll/UI/EndTurnButton").hide()
+		self.get_node("Scroll/UI/RightHand").hide()
+		self.get_node("Scroll/UI/LeftHand").hide()
 	else:
 		turn += 1
 		player = 1
@@ -293,7 +293,7 @@ func process_turn():
 		while not entityArray[player].is_active():
 			player += 1
 	
-	self.get_node("UI/TurnReport").render(turnLogQueue)
+	self.get_node("Scroll/UI/TurnReport").render(turnLogQueue)
 	
 	self.renderWizardSection()
 
@@ -438,9 +438,9 @@ func onGestureChange(isLeft):
 	var spellOptionsArray = analyzeGestures(player, isLeft)
 	var spellOptions
 	if isLeft:
-		spellOptions = self.get_node("UI/LeftHand/LeftHandSpellOptions")
+		spellOptions = self.get_node("Scroll/UI/LeftHand/LeftHandSpellOptions")
 	else:
-		spellOptions = self.get_node("UI/RightHand/RightHandSpellOptions")
+		spellOptions = self.get_node("Scroll/UI/RightHand/RightHandSpellOptions")
 	spellOptions.clear()
 	for i in spellOptionsArray.size():
 		spellOptions.add_item(spellOptionsArray[i].name, spellOptionsArray[i].id)
@@ -465,11 +465,11 @@ func onSpellChange(isLeft):
 	var offHand
 	
 	if isLeft:
-		mainHand = self.get_node("UI/LeftHand/LeftHandSpellOptions")
-		offHand = self.get_node("UI/RightHand/RightHandSpellOptions")
+		mainHand = self.get_node("Scroll/UI/LeftHand/LeftHandSpellOptions")
+		offHand = self.get_node("Scroll/UI/RightHand/RightHandSpellOptions")
 	else:
-		mainHand = self.get_node("UI/RightHand/RightHandSpellOptions")
-		offHand = self.get_node("UI/LeftHand/LeftHandSpellOptions")
+		mainHand = self.get_node("Scroll/UI/RightHand/RightHandSpellOptions")
+		offHand = self.get_node("Scroll/UI/LeftHand/LeftHandSpellOptions")
 	
 	var mainSpell = spellSearch(mainHand.get_selected_id())
 	var offSpell = spellSearch(offHand.get_selected_id())
@@ -490,10 +490,10 @@ func onSpellChange(isLeft):
 
 func onTargetChange(isLeft):
 	# TODO: if casting a two-handed spell, changing the target with one hand also changes target of the other
-	var rightSpell = spellSearch(self.get_node("UI/RightHand/RightHandSpellOptions").get_selected_id())
+	var rightSpell = spellSearch(self.get_node("Scroll/UI/RightHand/RightHandSpellOptions").get_selected_id())
 	
-	var rightTarget = self.get_node("UI/RightHand/RightHandTargetingOptions")
-	var leftTarget = self.get_node("UI/LeftHand/LeftHandTargetingOptions")
+	var rightTarget = self.get_node("Scroll/UI/RightHand/RightHandTargetingOptions")
+	var leftTarget = self.get_node("Scroll/UI/LeftHand/LeftHandTargetingOptions")
 	
 	if rightSpell.is_two_handed():
 		if isLeft:
@@ -512,17 +512,17 @@ func recalculateTarget(isLeft):
 	var offSpell
 	
 	if isLeft:
-		mainHand = self.get_node("UI/LeftHand/LeftHandSpellOptions")
-		mainTarget = self.get_node("UI/LeftHand/LeftHandTargetingOptions")
+		mainHand = self.get_node("Scroll/UI/LeftHand/LeftHandSpellOptions")
+		mainTarget = self.get_node("Scroll/UI/LeftHand/LeftHandTargetingOptions")
 		
-		offHand = self.get_node("UI/RightHand/RightHandSpellOptions")
-		offTarget = self.get_node("UI/RightHand/RightHandTargetingOptions")
+		offHand = self.get_node("Scroll/UI/RightHand/RightHandSpellOptions")
+		offTarget = self.get_node("Scroll/UI/RightHand/RightHandTargetingOptions")
 	else:
-		mainHand = self.get_node("UI/RightHand/RightHandSpellOptions")
-		mainTarget = self.get_node("UI/RightHand/RightHandTargetingOptions")
+		mainHand = self.get_node("Scroll/UI/RightHand/RightHandSpellOptions")
+		mainTarget = self.get_node("Scroll/UI/RightHand/RightHandTargetingOptions")
 		
-		offHand = self.get_node("UI/LeftHand/LeftHandSpellOptions")
-		offTarget = self.get_node("UI/LeftHand/LeftHandTargetingOptions")
+		offHand = self.get_node("Scroll/UI/LeftHand/LeftHandSpellOptions")
+		offTarget = self.get_node("Scroll/UI/LeftHand/LeftHandTargetingOptions")
 		
 	if mainHand.get_selected_id() == -1:
 		mainTarget.clear()
@@ -580,25 +580,25 @@ func isTargetHostile(target, caster):
 		return false
 
 func renderWizardSection():
-	self.get_node("UI/WizardList").render(entityArray, player)
-	self.get_node("UI/LeftHand/LeftHandGestureOptions").select(0)
-	self.get_node("UI/RightHand/RightHandGestureOptions").select(0)
-	self.get_node("UI/LeftHand/LeftHandSpellOptions").clear()
-	self.get_node("UI/RightHand/RightHandSpellOptions").clear()
-	self.get_node("UI/LeftHand/LeftHandSpellOptions").set_disabled(true)
-	self.get_node("UI/RightHand/RightHandSpellOptions").set_disabled(true)
-	self.get_node("UI/LeftHand/LeftHandTargetingOptions").clear()
-	self.get_node("UI/RightHand/RightHandTargetingOptions").clear()
-	self.get_node("UI/LeftHand/LeftHandTargetingOptions").set_disabled(true)
-	self.get_node("UI/RightHand/RightHandTargetingOptions").set_disabled(true)
+	self.get_node("Scroll/UI/WizardList").render(entityArray, player)
+	self.get_node("Scroll/UI/LeftHand/LeftHandGestureOptions").select(0)
+	self.get_node("Scroll/UI/RightHand/RightHandGestureOptions").select(0)
+	self.get_node("Scroll/UI/LeftHand/LeftHandSpellOptions").clear()
+	self.get_node("Scroll/UI/RightHand/RightHandSpellOptions").clear()
+	self.get_node("Scroll/UI/LeftHand/LeftHandSpellOptions").set_disabled(true)
+	self.get_node("Scroll/UI/RightHand/RightHandSpellOptions").set_disabled(true)
+	self.get_node("Scroll/UI/LeftHand/LeftHandTargetingOptions").clear()
+	self.get_node("Scroll/UI/RightHand/RightHandTargetingOptions").clear()
+	self.get_node("Scroll/UI/LeftHand/LeftHandTargetingOptions").set_disabled(true)
+	self.get_node("Scroll/UI/RightHand/RightHandTargetingOptions").set_disabled(true)
 
 func _on_end_turn_button_pressed():
 	
-	spellQueue[player][0] = spellSearch(self.get_node("UI/RightHand/RightHandSpellOptions").get_selected_id())
-	spellQueue[player][1] = spellSearch(self.get_node("UI/LeftHand/LeftHandSpellOptions").get_selected_id())
+	spellQueue[player][0] = spellSearch(self.get_node("Scroll/UI/RightHand/RightHandSpellOptions").get_selected_id())
+	spellQueue[player][1] = spellSearch(self.get_node("Scroll/UI/LeftHand/LeftHandSpellOptions").get_selected_id())
 		
-	targetQueue[player][0] = self.get_node("UI/RightHand/RightHandTargetingOptions").get_selected_id()
-	targetQueue[player][1] = self.get_node("UI/LeftHand/LeftHandTargetingOptions").get_selected_id()
+	targetQueue[player][0] = self.get_node("Scroll/UI/RightHand/RightHandTargetingOptions").get_selected_id()
+	targetQueue[player][1] = self.get_node("Scroll/UI/LeftHand/LeftHandTargetingOptions").get_selected_id()
 	
 	player += 1
 	
@@ -614,11 +614,11 @@ func _on_end_turn_button_pressed():
 			renderWizardSection()
 
 func _on_right_hand_gesture_options_item_selected(index):
-	var gesture_ID = self.get_node("UI/RightHand/RightHandGestureOptions").get_item_id(index)
+	var gesture_ID = self.get_node("Scroll/UI/RightHand/RightHandGestureOptions").get_item_id(index)
 	gestureQueue[player][0] = validGestures[gesture_ID]
 	
 	if gestureQueue[player][0] == "C":
-		var leftHand = self.get_node("UI/LeftHand/LeftHandGestureOptions")
+		var leftHand = self.get_node("Scroll/UI/LeftHand/LeftHandGestureOptions")
 		#leftHand.select(index)
 		#TODO: make sure to change this so that it doesn't break with fear, charm, etc
 	
@@ -626,11 +626,11 @@ func _on_right_hand_gesture_options_item_selected(index):
 	onGestureChange(true)
 
 func _on_left_hand_gesture_options_item_selected(index):
-	var gesture_ID = self.get_node("UI/LeftHand/LeftHandGestureOptions").get_item_id(index)
+	var gesture_ID = self.get_node("Scroll/UI/LeftHand/LeftHandGestureOptions").get_item_id(index)
 	gestureQueue[player][1] = validGestures[gesture_ID]
 	
 	if gestureQueue[player][1] == "C":
-		var rightHand = self.get_node("UI/RightHand/RightHandGestureOptions")
+		var rightHand = self.get_node("Scroll/UI/RightHand/RightHandGestureOptions")
 		#rightHand.select(index)
 	
 	onGestureChange(true)

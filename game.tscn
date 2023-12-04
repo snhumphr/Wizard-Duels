@@ -5,74 +5,86 @@
 [ext_resource type="Script" path="res://TurnReport.gd" id="3_dgo7r"]
 [ext_resource type="Script" path="res://WizardList.gd" id="3_laiom"]
 
-[node name="Game" type="Node2D"]
+[node name="Game" type="CanvasLayer"]
+follow_viewport_enabled = true
 script = ExtResource("1_3r2fk")
 
-[node name="UI" type="VBoxContainer" parent="."]
-offset_right = 500.0
-offset_bottom = 500.0
+[node name="Scroll" type="ScrollContainer" parent="."]
+clip_contents = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="SpellList" type="RichTextLabel" parent="UI"]
+[node name="UI" type="VBoxContainer" parent="Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="SpellList" type="RichTextLabel" parent="Scroll/UI"]
 layout_mode = 2
 fit_content = true
 script = ExtResource("2_cadle")
 
-[node name="TurnReport" type="RichTextLabel" parent="UI"]
+[node name="TurnReport" type="RichTextLabel" parent="Scroll/UI"]
 layout_mode = 2
 fit_content = true
 script = ExtResource("3_dgo7r")
 
-[node name="WizardList" type="RichTextLabel" parent="UI"]
+[node name="WizardList" type="RichTextLabel" parent="Scroll/UI"]
 layout_mode = 2
 fit_content = true
 script = ExtResource("3_laiom")
 
-[node name="RightHand" type="HBoxContainer" parent="UI"]
+[node name="RightHand" type="HBoxContainer" parent="Scroll/UI"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="UI/RightHand"]
+[node name="Label" type="Label" parent="Scroll/UI/RightHand"]
 layout_mode = 2
 text = "Right Hand:"
 
-[node name="RightHandGestureOptions" type="OptionButton" parent="UI/RightHand"]
+[node name="RightHandGestureOptions" type="OptionButton" parent="Scroll/UI/RightHand"]
 layout_mode = 2
 
-[node name="RightHandSpellOptions" type="OptionButton" parent="UI/RightHand"]
+[node name="RightHandSpellOptions" type="OptionButton" parent="Scroll/UI/RightHand"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 
-[node name="RightHandTargetingOptions" type="OptionButton" parent="UI/RightHand"]
+[node name="RightHandTargetingOptions" type="OptionButton" parent="Scroll/UI/RightHand"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 
-[node name="LeftHand" type="HBoxContainer" parent="UI"]
+[node name="LeftHand" type="HBoxContainer" parent="Scroll/UI"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="UI/LeftHand"]
+[node name="Label" type="Label" parent="Scroll/UI/LeftHand"]
 layout_mode = 2
-text = "Left Hand:"
+text = "Left Hand:  "
 
-[node name="LeftHandGestureOptions" type="OptionButton" parent="UI/LeftHand"]
+[node name="LeftHandGestureOptions" type="OptionButton" parent="Scroll/UI/LeftHand"]
 layout_mode = 2
 
-[node name="LeftHandSpellOptions" type="OptionButton" parent="UI/LeftHand"]
+[node name="LeftHandSpellOptions" type="OptionButton" parent="Scroll/UI/LeftHand"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 
-[node name="LeftHandTargetingOptions" type="OptionButton" parent="UI/LeftHand"]
+[node name="LeftHandTargetingOptions" type="OptionButton" parent="Scroll/UI/LeftHand"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 
-[node name="EndTurnButton" type="Button" parent="UI"]
+[node name="EndTurnButton" type="Button" parent="Scroll/UI"]
+custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
+size_flags_horizontal = 0
 text = "Submit Turn"
 
-[connection signal="item_selected" from="UI/RightHand/RightHandGestureOptions" to="." method="_on_right_hand_gesture_options_item_selected"]
-[connection signal="item_selected" from="UI/RightHand/RightHandSpellOptions" to="." method="_on_right_hand_spell_options_item_selected"]
-[connection signal="item_selected" from="UI/RightHand/RightHandTargetingOptions" to="." method="_on_right_hand_targeting_options_item_selected"]
-[connection signal="item_selected" from="UI/LeftHand/LeftHandGestureOptions" to="." method="_on_left_hand_gesture_options_item_selected"]
-[connection signal="item_selected" from="UI/LeftHand/LeftHandSpellOptions" to="." method="_on_left_hand_spell_options_item_selected"]
-[connection signal="item_selected" from="UI/LeftHand/LeftHandTargetingOptions" to="." method="_on_left_hand_targeting_options_item_selected"]
-[connection signal="pressed" from="UI/EndTurnButton" to="." method="_on_end_turn_button_pressed"]
+[connection signal="item_selected" from="Scroll/UI/RightHand/RightHandGestureOptions" to="." method="_on_right_hand_gesture_options_item_selected"]
+[connection signal="item_selected" from="Scroll/UI/RightHand/RightHandSpellOptions" to="." method="_on_right_hand_spell_options_item_selected"]
+[connection signal="item_selected" from="Scroll/UI/RightHand/RightHandTargetingOptions" to="." method="_on_right_hand_targeting_options_item_selected"]
+[connection signal="item_selected" from="Scroll/UI/LeftHand/LeftHandGestureOptions" to="." method="_on_left_hand_gesture_options_item_selected"]
+[connection signal="item_selected" from="Scroll/UI/LeftHand/LeftHandSpellOptions" to="." method="_on_left_hand_spell_options_item_selected"]
+[connection signal="item_selected" from="Scroll/UI/LeftHand/LeftHandTargetingOptions" to="." method="_on_left_hand_targeting_options_item_selected"]
+[connection signal="pressed" from="Scroll/UI/EndTurnButton" to="." method="_on_end_turn_button_pressed"]
