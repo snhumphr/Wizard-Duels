@@ -36,8 +36,8 @@ func addEffect(effectName, effectDuration, effectDict):
 	
 func removeEffect(effectName):
 	var index = 0
-	for i in effects:
-		if effects[i][0] == effectName:
+	for i in effects.size():
+		if effects[i][0].name == effectName:
 			index = i
 	effects.remove_at(index)
 	

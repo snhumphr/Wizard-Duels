@@ -256,6 +256,13 @@ func process_turn():
 		
 	for i in range(1, entityArray.size()):
 		
+		if entityArray[i].is_wizard or entityArray[i].is_monster:
+			if entityArray[i].is_active():
+				for effect in entityArray[i].effects:
+					effect[1] -= 1
+					if effect[1] <= 0:
+						entityArray[i].removeEffect(effect[0].name)
+		
 		#TODO: resolve anti spells in this step
 		
 		if entityArray[i].is_wizard and entityArray[i].is_active():

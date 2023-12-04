@@ -12,6 +12,8 @@ func render(entityArray, player):
 		if wizard.is_wizard:
 			self.newline()
 			self.add_text(wizard.name)
+			for effect in entityArray[i].effects:
+				self.add_text(" " + effect[0].name + "(" + str(effect[1]) + ")")
 			if player == i:
 				self.add_text(" (you)")
 			self.newline()
