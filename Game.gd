@@ -23,6 +23,8 @@ var validSpookedGestures = ["N", "P", "W", ">"]
 func _ready():
 	loadSpells("res://resources/spells", spellArray)
 	
+	spellArray.sort_custom(spellPowerSort)
+	
 	for i in spellArray.size():
 		spellArray[i].id = i
 	spellArray.sort_custom(spellSort)
@@ -320,14 +322,6 @@ func gesture_to_text(gesture, wizard):
 	
 	return message	
 
-func spellOrderSort(spellA, spellB):
-	if spellA[0].effect < spellB[0].effect:
-		return true
-	elif spellA[0].effect == spellB[0].effect and spellA[0].effect_name == "Reflect":
-		return true
-	else:
-		return false
-
 func checkSpellInterference(spell, target):
 	
 	if spell.blockable:
@@ -383,6 +377,25 @@ func loadEffects(path, dict):
 func spellSort(spellA, spellB):
 	if spellA.id < spellB.id:
 		return true
+	else:
+		return false
+
+func spellOrderSort(spellA, spellB):
+	if spellA[0].effect < spellB[0].effect:
+		return true
+	elif spellA[0].effect == spellB[0].effect and spellA[0].effect_name == "Reflect":
+		return true
+	else:
+		return false
+		
+func spellPowerSort(spellA, spellB):
+	if spellA.gestures.size() < spellB.gestures.size():
+		return true
+	elif spellA.gestures.size() == spellB.gestures.size():
+		if spellA.gestures[spellA.gestures.size()-1].length() < spellB.gestures[spellB.gestures.size()-1].length():
+			return true
+		else:
+			return false
 	else:
 		return false
 
