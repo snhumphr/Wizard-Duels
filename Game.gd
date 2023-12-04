@@ -445,6 +445,9 @@ func analyzeGestures(wizard_index, isLeft):
 		elif spell.is_two_handed() and off_gestures.ends_with(main_spell_gestures) and main_gestures.ends_with(off_spell_gestures):
 			spellOptionsArray.append(spell)
 	
+	spellOptionsArray.sort_custom(spellPowerSort)
+	spellOptionsArray.reverse()
+	
 	return spellOptionsArray
 
 func onGestureChange(isLeft):
