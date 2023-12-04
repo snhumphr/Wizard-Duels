@@ -8,6 +8,9 @@ var entityArray = Array()
 
 var effectDict = Dictionary()
 
+var monsterTemplate
+var adjectiveCount = 0
+
 var gestureQueue = Array()
 var spellQueue = Array()
 var targetQueue = Array()
@@ -44,6 +47,9 @@ func _ready():
 	entityArray.append(emptySpace)
 	entityArray.append(load("res://resources/wizards/wizard_one.tres"))
 	entityArray.append(load("res://resources/wizards/wizard_two.tres"))
+	
+	monsterTemplate = load("res://resources/monsters/base.tres")
+	monsterTemplate.adjectives.shuffle()
 	
 	for i in range(1, entityArray.size()):
 		entityArray[i].id = i
@@ -208,6 +214,23 @@ func process_turn():
 						else:
 							turnLogQueue.append(spellCheck)
 				Spell.SpellEffect.Summon:
+					for t in targets:
+						var summoner = -1
+						#TODO: check spell interference!
+						if t.is_wizard:
+							summoner = t.id
+						elif t.is_monster:
+							summoner = t.summoner_id
+						if summoner != -1:
+							var monster = monsterTemplate.duplicate()
+							monster.summoner_id = summoner
+							monster.id = entityArray.size()
+							monster.name = entityArray[summoner].name + "'s " + monster.adjectives[adjectiveCount] + " " + spell.effect_name
+							monster.max_hp = spell.intensity
+							monster.hp = spell.intensity
+							entityArray.append(monster)
+							adjectiveCount += 1
+							print(monster.adjectives[0])
 					print("summon monster")
 				Spell.SpellEffect.applyTempEffect:
 					print("apply effect")
@@ -273,9 +296,9 @@ func process_turn():
 			numPlayers += 1
 			activePlayer = i
 			
-		gestureQueue[i] = ["N", "N"]
-		spellQueue[i] = [null, null]
-		targetQueue[i] = [-1, -1]
+			gestureQueue[i] = ["N", "N"]
+			spellQueue[i] = [null, null]
+			targetQueue[i] = [-1, -1]
 		
 		
 	if numPlayers == 1:
@@ -511,7 +534,7 @@ func onTargetChange(isLeft):
 	var rightTarget = self.get_node("Scroll/UI/RightHand/RightHandTargetingOptions")
 	var leftTarget = self.get_node("Scroll/UI/LeftHand/LeftHandTargetingOptions")
 	
-	if rightSpell.is_two_handed():
+	if rightSpell != null and rightSpell.is_two_handed():
 		if isLeft:
 			rightTarget.select(rightTarget.get_item_index(leftTarget.get_selected_id()))
 		else:
@@ -590,7 +613,7 @@ func isTargetHostile(target, caster):
 	
 	if target.is_wizard and target.id != caster.id:
 		return true
-	elif target.is_monster and target.master_id != caster.id:
+	elif target.is_monster and target.summoner_id != caster.id:
 		return true
 	else:
 		return false

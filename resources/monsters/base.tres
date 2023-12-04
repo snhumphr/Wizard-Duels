@@ -1,14 +1,14 @@
-[gd_resource type="Resource" script_class="Monster" load_steps=2 format=3 uid="uid://ddoy3n53gssr3"]
+[gd_resource type="Resource" script_class="Monster" load_steps=2 format=3 uid="uid://dwpe1fne1v4s8"]
 
 [ext_resource type="Script" path="res://monster.gd" id="1_asf0e"]
 
 [resource]
 script = ExtResource("1_asf0e")
 id = -1
-name = ""
+name = "Goblin"
 summoner_id = -1
 pronouns = ["they", "them", "their"]
-adjectives = PackedStringArray("warty", "stinky", "ugly", "repugnant", "nasty", "spooky", "scary", "sinister", "evil", "malicious", "lumpy")
+adjectives = ["warty", "stinky", "ugly", "repugnant", "nasty", "spooky", "scary", "sinister", "evil", "malicious", "lumpy", "loathsome", "fulminating", "incarnadine", "grody", "gross", "greedy", "ominous", "accursed", "rude"]
 is_wizard = false
 is_monster = true
 fire = false

@@ -25,4 +25,10 @@ func render(entityArray, player):
 			self.add_text("    Left Hand:  ")
 			self.add_text("-".join(wizard.left_hand_gestures))
 			self.newline()
+			for e in entityArray:
+				if e.is_monster and e.is_active() and e.summoner_id == wizard.id:
+					self.add_text("    " + e.name)
+					self.newline()
+					self.add_text("        " + "HP: " + str(e.hp) + "/" + str(e.max_hp))
+					self.newline()
 	self.newline()
