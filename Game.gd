@@ -215,22 +215,27 @@ func process_turn():
 							turnLogQueue.append(spellCheck)
 				Spell.SpellEffect.Summon:
 					for t in targets:
-						var summoner = -1
-						#TODO: check spell interference!
-						if t.is_wizard:
-							summoner = t.id
-						elif t.is_monster:
-							summoner = t.summoner_id
-						if summoner != -1:
-							var monster = monsterTemplate.duplicate()
-							monster.summoner_id = summoner
-							monster.id = entityArray.size()
-							monster.name = entityArray[summoner].name + "'s " + monster.adjectives[adjectiveCount] + " " + spell.effect_name
-							monster.max_hp = spell.intensity
-							monster.hp = spell.intensity
-							entityArray.append(monster)
-							adjectiveCount += 1
-							print(monster.adjectives[0])
+						var spellCheck = checkSpellInterference(spell, t)
+						if spellCheck == "":
+							var summoner = -1
+							if t.is_wizard:
+								summoner = t.id
+							elif t.is_monster:
+								summoner = t.summoner_id
+								
+							if summoner != -1:
+								var monster = monsterTemplate.duplicate()
+								monster.summoner_id = summoner
+								monster.id = entityArray.size()
+								monster.name = entityArray[summoner].name + "'s " + monster.adjectives[adjectiveCount] + " " + spell.effect_name
+								monster.max_hp = spell.intensity
+								monster.hp = spell.intensity
+								entityArray.append(monster)
+								
+								turnLogQueue.append("A " + monster.adjectives[adjectiveCount] + " " + spell.effect_name + " appears to serve " + entityArray[summoner].name + "!")
+								adjectiveCount += 1
+							else:
+								turnLogQueue.append(spellCheck)
 					print("summon monster")
 				Spell.SpellEffect.applyTempEffect:
 					print("apply effect")
