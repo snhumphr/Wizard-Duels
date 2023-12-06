@@ -632,8 +632,8 @@ func findValidTargets(spell, caster):
 			elif spell.hostile and isTargetHostile(entityArray[i], caster):
 				preferredTargets.append(entityArray[i])
 	
-	randomize()
-	preferredTargets.shuffle()
+	#randomize()
+	#preferredTargets.shuffle()
 	
 	return [validTargets, preferredTargets[0].id]
 
