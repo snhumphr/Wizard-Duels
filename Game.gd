@@ -287,6 +287,26 @@ func process_turn():
 	numPlayers = 0
 		
 	for i in range(1, entityArray.size()):
+		var entity = entityArray[i]
+		if entity.is_monster and entity.is_active():
+			#print(entity.name)
+			if entity.target_id > 0:
+				var target = entityArray[entity.target_id]
+				#print(target.name)
+				var shield = false
+				for effect in target.effects:
+					if effect[0].shield:
+						shield = true
+				#TODO: make it so that a hexed monster also fails to attack
+				if shield:
+					turnLogQueue.append(entity.name + " attacks " + target.name + " , but " + target.pronouns[2] + " shield protects " + target.pronouns[1] + "!")
+				else:
+					turnLogQueue.append(entity.name + " attacks " + target.name + " for "+ str(entity.max_hp) + " damage.")
+					target.take_damage(entity.max_hp)
+			elif entity.aoe:
+				pass
+		
+	for i in range(1, entityArray.size()):
 		
 		if entityArray[i].is_wizard or entityArray[i].is_monster:
 			if entityArray[i].is_active():
@@ -294,6 +314,9 @@ func process_turn():
 					effect[1] -= 1
 					if effect[1] <= 0:
 						entityArray[i].removeEffect(effect[0].name)
+			else:
+				for effect in entityArray[i].effects:
+					entityArray[i].removeEffect(effect[0].name)
 		
 		#TODO: resolve anti spells in this step
 		
@@ -306,6 +329,8 @@ func process_turn():
 			gestureQueue[i] = ["N", "N"]
 			spellQueue[i] = [null, null]
 			targetQueue[i] = [-1, -1]
+		elif entityArray[i].is_monster:
+			entityArray[i].target_id = -1
 		
 		
 	if numPlayers == 1:
@@ -390,7 +415,7 @@ func loadSpells(path, array):
 			file_name = dir.get_next()
 		dir.list_dir_end()
 	else:
-		print("An error occurred when trying to access the path.")
+		printerr("An error occurred when trying to access the path.")
 
 func loadEffects(path, dict):
 	var dir = DirAccess.open(path)
@@ -490,8 +515,6 @@ func onGestureChange(isLeft):
 	spellOptions.clear()
 	for i in spellOptionsArray.size():
 		spellOptions.add_item(spellOptionsArray[i].name, spellOptionsArray[i].id)
-		
-	# TODO: sort the spell options by how long the gesture string takes
 	
 	# TODO: Make it so that clapping with one hand automatically claps with both
 	# TODO: And also that unclapping with one hand turns the other hand into the NULL gesture
@@ -535,7 +558,6 @@ func onSpellChange(isLeft):
 	recalculateTarget(isLeft)
 
 func onTargetChange(isLeft):
-	# TODO: if casting a two-handed spell, changing the target with one hand also changes target of the other
 	var rightSpell = spellSearch(self.get_node("Scroll/UI/RightHand/RightHandSpellOptions").get_selected_id())
 	
 	var rightTarget = self.get_node("Scroll/UI/RightHand/RightHandTargetingOptions")
@@ -649,6 +671,15 @@ func _on_end_turn_button_pressed():
 	
 	player += 1
 	
+	var monsterList = self.get_node("Scroll/UI/SummonControlPanel").getMonsterList()
+	
+	for monster in monsterList:
+		for child in monster[0].get_children():
+			if child is OptionButton:
+				var target_id = child.get_selected_id()
+				entityArray[monster[1]].target_id = target_id
+				#print(entityArray[monster[1]].name + " targets " +entityArray[target_id].name)
+	
 	if player >= entityArray.size():
 		process_turn()
 	else:
@@ -706,4 +737,3 @@ func _on_summon_control_panel_request_valid_targets(monster, button):
 	button.select(button.get_item_index(targets[1]))
 	if targets[1] == -1:
 		button.set_disabled(true)
-		

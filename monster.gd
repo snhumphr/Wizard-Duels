@@ -16,6 +16,7 @@ class_name Monster
 @export var hp: int = 1
 @export var max_hp: int = 1
 @export var aoe: bool = false
+@export var target_id: int = -1
 
 @export var effects: Array = []
 
