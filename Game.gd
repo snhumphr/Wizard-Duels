@@ -176,6 +176,12 @@ func process_turn():
 		if magicDispelled and spell.dispellable:
 			spellFailed = true
 			
+		if spell.once_per_turn:
+			for spell_id in oncePerTurnSpells:
+				if spell_id == spell.id:
+					spellFailed = true
+			if not spellFailed:
+				oncePerTurnSpells.append(spell.id)
 		#TODO: add more spell failure conditions here?
 		
 		if not spellFailed: 
