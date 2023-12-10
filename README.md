@@ -1,9 +1,9 @@
 # Wizard-Duels
 
-Wizard Duels is my personal adaptation of the [https://mud.co.uk/richard/spellbnd.htm](Spellbinder/Waving Hands rules by Richard Bartle).
+Wizard Duels is my personal adaptation of the [Spellbinder/Waving Hands rules by Richard Bartle](https://mud.co.uk/richard/spellbnd.html).
 Although he has been kind enough to allow non-commercial adaptations of these rules, all rights regarding the ruleset still belong to him.
 
-Some rules have been altered from their original version. Sometimes this is for my own mysterious reasons, but there are also several major balance and playability changes carried over from [https://games.ravenblack.net/rules/1/intro.html](the Ravenblack) strain of Spellbinder, which I quite enjoyed. All credit for those changes goes to that community.
+Some rules have been altered from their original version. Sometimes this is for my own mysterious reasons, but there are also several major balance and playability changes carried over from the [Ravenblack](https://games.ravenblack.net/rules/1/intro.html) strain of Spellbinder, which I quite enjoyed. All credit for those changes goes to that community.
 
 If someone else wants to take this version and do something else with it, then you're welcome to, but you should credit what changes you took from me specifically(as I did here) and definitely not pass off the whole thing unchanged as your own.
 
