@@ -28,6 +28,8 @@ func render(entityArray, player):
 			for e in entityArray:
 				if e.is_monster and e.is_active() and e.summoner_id == wizard.id:
 					self.add_text("    " + e.name)
+					for effect in e.effects:
+						self.add_text(" " + effect[0].name + "(" + str(effect[1]) + ")")
 					self.newline()
 					self.add_text("        " + "HP: " + str(e.hp) + "/" + str(e.max_hp))
 					self.newline()
