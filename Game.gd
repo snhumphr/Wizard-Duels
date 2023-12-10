@@ -420,8 +420,15 @@ func monsterActions(entityArray, turnLogQueue):
 				for effect in target.effects:
 					if effect[0].shield:
 						shield = true
-				#TODO: make it so that a hexed monster also fails to attack
-				if shield:
+	
+				var hexed = false
+				for effect in entity.effects:
+					if effect[0].hex:
+						hexed = true
+				
+				if hexed:
+					turnLogQueue.append(entity.name + " tries to attack " + target_name + ", but " + entity.pronouns[2] + "  hex prevents " + entity.pronouns[1])
+				elif shield:
 					turnLogQueue.append(entity.name + " attacks " + target_name + ", but " + target.pronouns[2] + " shield protects " + target.pronouns[1] + "!")
 				else:
 					turnLogQueue.append(entity.name + " attacks " + target_name + " for "+ str(entity.max_hp) + " damage.")
