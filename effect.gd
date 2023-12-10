@@ -3,6 +3,7 @@ class_name Effect
 
 @export var name: String
 @export var is_silent: bool = false
+@export var permanent: bool = false
 
 @export var shield: bool = false
 @export var counterspell: bool = false

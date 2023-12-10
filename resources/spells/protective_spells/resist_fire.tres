@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=2 format=3 uid="uid://bkya0e8at3xlj"]
+
+[ext_resource type="Script" path="res://spells.gd" id="1_sgxwl"]
+
+[resource]
+resource_name = "Shield"
+script = ExtResource("1_sgxwl")
+name = "Resist Fire"
+gestures = PackedStringArray("W", "W", "F", "P")
+id = 0
+is_spell = true
+is_silent = false
+once_per_turn = false
+once_per_wizard = false
+once_per_duel = false
+mandatory = false
+hex = false
+fire_spell = false
+ice_spell = true
+dispellable = true
+counterable = true
+reflectable = true
+targetable = true
+blockable = false
+hostile = false
+requires_target = false
+can_target_corpses = false
+always_targets_self = false
+permanency_valid = false
+effect = 3
+effect_name = "Resist Fire"
+intensity = 0

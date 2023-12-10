@@ -14,7 +14,10 @@ func render(entityArray, player):
 			self.add_text(wizard.name)
 			for effect in entityArray[i].effects:
 				if not effect[0].is_silent:
-					self.add_text(" " + effect[0].name + "(" + str(effect[1]) + ")")
+					var duration = str(effect[1])
+					if effect[0].permanent:
+						duration = "permanent"
+					self.add_text(" " + effect[0].name + "(" + duration + ")")
 			if player == i:
 				self.add_text(" (you)")
 			self.newline()

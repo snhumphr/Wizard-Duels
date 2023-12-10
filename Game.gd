@@ -190,7 +190,7 @@ func process_turn():
 				verb = " "
 				target_string = "s " + target_string
 				spell_name = spell_name.to_lower()
-			else:
+			elif targets.size() == 1:
 				target_string = " on " + target_string
 					
 			var message = caster.name + verb + spell_name + target_string
@@ -321,9 +321,10 @@ func process_turn():
 		if entityArray[i].is_wizard or entityArray[i].is_monster:
 			if entityArray[i].is_active():
 				for effect in entityArray[i].effects:
-					effect[1] -= 1
-					if effect[1] <= 0:
-						entityArray[i].removeEffect(effect[0].name)
+					if not effect[0].permanent:
+						effect[1] -= 1
+						if effect[1] <= 0:
+							entityArray[i].removeEffect(effect[0].name)
 			else:
 				for effect in entityArray[i].effects:
 					entityArray[i].removeEffect(effect[0].name)
@@ -403,12 +404,12 @@ func checkSpellInterference(spell, target):
 		
 	if spell.fire_spell: #TODO: Add elemental innate resistance here
 		for effect in target.effects:
-			if effect[0].fire_res:
+			if effect[0].fire_res and spell.hostile:
 				return target.name +  " resists the fire!"
 		
 	if spell.ice_spell:
 		for effect in target.effects:
-			if effect[0].cold_res:
+			if effect[0].cold_res and spell.hostile:
 				return target.name +  " resists the cold!"
 		
 	return ""

@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="Effect" load_steps=2 format=3 uid="uid://ct54kj0nghxol"]
+
+[ext_resource type="Script" path="res://effect.gd" id="1_waldg"]
+
+[resource]
+script = ExtResource("1_waldg")
+name = "Resist Ice"
+is_silent = false
+permanent = true
+shield = false
+counterspell = false
+reflect = false
+fire_res = false
+cold_res = true
+invisibility = false
+surrender = false
+fatal = false
+curable = 0
+hex = false
+dispellable = true
+unstable = false
+charm_person = false
+fear = false
+paralysis = false
+maladroit = false
+amnesia = false
