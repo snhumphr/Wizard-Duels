@@ -329,9 +329,14 @@ func castSpells(spellExecutionList, entityArray, turnLogQueue):
 					magicDispelled = true
 					for t in targets:
 						if t.is_wizard:
+							var dispelList = []
 							for e in t.effects.size():
-								if t.effects[e].dispellable:
-									t.effects.remove_at(e)
+								if t.effects[e][0].dispellable:
+									dispelList.append(t.effects[e][0].name)
+								
+							for effectName in dispelList:
+								t.removeEffect(effectName)
+								
 							t.addEffect("Shield", 0, effectDict)
 						elif t.is_monster:
 							t.take_damage(99)
