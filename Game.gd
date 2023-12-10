@@ -135,6 +135,18 @@ func process_turn():
 
 	castSpells(spellExecutionList, entityArray, turnLogQueue)
 	
+	for i in range(1, entityArray.size()):
+		if entityArray[i].is_active():
+			var hexList = []
+			for effect in entityArray[i].effects:
+				if effect[0].hex and (effect[1] == 2 or effect[1] == 0):
+					hexList.append(effect[0].name)
+					
+			if hexList.size() > 1:
+				for effectName in hexList:
+					entityArray[i].removeEffect(effectName)
+				turnLogQueue.append("The conflicting hexes on " + entityArray[i].name + " cancel each other out!")
+	
 	monsterActions(entityArray, turnLogQueue)
 	
 	var activePlayer = 0
