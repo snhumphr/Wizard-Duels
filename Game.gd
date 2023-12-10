@@ -425,6 +425,7 @@ func monsterActions(entityArray, turnLogQueue):
 				for effect in entity.effects:
 					if effect[0].hex:
 						hexed = true
+						effect[1] = 0
 				
 				if hexed:
 					turnLogQueue.append(entity.name + " tries to attack " + target_name + ", but " + entity.pronouns[2] + "  hex prevents " + entity.pronouns[1])
