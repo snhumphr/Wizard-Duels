@@ -130,15 +130,107 @@ func process_turn():
 				if spell != null and not(s > 0 and spell.is_two_handed()):
 					spellExecutionList.append([spell, i, targetQueue[i][s]]) #spell, caster, target
 				
+
+	castSpells(spellExecutionList, entityArray, turnLogQueue)
+	
+	monsterActions(entityArray, turnLogQueue)
+	
+	var activePlayer = 0
+	numPlayers = 0
+		
+	for i in range(1, entityArray.size()):
+		
+		if entityArray[i].dead == 1:
+			turnLogQueue.append(entityArray[i].name + " perishes!")
+			entityArray[i].dead = 2
+		elif entityArray[i].dead == 0 and entityArray[i].is_wizard:
+			for effect in entityArray[i].effects:
+				print(effect[0].name)
+				if effect[0].surrender:
+					entityArray[i].surrendered = true
+					turnLogQueue.append(entityArray[i].name + " surrenders!")
+					
+		if entityArray[i].is_wizard or entityArray[i].is_monster:
+			if entityArray[i].is_active():
+				for effect in entityArray[i].effects:
+					if not effect[0].permanent:
+						effect[1] -= 1
+						if effect[1] <= 0:
+							entityArray[i].removeEffect(effect[0].name)
+			else:
+				for effect in entityArray[i].effects:
+					entityArray[i].removeEffect(effect[0].name)
+		
+		#TODO: resolve anti spells in this step
+		
+		if entityArray[i].is_wizard:
+			entityArray[i].right_hand_gestures.append(gestureQueue[i][0])
+			entityArray[i].left_hand_gestures.append(gestureQueue[i][1])
+		
+		if entityArray[i].is_wizard and entityArray[i].is_active():
+			numPlayers += 1
+			activePlayer = i
+			
+			gestureQueue[i] = ["N", "N"]
+			spellQueue[i] = [null, null]
+			targetQueue[i] = [-1, -1]
+		elif entityArray[i].is_monster:
+			entityArray[i].target_id = -1
+		
+	if numPlayers == 1:
+		turnLogQueue.append(entityArray[activePlayer].name + " has won the duel!")
+		self.get_node("Scroll/UI/EndTurnButton").hide()
+		self.get_node("Scroll/UI/RightHand").hide()
+		self.get_node("Scroll/UI/LeftHand").hide()
+	elif numPlayers == 0:
+		turnLogQueue.append("All wizards have been eliminated. The duel ends in a draw.")
+		self.get_node("Scroll/UI/EndTurnButton").hide()
+		self.get_node("Scroll/UI/RightHand").hide()
+		self.get_node("Scroll/UI/LeftHand").hide()
+	else:
+		turn += 1
+		player = 1
+		
+		while not entityArray[player].is_active():
+			player += 1
+	
+	self.get_node("Scroll/UI/TurnReport").render(turnLogQueue)
+	
+	self.renderWizardSection()
+
+func gesture_to_text(gesture, wizard):
+	
+	var message = wizard.name
+	var pronouns = wizard.pronouns
+	
+	match gesture:
+		"S":
+			message += " snaps " + pronouns[2] + " fingers."
+		"D":
+			message += " points with a single digit."
+		"W":
+			message += " waves " + pronouns[2] + " hand."
+		"F":
+			message += " wriggles " + pronouns[2] + " fingers."
+		"P":
+			message += " proffers " + pronouns[2] + " palm."
+		">":
+			message += " produces a knife!"
+		_:
+			message = ""
+	
+	return message	
+
+func castSpells(spellExecutionList, entityArray, turnLogQueue):
 	#sort spells by the order their effects resolves:
 	#1: dispel magic goes off
 	#1.5: counterspells goes off
 	#2: summons go off
 	#3: temp effect applications go off
+	#3.5 Reflection effects are applied before other temp effects
 	#4: damage spells go off
 	#5: healing spells go off
 	#6: kill spells go off
-	
 	spellExecutionList.sort_custom(spellOrderSort)
 	
 	var magicDispelled = false
@@ -238,10 +330,11 @@ func process_turn():
 							if summoner != -1:
 								var monster = monsterTemplate.duplicate()
 								monster.summoner_id = summoner
-								monster.id = entityArray.size()
 								monster.name = entityArray[summoner].name + "'s " + monster.adjectives[adjectiveCount] + " " + spell.effect_name
 								monster.max_hp = spell.intensity
 								monster.hp = spell.intensity
+								
+								monster.id = entityArray.size()
 								entityArray.append(monster)
 								
 								turnLogQueue.append("A " + monster.adjectives[adjectiveCount] + " " + spell.effect_name + " appears to serve " + entityArray[summoner].name + "!")
@@ -289,7 +382,8 @@ func process_turn():
 					printerr("Spell effect not recognized")
 		else:
 			turnLogQueue.append(caster.name + "'s spell fizzles!")
-	
+
+func monsterActions(entityArray, turnLogQueue):
 	for i in range(1, entityArray.size()):
 		var entity = entityArray[i]
 		if entity.is_monster and entity.is_active():
@@ -312,95 +406,6 @@ func process_turn():
 					target.take_damage(entity.max_hp)
 			elif entity.aoe:
 				pass
-		
-	var activePlayer = 0
-	numPlayers = 0
-		
-	for i in range(1, entityArray.size()):
-		
-		
-		if entityArray[i].dead == 1:
-			turnLogQueue.append(entityArray[i].name + " perishes!")
-			entityArray[i].dead = 2
-		elif entityArray[i].dead == 0 and entityArray[i].is_wizard:
-			for effect in entityArray[i].effects:
-				print(effect[0].name)
-				if effect[0].surrender:
-					entityArray[i].surrendered = true
-					print("awoo")
-					turnLogQueue.append(entityArray[i].name + " surrenders!")
-					
-		if entityArray[i].is_wizard or entityArray[i].is_monster:
-			if entityArray[i].is_active():
-				for effect in entityArray[i].effects:
-					if not effect[0].permanent:
-						effect[1] -= 1
-						if effect[1] <= 0:
-							entityArray[i].removeEffect(effect[0].name)
-			else:
-				for effect in entityArray[i].effects:
-					entityArray[i].removeEffect(effect[0].name)
-		
-		#TODO: resolve anti spells in this step
-		
-		if entityArray[i].is_wizard:
-			entityArray[i].right_hand_gestures.append(gestureQueue[i][0])
-			entityArray[i].left_hand_gestures.append(gestureQueue[i][1])
-		
-		if entityArray[i].is_wizard and entityArray[i].is_active():
-			numPlayers += 1
-			activePlayer = i
-			
-			gestureQueue[i] = ["N", "N"]
-			spellQueue[i] = [null, null]
-			targetQueue[i] = [-1, -1]
-		elif entityArray[i].is_monster:
-			entityArray[i].target_id = -1
-		
-		
-	if numPlayers == 1:
-		turnLogQueue.append(entityArray[activePlayer].name + " has won the duel!")
-		self.get_node("Scroll/UI/EndTurnButton").hide()
-		self.get_node("Scroll/UI/RightHand").hide()
-		self.get_node("Scroll/UI/LeftHand").hide()
-	elif numPlayers == 0:
-		turnLogQueue.append("All wizards have been eliminated. The duel ends in a draw.")
-		self.get_node("Scroll/UI/EndTurnButton").hide()
-		self.get_node("Scroll/UI/RightHand").hide()
-		self.get_node("Scroll/UI/LeftHand").hide()
-	else:
-		turn += 1
-		player = 1
-		
-		while not entityArray[player].is_active():
-			player += 1
-	
-	self.get_node("Scroll/UI/TurnReport").render(turnLogQueue)
-	
-	self.renderWizardSection()
-
-func gesture_to_text(gesture, wizard):
-	
-	var message = wizard.name
-	var pronouns = wizard.pronouns
-	
-	match gesture:
-		"S":
-			message += " snaps " + pronouns[2] + " fingers."
-		"D":
-			message += " points with a single digit."
-		"W":
-			message += " waves " + pronouns[2] + " hand."
-		"F":
-			message += " wriggles " + pronouns[2] + " fingers."
-		"P":
-			message += " proffers " + pronouns[2] + " palm."
-		">":
-			message += " produces a knife!"
-		_:
-			message = ""
-	
-	return message	
 
 func checkSpellInterference(spell, target):
 	
