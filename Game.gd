@@ -142,32 +142,45 @@ func process_turn():
 		
 	for i in range(1, entityArray.size()):
 		
+		if entityArray[i].is_wizard and entityArray[i].is_active():
+			
+			var spellsDisrupted = false
+			for effect in entityArray[i].effects:
+				if effect[0].anti_spell:
+					spellsDisrupted = true
+			
+			if not spellsDisrupted:
+				entityArray[i].right_hand_gestures.append(gestureQueue[i][0])
+				entityArray[i].left_hand_gestures.append(gestureQueue[i][1])
+			else:
+				turnLogQueue.append(entityArray[i].name + "'s magic is disrupted!")
+				entityArray[i].right_hand_gestures.append("N")
+				entityArray[i].left_hand_gestures.append("N")
+		
 		if entityArray[i].dead == 1:
 			turnLogQueue.append(entityArray[i].name + " perishes!")
 			entityArray[i].dead = 2
 		elif entityArray[i].dead == 0 and entityArray[i].is_wizard:
 			for effect in entityArray[i].effects:
-				print(effect[0].name)
 				if effect[0].surrender:
 					entityArray[i].surrendered = true
 					turnLogQueue.append(entityArray[i].name + " surrenders!")
 					
 		if entityArray[i].is_wizard or entityArray[i].is_monster:
 			if entityArray[i].is_active():
+				var removeEffectList = []
 				for effect in entityArray[i].effects:
 					if not effect[0].permanent:
 						effect[1] -= 1
 						if effect[1] <= 0:
-							entityArray[i].removeEffect(effect[0].name)
+							removeEffectList.append(effect[0].name)
+							
+				for effect_name in removeEffectList:
+					entityArray[i].removeEffect(effect_name)
+				
 			else:
 				for effect in entityArray[i].effects:
 					entityArray[i].removeEffect(effect[0].name)
-		
-		#TODO: resolve anti spells in this step
-		
-		if entityArray[i].is_wizard:
-			entityArray[i].right_hand_gestures.append(gestureQueue[i][0])
-			entityArray[i].left_hand_gestures.append(gestureQueue[i][1])
 		
 		if entityArray[i].is_wizard and entityArray[i].is_active():
 			numPlayers += 1
@@ -322,7 +335,6 @@ func castSpells(spellExecutionList, entityArray, turnLogQueue):
 							t.addEffect("Shield", 0, effectDict)
 						elif t.is_monster:
 							t.take_damage(99)
-					print("dispel magic")
 				Spell.SpellEffect.Counter:
 					for t in targets:
 						var spellCheck = checkSpellInterference(spell, t)
@@ -353,9 +365,7 @@ func castSpells(spellExecutionList, entityArray, turnLogQueue):
 								adjectiveCount += 1
 							else:
 								turnLogQueue.append(spellCheck)
-					print("summon monster")
 				Spell.SpellEffect.applyTempEffect:
-					print("apply effect")
 					for t in targets:
 						var spellCheck = checkSpellInterference(spell, t)
 						if spellCheck == "":
@@ -363,7 +373,6 @@ func castSpells(spellExecutionList, entityArray, turnLogQueue):
 						else:
 							turnLogQueue.append(spellCheck)
 				Spell.SpellEffect.dealDamage:
-					print("deal damage")
 					for t in targets:
 						var spellCheck = checkSpellInterference(spell, t)
 						if spellCheck == "":
@@ -372,7 +381,6 @@ func castSpells(spellExecutionList, entityArray, turnLogQueue):
 						else:
 							turnLogQueue.append(spellCheck)
 				Spell.SpellEffect.Heal:
-					print("heal")
 					for t in targets:
 						var spellCheck = checkSpellInterference(spell, t)
 						if spellCheck == "":
@@ -381,7 +389,6 @@ func castSpells(spellExecutionList, entityArray, turnLogQueue):
 						else:
 							turnLogQueue.append(spellCheck)
 				Spell.SpellEffect.Kill:
-					print("kill")
 					for t in targets:
 						var spellCheck = checkSpellInterference(spell, t)
 						if spellCheck == "":
@@ -399,13 +406,11 @@ func monsterActions(entityArray, turnLogQueue):
 	for i in range(1, entityArray.size()):
 		var entity = entityArray[i]
 		if entity.is_monster and entity.is_active():
-			#print(entity.name)
 			if entity.target_id > 0:
 				var target = entityArray[entity.target_id]
 				var target_name = target.name
 				if entity.id == target.id:
 					target_name = entity.pronouns[3]
-				#print(target.name)
 				var shield = false
 				for effect in target.effects:
 					if effect[0].shield:
@@ -680,11 +685,7 @@ func findValidTargets(spell, caster):
 	for i in range(1, entityArray.size()):
 		if (entityArray[i].is_wizard and entityArray[i].is_active()) or (entityArray[i].is_monster and entityArray[i].is_alive()):
 			validTargets.append(entityArray[i])
-			#print("Caster ID: " + str(caster.id))
-			#print("Target ID: " + str(entityArray[i].id))
 			if entityArray[i].id == caster.id and not spell.hostile:
-				#print("awoo")
-				#print(entityArray[i].name)
 				preferredTargets.append(entityArray[i])
 			elif spell.hostile and isTargetHostile(entityArray[i], caster):
 				preferredTargets.append(entityArray[i])
@@ -735,7 +736,6 @@ func _on_end_turn_button_pressed():
 			if child is OptionButton:
 				var target_id = child.get_selected_id()
 				entityArray[monster[1]].target_id = target_id
-				#print(entityArray[monster[1]].name + " targets " +entityArray[target_id].name)
 	
 	if player >= entityArray.size():
 		process_turn()
