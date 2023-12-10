@@ -30,7 +30,7 @@ func is_active():
 	
 func take_damage(amount):
 	hp -= amount
-	if hp < 0:
+	if hp <= 0:
 		hp = 0
 		dead = 1
 	else:

@@ -290,6 +290,9 @@ func process_turn():
 			#print(entity.name)
 			if entity.target_id > 0:
 				var target = entityArray[entity.target_id]
+				var target_name = target.name
+				if entity.id == target.id:
+					target_name = entity.pronouns[3]
 				#print(target.name)
 				var shield = false
 				for effect in target.effects:
@@ -297,9 +300,9 @@ func process_turn():
 						shield = true
 				#TODO: make it so that a hexed monster also fails to attack
 				if shield:
-					turnLogQueue.append(entity.name + " attacks " + target.name + " , but " + target.pronouns[2] + " shield protects " + target.pronouns[1] + "!")
+					turnLogQueue.append(entity.name + " attacks " + target_name + ", but " + target.pronouns[2] + " shield protects " + target.pronouns[1] + "!")
 				else:
-					turnLogQueue.append(entity.name + " attacks " + target.name + " for "+ str(entity.max_hp) + " damage.")
+					turnLogQueue.append(entity.name + " attacks " + target_name + " for "+ str(entity.max_hp) + " damage.")
 					target.take_damage(entity.max_hp)
 			elif entity.aoe:
 				pass
