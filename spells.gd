@@ -9,8 +9,7 @@ enum SpellEffect {
 	applyTempEffect,
 	dealDamage,
 	Heal,
-	Kill,
-	Surrender
+	Kill
 }
 
 @export var name: String = ""
@@ -18,6 +17,7 @@ enum SpellEffect {
 @export var id: int
 
 @export var is_spell: bool = true
+@export var is_silent: bool = false
 
 @export var once_per_turn: bool = false
 @export var once_per_wizard: bool = false
@@ -39,6 +39,7 @@ enum SpellEffect {
 
 @export var requires_target: bool = false
 @export var can_target_corpses: bool = false
+@export var always_targets_self: bool = false
 
 @export var permanency_valid: bool = false
 

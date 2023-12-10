@@ -15,13 +15,15 @@ class_name Monster
 
 @export var hp: int = 1
 @export var max_hp: int = 1
+@export var dead: int = 0
+
 @export var aoe: bool = false
 @export var target_id: int = -1
 
 @export var effects: Array = []
 
 func is_alive():
-	return hp > 0
+	return dead <= 1
 	
 func is_active():
 	return is_alive()
@@ -30,8 +32,11 @@ func take_damage(amount):
 	hp -= amount
 	if hp < 0:
 		hp = 0
-	elif hp > max_hp:
-		hp = max_hp
+		dead = 1
+	else:
+		if hp > max_hp:
+			hp = max_hp
+		dead = 0
 
 func addEffect(effectName, effectDuration, effectDict):
 	if not hasEffect(effectName):

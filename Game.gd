@@ -138,7 +138,6 @@ func process_turn():
 	#4: damage spells go off
 	#5: healing spells go off
 	#6: kill spells go off
-	#7: surrenders go off
 	
 	spellExecutionList.sort_custom(spellOrderSort)
 	
@@ -195,7 +194,9 @@ func process_turn():
 				target_string = " on " + target_string
 					
 			var message = caster.name + verb + spell_name + target_string
-			turnLogQueue.append(message)
+			
+			if not spell.is_silent:
+				turnLogQueue.append(message)
 			
 			match spellExecutionList[i][0].effect:	
 				Spell.SpellEffect.dispelMagic:
@@ -272,20 +273,14 @@ func process_turn():
 						if spellCheck == "":
 							turnLogQueue.append(t.name + " is " + spell.effect_name + "!")
 							t.take_damage(99)
+							t.dead = 2
 						else:
 							turnLogQueue.append(spellCheck)
-				Spell.SpellEffect.Surrender:
-						if caster.is_alive():
-							caster.surrendered = true
-							#turnLogQueue.append(caster.name + " surrenders!")
 				_:
 					printerr("Spell effect not recognized")
 		else:
 			turnLogQueue.append(caster.name + "'s spell fizzles!")
 	
-	var activePlayer = 0
-	numPlayers = 0
-		
 	for i in range(1, entityArray.size()):
 		var entity = entityArray[i]
 		if entity.is_monster and entity.is_active():
@@ -306,8 +301,23 @@ func process_turn():
 			elif entity.aoe:
 				pass
 		
+	var activePlayer = 0
+	numPlayers = 0
+		
 	for i in range(1, entityArray.size()):
 		
+		
+		if entityArray[i].dead == 1:
+			turnLogQueue.append(entityArray[i].name + " perishes!")
+			entityArray[i].dead = 2
+		elif entityArray[i].dead == 0 and entityArray[i].is_wizard:
+			for effect in entityArray[i].effects:
+				print(effect[0].name)
+				if effect[0].surrender:
+					entityArray[i].surrendered = true
+					print("awoo")
+					turnLogQueue.append(entityArray[i].name + " surrenders!")
+					
 		if entityArray[i].is_wizard or entityArray[i].is_monster:
 			if entityArray[i].is_active():
 				for effect in entityArray[i].effects:
@@ -320,9 +330,11 @@ func process_turn():
 		
 		#TODO: resolve anti spells in this step
 		
-		if entityArray[i].is_wizard and entityArray[i].is_active():
+		if entityArray[i].is_wizard:
 			entityArray[i].right_hand_gestures.append(gestureQueue[i][0])
 			entityArray[i].left_hand_gestures.append(gestureQueue[i][1])
+		
+		if entityArray[i].is_wizard and entityArray[i].is_active():
 			numPlayers += 1
 			activePlayer = i
 			
@@ -616,6 +628,9 @@ func findValidTargets(spell, caster):
 	
 	if not spell.targetable:
 		return [[],-1]
+		
+	if spell.always_targets_self:
+		return[[caster], caster.id]
 	
 	if not spell.requires_target:
 		validTargets.append(entityArray[0])

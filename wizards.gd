@@ -11,6 +11,7 @@ class_name Wizard
 @export var hp: int = 15
 @export var max_hp: int = 15
 @export var surrendered: bool = false
+@export var dead: int = 0
 
 @export var effects: Array = []
 
@@ -18,7 +19,7 @@ class_name Wizard
 @export var right_hand_gestures: Array = []
 
 func is_alive():
-	return hp > 0
+	return dead <= 1
 	
 func is_active():
 	return not surrendered and is_alive()
@@ -27,8 +28,11 @@ func take_damage(amount):
 	hp -= amount
 	if hp < 0:
 		hp = 0
-	elif hp > max_hp:
-		hp = max_hp
+		dead = 1
+	else:
+		if hp > max_hp:
+			hp = max_hp
+		dead = 0
 
 func addEffect(effectName, effectDuration, effectDict):
 	if not hasEffect(effectName):
