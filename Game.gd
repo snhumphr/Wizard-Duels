@@ -16,6 +16,8 @@ var gestureQueue = Array()
 var spellQueue = Array()
 var targetQueue = Array()
 
+var oncePerDuelSpells = Array()
+
 var player
 var numPlayers
 var turn = 0
@@ -231,6 +233,7 @@ func castSpells(spellExecutionList, entityArray, turnLogQueue):
 	#4: damage spells go off
 	#5: healing spells go off
 	#6: kill spells go off
+	
 	spellExecutionList.sort_custom(spellOrderSort)
 	
 	var magicDispelled = false
@@ -268,13 +271,22 @@ func castSpells(spellExecutionList, entityArray, turnLogQueue):
 		if magicDispelled and spell.dispellable:
 			spellFailed = true
 			
-		if spell.once_per_turn:
+		if spell.once_per_turn and not spellFailed:
 			for spell_id in oncePerTurnSpells:
 				if spell_id == spell.id:
 					spellFailed = true
 			if not spellFailed:
 				oncePerTurnSpells.append(spell.id)
-		#TODO: add more spell failure conditions here?
+				
+		if spell.once_per_duel and not spellFailed:
+			for s in oncePerDuelSpells.size():
+				if oncePerDuelSpells[s][0] == caster.id and oncePerDuelSpells[s][1] == spell.id:
+					spellFailed = true
+			
+			if not spellFailed:
+				oncePerDuelSpells.append([caster.id, spell.id])
+					
+		#TODO: add more spell failure conditions
 		
 		if not spellFailed: 
 			
@@ -526,9 +538,21 @@ func analyzeGestures(wizard_index, isLeft):
 			if spell.mandatory:
 				return [spell]
 			else:
-				spellOptionsArray.append(spell)
+				var already_cast = false
+				if spell.once_per_duel:
+					for s in oncePerDuelSpells.size():
+						if oncePerDuelSpells[s][0] == wizard_index and oncePerDuelSpells[s][1] == spell.id:
+							already_cast = true
+				if not already_cast:
+					spellOptionsArray.append(spell)
 		elif spell.is_two_handed() and off_gestures.ends_with(main_spell_gestures) and main_gestures.ends_with(off_spell_gestures):
-			spellOptionsArray.append(spell)
+			var already_cast = false
+			if spell.once_per_duel:
+				for s in oncePerDuelSpells.size():
+					if oncePerDuelSpells[s][0] == wizard_index and oncePerDuelSpells[s][1] == spell.id:
+						already_cast = true
+			if not already_cast:
+				spellOptionsArray.append(spell)
 	
 	spellOptionsArray.sort_custom(spellPowerSort)
 	spellOptionsArray.reverse()

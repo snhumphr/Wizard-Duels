@@ -20,6 +20,7 @@ class_name Effect
 @export var unstable: bool = false #Whether this effect kills summoned creatures or not
 
 @export var charm_person: bool = false
+@export var charm_monster: bool = false
 @export var fear: bool = false
 @export var paralysis: bool = false
 @export var maladroit: bool = false
