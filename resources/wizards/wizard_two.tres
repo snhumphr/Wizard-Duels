@@ -6,10 +6,13 @@
 script = ExtResource("1_tbxl2")
 id = 0
 name = "Wizard Two"
-pronouns = ["they", "them", "their"]
+pronouns = ["they", "them", "their", "themselves"]
 is_wizard = true
 is_monster = false
 hp = 15
 max_hp = 15
+surrendered = false
+dead = 0
+effects = []
 left_hand_gestures = []
 right_hand_gestures = []

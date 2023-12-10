@@ -4,7 +4,7 @@ class_name Monster
 @export var id: int = -1
 @export var name: String = ""
 @export var summoner_id: int = -1
-@export var pronouns: Array = ["they", "them", "their"]
+@export var pronouns: Array = ["they", "them", "their", "themselves"]
 @export var adjectives: Array
 
 @export var is_wizard: bool = false

@@ -3,7 +3,7 @@ class_name Wizard
 
 @export var id: int
 @export var name: String = ""
-@export var pronouns: Array = ["they", "them", "their"]
+@export var pronouns: Array = ["they", "them", "their", "themselves"]
 
 @export var is_wizard: bool = true
 @export var is_monster: bool = false

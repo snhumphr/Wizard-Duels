@@ -184,7 +184,10 @@ func process_turn():
 			var target_string = ""
 			var spell_name = spell.name
 			if targets.size() == 1:
-				target_string =  targets[0].name
+				if caster.id == target.id:
+					target_string = caster.pronouns[3]
+				else:
+					target_string =  targets[0].name
 				
 			if not spell.is_spell:
 				verb = " "
