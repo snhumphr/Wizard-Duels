@@ -492,6 +492,8 @@ func spellOrderSort(spellA, spellB):
 		return true
 	elif spellA[0].effect == spellB[0].effect and spellA[0].effect_name == "Reflect":
 		return true
+	elif spellA[0].effect == spellB[0].effect and spellA[0].intensity > spellB[0].intensity:
+		return true
 	else:
 		return false
 		
