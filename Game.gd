@@ -729,22 +729,6 @@ func isTargetHostile(target, caster):
 func renderWizardSection():
 	self.get_node("Scroll/UI/WizardList").render(entityArray, player)
 	
-	
-	self.get_node("Scroll/UI/LeftHand/LeftHandGestureOptions").clear()
-	self.get_node("Scroll/UI/RightHand/RightHandGestureOptions").clear()
-	
-	var spooked = false
-	for effect in entityArray[player].effects:
-		if effect[0].fear:
-			spooked = true
-			break
-	
-	for i in validGestures.size(): #TODO: make this also add the ID, to support fear, charm, etc
-		var gesture = validGestures[i]
-		if not spooked or validSpookedGestures.has(gesture):
-			self.get_node("Scroll/UI/LeftHand/LeftHandGestureOptions").add_item(gesture, i)
-			self.get_node("Scroll/UI/RightHand/RightHandGestureOptions").add_item(gesture, i)
-	
 	self.get_node("Scroll/UI/LeftHand/LeftHandSpellOptions").clear()
 	self.get_node("Scroll/UI/RightHand/RightHandSpellOptions").clear()
 	self.get_node("Scroll/UI/LeftHand/LeftHandSpellOptions").set_disabled(true)
@@ -754,6 +738,38 @@ func renderWizardSection():
 	self.get_node("Scroll/UI/RightHand/RightHandTargetingOptions").clear()
 	self.get_node("Scroll/UI/LeftHand/LeftHandTargetingOptions").set_disabled(true)
 	self.get_node("Scroll/UI/RightHand/RightHandTargetingOptions").set_disabled(true)
+	
+	self.get_node("Scroll/UI/LeftHand/LeftHandGestureOptions").clear()
+	self.get_node("Scroll/UI/RightHand/RightHandGestureOptions").clear()
+	
+	var spooked = false
+	var forgetful = false
+	for effect in entityArray[player].effects:
+		if effect[0].fear:
+			spooked = true
+		elif effect[0].amnesia:
+			forgetful = true
+	
+	if not forgetful:
+		for i in validGestures.size():
+			var gesture = validGestures[i]
+			if not spooked or validSpookedGestures.has(gesture):
+				self.get_node("Scroll/UI/LeftHand/LeftHandGestureOptions").add_item(gesture, i)
+				self.get_node("Scroll/UI/RightHand/RightHandGestureOptions").add_item(gesture, i)
+	else:
+		for i in validGestures.size():
+			var gesture = validGestures[i]
+			if gesture == entityArray[player].right_hand_gestures.back():
+				self.get_node("Scroll/UI/RightHand/RightHandGestureOptions").add_item(gesture, i)
+				self.get_node("Scroll/UI/RightHand/RightHandGestureOptions").select(0)
+				gestureQueue[player][0] = gesture
+			if gesture == entityArray[player].left_hand_gestures.back():
+				self.get_node("Scroll/UI/LeftHand/LeftHandGestureOptions").add_item(gesture, i)
+				self.get_node("Scroll/UI/LeftHand/LeftHandGestureOptions").select(0)
+				gestureQueue[player][1] = gesture
+		onGestureChange(false)
+		onGestureChange(true)
+				
 	
 	self.get_node("Scroll/UI/SummonControlPanel").render(entityArray, player)
 
