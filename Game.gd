@@ -61,11 +61,6 @@ func _ready():
 		
 	numPlayers = entityArray.size() - 1
 	
-	for i in validGestures.size(): #TODO: make this also add the ID, to support fear, charm, etc
-		var gesture = validGestures[i]
-		self.get_node("Scroll/UI/LeftHand/LeftHandGestureOptions").add_item(gesture, i)
-		self.get_node("Scroll/UI/RightHand/RightHandGestureOptions").add_item(gesture, i)
-	
 	for i in range(0, entityArray.size()):
 		gestureQueue.append(["N", "N"])
 		spellQueue.append([null, null])
@@ -733,12 +728,28 @@ func isTargetHostile(target, caster):
 
 func renderWizardSection():
 	self.get_node("Scroll/UI/WizardList").render(entityArray, player)
-	self.get_node("Scroll/UI/LeftHand/LeftHandGestureOptions").select(0)
-	self.get_node("Scroll/UI/RightHand/RightHandGestureOptions").select(0)
+	
+	
+	self.get_node("Scroll/UI/LeftHand/LeftHandGestureOptions").clear()
+	self.get_node("Scroll/UI/RightHand/RightHandGestureOptions").clear()
+	
+	var spooked = false
+	for effect in entityArray[player].effects:
+		if effect[0].fear:
+			spooked = true
+			break
+	
+	for i in validGestures.size(): #TODO: make this also add the ID, to support fear, charm, etc
+		var gesture = validGestures[i]
+		if not spooked or validSpookedGestures.has(gesture):
+			self.get_node("Scroll/UI/LeftHand/LeftHandGestureOptions").add_item(gesture, i)
+			self.get_node("Scroll/UI/RightHand/RightHandGestureOptions").add_item(gesture, i)
+	
 	self.get_node("Scroll/UI/LeftHand/LeftHandSpellOptions").clear()
 	self.get_node("Scroll/UI/RightHand/RightHandSpellOptions").clear()
 	self.get_node("Scroll/UI/LeftHand/LeftHandSpellOptions").set_disabled(true)
 	self.get_node("Scroll/UI/RightHand/RightHandSpellOptions").set_disabled(true)
+	
 	self.get_node("Scroll/UI/LeftHand/LeftHandTargetingOptions").clear()
 	self.get_node("Scroll/UI/RightHand/RightHandTargetingOptions").clear()
 	self.get_node("Scroll/UI/LeftHand/LeftHandTargetingOptions").set_disabled(true)
