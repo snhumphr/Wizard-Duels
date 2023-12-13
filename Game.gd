@@ -790,10 +790,14 @@ func _on_right_hand_gesture_options_item_selected(index):
 	var gesture_ID = self.get_node("Scroll/UI/RightHand/RightHandGestureOptions").get_item_id(index)
 	gestureQueue[player][0] = validGestures[gesture_ID]
 	
-	if gestureQueue[player][0] == "C":
+	var maladroit = false
+	for effect in entityArray[player].effects:
+		if effect[0].maladroit:
+			maladroit = true
+	
+	if maladroit:
 		var leftHand = self.get_node("Scroll/UI/LeftHand/LeftHandGestureOptions")
-		#leftHand.select(index)
-		#TODO: make sure to change this so that it doesn't break with fear, charm, etc
+		leftHand.select(index)
 	
 	onGestureChange(false)
 	onGestureChange(true)
@@ -802,9 +806,14 @@ func _on_left_hand_gesture_options_item_selected(index):
 	var gesture_ID = self.get_node("Scroll/UI/LeftHand/LeftHandGestureOptions").get_item_id(index)
 	gestureQueue[player][1] = validGestures[gesture_ID]
 	
-	if gestureQueue[player][1] == "C":
+	var maladroit = false
+	for effect in entityArray[player].effects:
+		if effect[0].maladroit:
+			maladroit = true
+	
+	if maladroit:
 		var rightHand = self.get_node("Scroll/UI/RightHand/RightHandGestureOptions")
-		#rightHand.select(index)
+		rightHand.select(index)
 	
 	onGestureChange(true)
 	onGestureChange(false)
