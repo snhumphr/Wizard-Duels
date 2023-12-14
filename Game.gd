@@ -8,6 +8,30 @@ var entityArray = Array()
 
 var effectDict = Dictionary()
 
+var ordersDict = Dictionary()
+# What needs to be in a set of orders submitted:
+	#Left hand gesture order
+	#Right hand gesture order
+	#Left hand spell order
+	#Right hand spell order
+	#Left hand targeting order
+	#Right hand targeting order
+	#Any number of hand/gesture/wizard triplets
+		#These are checked client-side as to whether they're valid for the effects
+	#Any number of monster/target couplets
+		#Again, these are checked client-side to make sure you can't order enemy/neutral monsters
+		
+# Experimental heat/cold rework idea:
+	#Fireball/Fire Storm/Ice Storm no longer deal damage
+	#Instead, they apply 0 duration Burn or Freeze
+	#Burn and Freeze do not stack, and cancel each other out
+	#Heat res protects against Burn and cold res protects against Freeze
+	#Applying either status to an elemental destroys them before they can attack
+	#At the end of the turn, having Burn or Freeze on you deals 5 damage
+	#Problem: This makes fire/ice damage trigger after healing spells
+	#Solution: Use a similar solution for healing spells, where they apply Heal effects
+	#Problem: Fire Storm mutually cancelling an Ice Elemental still a problem
+
 var monsterTemplate
 var adjectiveCount = 0
 var stabID
@@ -78,7 +102,7 @@ func process_turn():
 	for i in range(1, entityArray.size()):
 		
 		#Resolve gesture changes from charm/paralysis
-		if entityArray[i].is_wizard:
+		if entityArray[i].is_wizard and entityArray[i].is_active():
 			for effect in entityArray[i].effects:
 				if effect[0].paralysis:
 					if effect[0].hand == "Right":
@@ -91,33 +115,33 @@ func process_turn():
 					elif effect[0].hand == "Left":
 						gestureQueue[i][1] = effect[0].gesture
 		
-		#Analyze gestures to determine which spells they can cast this turn
-		var leftSpellOptions = analyzeGestures(i, true)
-		var rightSpellOptions = analyzeGestures(i, false)
-		
-		#If the spell in their spell queue is a spell they can cast, select that spell
-		if not rightSpellOptions.has(spellQueue[i][0]):
-			#Otherwise, select another valid spell for their current gestures
-			#This automatically chooses mandatory spells if any are allowed, or the most complex spell available otherwise
-			if rightSpellOptions.size() > 0 and rightSpellOptions[0]:
-				#If the spell is the same hostility as the original spell, keep the old target
-				#Otherwise, use the default target for that type of spell
-				if not spellQueue[i][0] or spellQueue[i][0].hostile != rightSpellOptions[0].hostile:
-					targetQueue[i][0] = findValidTargets(rightSpellOptions[0], entityArray[i])[1]
-				spellQueue[i][0] = rightSpellOptions[0]
-			else:
-				spellQueue[i][0] = null
+			#Analyze gestures to determine which spells they can cast this turn
+			var leftSpellOptions = analyzeGestures(i, true)
+			var rightSpellOptions = analyzeGestures(i, false)
+			var leftSpell = spellQueue[i][1]
+			var rightSpell = spellQueue[i][0]
 			
-		#Same as the above block, but hand flipped. TODO: Consider eliminating these kinds of duplicate code blocks
-		if not leftSpellOptions.has(spellQueue[i][0]):
-			if leftSpellOptions.size() > 0 and leftSpellOptions[0]:
-				if not spellQueue[i][1] or spellQueue[i][1].hostile != leftSpellOptions[0].hostile:
-					targetQueue[i][1] = findValidTargets(leftSpellOptions[0], entityArray[i])[1]
-				spellQueue[i][1] = leftSpellOptions[0]
-			else:
-				spellQueue[i][1] = null
-		
-		if entityArray[i].is_wizard and entityArray[i].is_active():
+			#If the spell in their spell queue is a spell they can cast, select that spell
+			if not rightSpellOptions.has(rightSpell):
+				#Otherwise, select another valid spell for their current gestures
+				#This automatically chooses mandatory spells if any are allowed, or the most complex spell available otherwise
+				if rightSpellOptions.size() > 0 and rightSpellOptions[0]:
+					#If the spell is the same hostility as the original spell, keep the old target
+					#Otherwise, use the default target for that type of spell
+					if not rightSpell or rightSpell.hostile != rightSpellOptions[0].hostile:
+						targetQueue[i][0] = findValidTargets(rightSpellOptions[0], entityArray[i])[1]
+					spellQueue[i][0] = rightSpellOptions[0]
+				else:
+					spellQueue[i][0] = null
+				
+			#Same as the above block, but hand flipped. TODO: Consider eliminating these kinds of duplicate code blocks
+			if not leftSpellOptions.has(leftSpell):
+				if leftSpellOptions.size() > 0 and leftSpellOptions[0]:
+					if not leftSpell or leftSpell.hostile != leftSpellOptions[0].hostile:
+						targetQueue[i][1] = findValidTargets(leftSpellOptions[0], entityArray[i])[1]
+					spellQueue[i][1] = leftSpellOptions[0]
+				else:
+					spellQueue[i][1] = null
 		
 			var clap = 0
 			
@@ -806,13 +830,24 @@ func renderWizardSection():
 
 func _on_end_turn_button_pressed():
 	
-	spellQueue[player][0] = spellSearch(self.get_node("Scroll/UI/RightHand/RightHandSpellOptions").get_selected_id())
-	spellQueue[player][1] = spellSearch(self.get_node("Scroll/UI/LeftHand/LeftHandSpellOptions").get_selected_id())
-		
-	targetQueue[player][0] = self.get_node("Scroll/UI/RightHand/RightHandTargetingOptions").get_selected_id()
-	targetQueue[player][1] = self.get_node("Scroll/UI/LeftHand/LeftHandTargetingOptions").get_selected_id()
+	var orders = {}
+	orders.id = player
+	orders.gestures = gestureQueue[player]
+	orders.spells = [null, null]
+	orders.spells[0] = self.get_node("Scroll/UI/RightHand/RightHandSpellOptions").get_selected_id()
+	orders.spells[1] = self.get_node("Scroll/UI/LeftHand/LeftHandSpellOptions").get_selected_id()
+	orders.targets = [null, null]
+	orders.targets[0] = self.get_node("Scroll/UI/RightHand/RightHandTargetingOptions").get_selected_id()
+	orders.targets[1] = self.get_node("Scroll/UI/LeftHand/LeftHandTargetingOptions").get_selected_id()
+	orders.effect_orders = []
+	orders.monster_orders = []
 	
-	player += 1
+	if true:
+		spellQueue[player][0] = spellSearch(self.get_node("Scroll/UI/RightHand/RightHandSpellOptions").get_selected_id())
+		spellQueue[player][1] = spellSearch(self.get_node("Scroll/UI/LeftHand/LeftHandSpellOptions").get_selected_id())
+		
+		targetQueue[player][0] = self.get_node("Scroll/UI/RightHand/RightHandTargetingOptions").get_selected_id()
+		targetQueue[player][1] = self.get_node("Scroll/UI/LeftHand/LeftHandTargetingOptions").get_selected_id()
 	
 	var monsterList = self.get_node("Scroll/UI/SummonControlPanel").getMonsterList()
 	
@@ -821,6 +856,7 @@ func _on_end_turn_button_pressed():
 			if child is OptionButton:
 				var target_id = child.get_selected_id()
 				entityArray[monster[1]].target_id = target_id
+				orders.monster_orders.append([monster[1], target_id])
 	
 	var paraList = self.get_node("Scroll/UI/EffectControlPanel").getParaList()
 	
@@ -829,10 +865,19 @@ func _on_end_turn_button_pressed():
 			if child is OptionButton:
 				for effect in entityArray[eff[2]].effects:
 					if eff[1] == effect[0]:
-						effect[0].hand = child.get_item_text(child.get_selected_id())
+						var hand = child.get_item_text(child.get_selected_id())
+						effect[0].hand = hand
+						var old_gesture
+						if hand == "Right":
+							old_gesture = entityArray[eff[2]].right_hand_gestures.back()
+						elif hand == "Left":
+							old_gesture = entityArray[eff[2]].left_hand_gestures.back()
+						var new_gesture = paralyze_gesture(old_gesture)
+						orders.effect_orders.append([eff[2], hand, new_gesture])
 	
 	var charmList = self.get_node("Scroll/UI/EffectControlPanel").getCharmList()
-	
+	var hand
+	var new_gesture
 	for eff in charmList:
 		for child in eff[0].get_children():
 			if child is OptionButton:
@@ -840,8 +885,19 @@ func _on_end_turn_button_pressed():
 					var text = child.get_item_text(child.get_selected_id())
 					if text.length() > 1:
 						effect[0].hand = text
+						hand = text
 					else:
 						effect[0].gesture = text
+						new_gesture = text
+						
+					if hand and new_gesture:
+						orders.effect_orders.append([eff[2], hand, new_gesture])
+						new_gesture = null
+						hand = null
+	
+	submitOrders(orders)
+	
+	player += 1
 	
 	if player >= entityArray.size():
 		process_turn()
@@ -853,6 +909,10 @@ func _on_end_turn_button_pressed():
 			_on_end_turn_button_pressed()
 		else:
 			renderWizardSection()
+
+func submitOrders(orders):
+	print(orders)
+	pass
 
 func _on_right_hand_gesture_options_item_selected(index):
 	var gesture_ID = self.get_node("Scroll/UI/RightHand/RightHandGestureOptions").get_item_id(index)
