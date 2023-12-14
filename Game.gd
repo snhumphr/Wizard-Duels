@@ -77,6 +77,7 @@ func process_turn():
 	
 	for i in range(1, entityArray.size()):
 		
+		#Resolve gesture changes from charm/paralysis
 		if entityArray[i].is_wizard:
 			for effect in entityArray[i].effects:
 				if effect[0].paralysis:
@@ -89,20 +90,25 @@ func process_turn():
 						gestureQueue[i][0] = effect[0].gesture
 					elif effect[0].hand == "Left":
 						gestureQueue[i][1] = effect[0].gesture
-		#TODO: resolve gesture changes from charm/paralysis here
 		
+		#Analyze gestures to determine which spells they can cast this turn
 		var leftSpellOptions = analyzeGestures(i, true)
 		var rightSpellOptions = analyzeGestures(i, false)
 		
+		#If the spell in their spell queue is a spell they can cast, select that spell
 		if not rightSpellOptions.has(spellQueue[i][0]):
+			#Otherwise, select another valid spell for their current gestures
+			#This automatically chooses mandatory spells if any are allowed, or the most complex spell available otherwise
 			if rightSpellOptions.size() > 0 and rightSpellOptions[0]:
-				print(rightSpellOptions[0])
+				#If the spell is the same hostility as the original spell, keep the old target
+				#Otherwise, use the default target for that type of spell
 				if not spellQueue[i][0] or spellQueue[i][0].hostile != rightSpellOptions[0].hostile:
 					targetQueue[i][0] = findValidTargets(rightSpellOptions[0], entityArray[i])[1]
 				spellQueue[i][0] = rightSpellOptions[0]
 			else:
 				spellQueue[i][0] = null
 			
+		#Same as the above block, but hand flipped. TODO: Consider eliminating these kinds of duplicate code blocks
 		if not leftSpellOptions.has(spellQueue[i][0]):
 			if leftSpellOptions.size() > 0 and leftSpellOptions[0]:
 				if not spellQueue[i][1] or spellQueue[i][1].hostile != leftSpellOptions[0].hostile:
@@ -110,22 +116,6 @@ func process_turn():
 				spellQueue[i][1] = leftSpellOptions[0]
 			else:
 				spellQueue[i][1] = null
-		#TODO: analyze gestures to determine which spells they can cast this turn
-		
-		#TODO: if the spell in their spell queue is a spell they can cast, select that spell
-		
-		#TODO: otherwise, select another valid spell for their current gestures
-		#TODO: if a spell would be mandatory, then automatically select that
-		#TODO: otherwise, select the most complex spell of the possibilities
-		
-		#TODO: if the final spell to be cast was the same as their original spell, cast it on their original target
-		#TODO: otherwise, pick the preferred target for the type of spell in question:
-			#No target if it can't be targeted, obviously
-			#On a random enemy wizard, if it was a hostile spell
-			#On yourself, if it was a non-hostile spell
-			
-		# since this is all stuff that is only relevant if gestures can be changed before spells go off
-		# for now we just skip all this stuff, and use the spellqueue and the targetqueue as they are
 		
 		if entityArray[i].is_wizard and entityArray[i].is_active():
 		
@@ -138,11 +128,11 @@ func process_turn():
 			if gestureQueue[i][1] == "C":
 				clap += 1
 				gestureQueue[i][1] = "N"
-				
+			#If only one clap gesture is performed, then turn it into a null gesture
+			#This greatly simplifies the gesture analysis code if we assume C only exists with a successful clap
 			if clap == 2:
 				gestureQueue[i][0] = "C"
 				gestureQueue[i][1] = "C"
-				
 				turnLogQueue.append(entityArray[i].name + " claps " + entityArray[i].pronouns[2] + " hands.")
 			else:
 				for gesture in gestureQueue[i]:
@@ -158,7 +148,6 @@ func process_turn():
 				var spell = spellQueue[i][s]
 				if spell != null and not(s > 0 and spell.is_two_handed()):
 					spellExecutionList.append([spell, i, targetQueue[i][s]]) #spell, caster, target
-				
 
 	castSpells(spellExecutionList, entityArray, turnLogQueue)
 	
@@ -641,10 +630,6 @@ func onGestureChange(isLeft):
 	spellOptions.clear()
 	for i in spellOptionsArray.size():
 		spellOptions.add_item(spellOptionsArray[i].name, spellOptionsArray[i].id)
-	
-	# TODO: Make it so that clapping with one hand automatically claps with both
-	# TODO: And also that unclapping with one hand turns the other hand into the NULL gesture
-	# ^ Maybe don't actually do the above things
 	
 	if spellOptions.get_selectable_item() != -1:
 		spellOptions.set_disabled(false)
