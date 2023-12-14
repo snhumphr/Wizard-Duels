@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="Effect" load_steps=2 format=3 uid="uid://beyvrf7na7kvw"]
+
+[ext_resource type="Script" path="res://effect.gd" id="1_sr2bv"]
+
+[resource]
+script = ExtResource("1_sr2bv")
+name = "Charm Person"
+caster_id = -1
+is_silent = false
+permanent = false
+stackable = false
+hand = "choose"
+gesture = ""
+shield = false
+counterspell = false
+reflect = false
+fire_res = false
+cold_res = false
+invisibility = false
+surrender = false
+fatal = false
+curable = 0
+hex = true
+dispellable = true
+unstable = false
+anti_spell = false
+charm_person = true
+charm_monster = false
+fear = false
+paralysis = false
+maladroit = false
+amnesia = false

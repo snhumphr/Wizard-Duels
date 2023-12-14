@@ -23,6 +23,7 @@ var numPlayers
 var turn = 0
 
 var validGestures = ["N", "P", "W", "S", "D", "F", "C", ">"]
+var validCharmGestures =  ["P", "W", "S", "D", "F", "C", ">"]
 var validSpookedGestures = ["N", "P", "W", ">"]
 
 # Called when the node enters the scene tree for the first time.
@@ -83,23 +84,28 @@ func process_turn():
 						gestureQueue[i][0] = paralyze_gesture(entityArray[i].right_hand_gestures.back())
 					elif effect[0].hand == "Left":
 						gestureQueue[i][1] = paralyze_gesture(entityArray[i].left_hand_gestures.back())
+				elif effect[0].charm_person:
+					if effect[0].hand == "Right":
+						gestureQueue[i][0] = effect[0].gesture
+					elif effect[0].hand == "Left":
+						gestureQueue[i][1] = effect[0].gesture
 		#TODO: resolve gesture changes from charm/paralysis here
 		
 		var leftSpellOptions = analyzeGestures(i, true)
 		var rightSpellOptions = analyzeGestures(i, false)
 		
 		if not rightSpellOptions.has(spellQueue[i][0]):
-			if rightSpellOptions.size() > 0:
-				if spellQueue[i][0].hostile != rightSpellOptions[0].hostile:
+			if rightSpellOptions.size() > 0 and rightSpellOptions[0]:
+				print(rightSpellOptions[0])
+				if not spellQueue[i][0] or spellQueue[i][0].hostile != rightSpellOptions[0].hostile:
 					targetQueue[i][0] = findValidTargets(rightSpellOptions[0], entityArray[i])[1]
-				
 				spellQueue[i][0] = rightSpellOptions[0]
 			else:
 				spellQueue[i][0] = null
 			
 		if not leftSpellOptions.has(spellQueue[i][0]):
-			if leftSpellOptions.size() > 0:
-				if spellQueue[i][1].hostile != leftSpellOptions[0].hostile:
+			if leftSpellOptions.size() > 0 and leftSpellOptions[0]:
+				if not spellQueue[i][1] or spellQueue[i][1].hostile != leftSpellOptions[0].hostile:
 					targetQueue[i][1] = findValidTargets(leftSpellOptions[0], entityArray[i])[1]
 				spellQueue[i][1] = leftSpellOptions[0]
 			else:
@@ -781,35 +787,36 @@ func renderWizardSection():
 	self.get_node("Scroll/UI/LeftHand/LeftHandGestureOptions").clear()
 	self.get_node("Scroll/UI/RightHand/RightHandGestureOptions").clear()
 	
-	var spooked = false
-	var forgetful = false
-	for effect in entityArray[player].effects:
-		if effect[0].fear:
-			spooked = true
-		elif effect[0].amnesia:
-			forgetful = true
-	
-	if not forgetful:
-		for i in validGestures.size():
-			var gesture = validGestures[i]
-			if not spooked or validSpookedGestures.has(gesture):
-				self.get_node("Scroll/UI/LeftHand/LeftHandGestureOptions").add_item(gesture, i)
-				self.get_node("Scroll/UI/RightHand/RightHandGestureOptions").add_item(gesture, i)
-	else:
-		for i in validGestures.size():
-			var gesture = validGestures[i]
-			if gesture == entityArray[player].right_hand_gestures.back():
-				self.get_node("Scroll/UI/RightHand/RightHandGestureOptions").add_item(gesture, i)
-				self.get_node("Scroll/UI/RightHand/RightHandGestureOptions").select(0)
-				gestureQueue[player][0] = gesture
-			if gesture == entityArray[player].left_hand_gestures.back():
-				self.get_node("Scroll/UI/LeftHand/LeftHandGestureOptions").add_item(gesture, i)
-				self.get_node("Scroll/UI/LeftHand/LeftHandGestureOptions").select(0)
-				gestureQueue[player][1] = gesture
-		onGestureChange(false)
-		onGestureChange(true)
+	if player < entityArray.size():
+		var spooked = false
+		var forgetful = false
+		for effect in entityArray[player].effects:
+			if effect[0].fear:
+				spooked = true
+			elif effect[0].amnesia:
+				forgetful = true
+		
+		if not forgetful:
+			for i in validGestures.size():
+				var gesture = validGestures[i]
+				if not spooked or validSpookedGestures.has(gesture):
+					self.get_node("Scroll/UI/LeftHand/LeftHandGestureOptions").add_item(gesture, i)
+					self.get_node("Scroll/UI/RightHand/RightHandGestureOptions").add_item(gesture, i)
+		else:
+			for i in validGestures.size():
+				var gesture = validGestures[i]
+				if gesture == entityArray[player].right_hand_gestures.back():
+					self.get_node("Scroll/UI/RightHand/RightHandGestureOptions").add_item(gesture, i)
+					self.get_node("Scroll/UI/RightHand/RightHandGestureOptions").select(0)
+					gestureQueue[player][0] = gesture
+				if gesture == entityArray[player].left_hand_gestures.back():
+					self.get_node("Scroll/UI/LeftHand/LeftHandGestureOptions").add_item(gesture, i)
+					self.get_node("Scroll/UI/LeftHand/LeftHandGestureOptions").select(0)
+					gestureQueue[player][1] = gesture
+			onGestureChange(false)
+			onGestureChange(true)
 				
-	self.get_node("Scroll/UI/EffectControlPanel").render(entityArray, player)
+	self.get_node("Scroll/UI/EffectControlPanel").render(entityArray, player, validCharmGestures)
 	self.get_node("Scroll/UI/SummonControlPanel").render(entityArray, player)
 
 func _on_end_turn_button_pressed():
@@ -830,14 +837,26 @@ func _on_end_turn_button_pressed():
 				var target_id = child.get_selected_id()
 				entityArray[monster[1]].target_id = target_id
 	
-	var effectList = self.get_node("Scroll/UI/EffectControlPanel").getEffectList()
+	var paraList = self.get_node("Scroll/UI/EffectControlPanel").getParaList()
 	
-	for eff in effectList:
+	for eff in paraList:
 		for child in eff[0].get_children():
 			if child is OptionButton:
 				for effect in entityArray[eff[2]].effects:
 					if eff[1] == effect[0]:
 						effect[0].hand = child.get_item_text(child.get_selected_id())
+	
+	var charmList = self.get_node("Scroll/UI/EffectControlPanel").getCharmList()
+	
+	for eff in charmList:
+		for child in eff[0].get_children():
+			if child is OptionButton:
+				for effect in entityArray[eff[2]].effects:
+					var text = child.get_item_text(child.get_selected_id())
+					if text.length() > 1:
+						effect[0].hand = text
+					else:
+						effect[0].gesture = text
 	
 	if player >= entityArray.size():
 		process_turn()

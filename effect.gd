@@ -7,6 +7,7 @@ class_name Effect
 @export var permanent: bool = false
 @export var stackable: bool = false
 @export var hand: String = ""
+@export var gesture: String = ""
 
 @export var shield: bool = false
 @export var counterspell: bool = false
