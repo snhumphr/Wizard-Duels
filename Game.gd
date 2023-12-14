@@ -76,8 +76,34 @@ func process_turn():
 	
 	for i in range(1, entityArray.size()):
 		
+		if entityArray[i].is_wizard:
+			for effect in entityArray[i].effects:
+				if effect[0].paralysis:
+					if effect[0].hand == "Right":
+						gestureQueue[i][0] = paralyze_gesture(entityArray[i].right_hand_gestures.back())
+					elif effect[0].hand == "Left":
+						gestureQueue[i][1] = paralyze_gesture(entityArray[i].left_hand_gestures.back())
 		#TODO: resolve gesture changes from charm/paralysis here
 		
+		var leftSpellOptions = analyzeGestures(i, true)
+		var rightSpellOptions = analyzeGestures(i, false)
+		
+		if not rightSpellOptions.has(spellQueue[i][0]):
+			if rightSpellOptions.size() > 0:
+				if spellQueue[i][0].hostile != rightSpellOptions[0].hostile:
+					targetQueue[i][0] = findValidTargets(rightSpellOptions[0], entityArray[i])[1]
+				
+				spellQueue[i][0] = rightSpellOptions[0]
+			else:
+				spellQueue[i][0] = null
+			
+		if not leftSpellOptions.has(spellQueue[i][0]):
+			if leftSpellOptions.size() > 0:
+				if spellQueue[i][1].hostile != leftSpellOptions[0].hostile:
+					targetQueue[i][1] = findValidTargets(leftSpellOptions[0], entityArray[i])[1]
+				spellQueue[i][1] = leftSpellOptions[0]
+			else:
+				spellQueue[i][1] = null
 		#TODO: analyze gestures to determine which spells they can cast this turn
 		
 		#TODO: if the spell in their spell queue is a spell they can cast, select that spell
@@ -220,6 +246,17 @@ func process_turn():
 	
 	self.renderWizardSection()
 
+func paralyze_gesture(gesture):
+	match gesture:
+		"S":
+			return "D"
+		"C":
+			return "F"
+		"W":
+			return "P"
+		_:
+			return gesture
+
 func gesture_to_text(gesture, wizard):
 	
 	var message = wizard.name
@@ -241,7 +278,7 @@ func gesture_to_text(gesture, wizard):
 		_:
 			message = ""
 	
-	return message	
+	return message
 
 func castSpells(spellExecutionList, entityArray, turnLogQueue):
 	#sort spells by the order their effects resolves:
@@ -344,14 +381,14 @@ func castSpells(spellExecutionList, entityArray, turnLogQueue):
 							for effectName in dispelList:
 								t.removeEffect(effectName)
 								
-							t.addEffect("Shield", 0, effectDict)
+							t.addEffect(effectDict["Shield"], 0)
 						elif t.is_monster:
 							t.take_damage(99)
 				Spell.SpellEffect.Counter:
 					for t in targets:
 						var spellCheck = checkSpellInterference(spell, t)
 						if spellCheck == "":
-							t.addEffect("Counterspell", 0, effectDict)
+							t.addEffect(effectDict["Counterspell"], 0)
 						else:
 							turnLogQueue.append(spellCheck)
 				Spell.SpellEffect.Summon:
@@ -381,7 +418,9 @@ func castSpells(spellExecutionList, entityArray, turnLogQueue):
 					for t in targets:
 						var spellCheck = checkSpellInterference(spell, t)
 						if spellCheck == "":
-							t.addEffect(spell.effect_name, spell.intensity, effectDict)
+							var effect = effectDict[spell.effect_name]
+							effect.caster_id = caster.id
+							t.addEffect(effect, spell.intensity)
 						else:
 							turnLogQueue.append(spellCheck)
 				Spell.SpellEffect.dealDamage:
@@ -770,7 +809,7 @@ func renderWizardSection():
 		onGestureChange(false)
 		onGestureChange(true)
 				
-	
+	self.get_node("Scroll/UI/EffectControlPanel").render(entityArray, player)
 	self.get_node("Scroll/UI/SummonControlPanel").render(entityArray, player)
 
 func _on_end_turn_button_pressed():
@@ -790,6 +829,15 @@ func _on_end_turn_button_pressed():
 			if child is OptionButton:
 				var target_id = child.get_selected_id()
 				entityArray[monster[1]].target_id = target_id
+	
+	var effectList = self.get_node("Scroll/UI/EffectControlPanel").getEffectList()
+	
+	for eff in effectList:
+		for child in eff[0].get_children():
+			if child is OptionButton:
+				for effect in entityArray[eff[2]].effects:
+					if eff[1] == effect[0]:
+						effect[0].hand = child.get_item_text(child.get_selected_id())
 	
 	if player >= entityArray.size():
 		process_turn()

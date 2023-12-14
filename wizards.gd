@@ -34,9 +34,16 @@ func take_damage(amount):
 			hp = max_hp
 		dead = 0
 
-func addEffect(effectName, effectDuration, effectDict):
+func addEffect(effectBase, effectDuration):
+	var effect = effectBase.duplicate()
+	var effectName = effect.name
 	if not hasEffect(effectName):
-		effects.append([effectDict[effectName], effectDuration])
+		effects.append([effect, effectDuration])
+	else:
+		if effect.stackable:
+			for eff in effects:
+				if eff[0].name == effectName:
+					eff[1] = effectDuration
 	
 func removeEffect(effectName):
 	var index = 0

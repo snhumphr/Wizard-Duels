@@ -2,8 +2,11 @@ extends Resource
 class_name Effect
 
 @export var name: String
+@export var caster_id: int = -1
 @export var is_silent: bool = false
 @export var permanent: bool = false
+@export var stackable: bool = false
+@export var hand: String = ""
 
 @export var shield: bool = false
 @export var counterspell: bool = false

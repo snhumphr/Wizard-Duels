@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://yrv8myggdj1h"]
+[gd_scene load_steps=7 format=3 uid="uid://yrv8myggdj1h"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_3r2fk"]
 [ext_resource type="Script" path="res://SpellList.gd" id="2_cadle"]
 [ext_resource type="Script" path="res://TurnReport.gd" id="3_dgo7r"]
 [ext_resource type="Script" path="res://WizardList.gd" id="3_laiom"]
+[ext_resource type="Script" path="res://EffectControlPanel.gd" id="5_8i5um"]
 [ext_resource type="Script" path="res://SummonControlPanel.gd" id="5_p744m"]
 
 [node name="Game" type="CanvasLayer"]
@@ -75,6 +76,10 @@ layout_mode = 2
 [node name="LeftHandTargetingOptions" type="OptionButton" parent="Scroll/UI/LeftHand"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
+
+[node name="EffectControlPanel" type="VBoxContainer" parent="Scroll/UI"]
+layout_mode = 2
+script = ExtResource("5_8i5um")
 
 [node name="SummonControlPanel" type="VBoxContainer" parent="Scroll/UI"]
 layout_mode = 2

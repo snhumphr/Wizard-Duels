@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="Effect" load_steps=2 format=3 uid="uid://c1qnmgknaa4o1"]
+
+[ext_resource type="Script" path="res://effect.gd" id="1_jbt0f"]
+
+[resource]
+script = ExtResource("1_jbt0f")
+name = "Paralysis"
+caster_id = -1
+is_silent = false
+permanent = false
+stackable = true
+hand = "choose"
+shield = false
+counterspell = false
+reflect = false
+fire_res = false
+cold_res = false
+invisibility = false
+surrender = false
+fatal = false
+curable = 0
+hex = true
+dispellable = true
+unstable = false
+anti_spell = false
+charm_person = false
+charm_monster = false
+fear = false
+paralysis = true
+maladroit = false
+amnesia = false
