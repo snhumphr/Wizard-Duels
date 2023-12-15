@@ -1,6 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://b87esord2f7op"]
+[gd_scene load_steps=5 format=3 uid="uid://b87esord2f7op"]
 
+[ext_resource type="FontFile" uid="uid://b2eeuc8u1hno5" path="res://resources/fonts/LibertinusMono-Regular.woff2" id="1_dudxa"]
 [ext_resource type="Script" path="res://menu.gd" id="1_rtr2h"]
+
+[sub_resource type="Theme" id="Theme_ftatf"]
+default_font = ExtResource("1_dudxa")
 
 [sub_resource type="LabelSettings" id="LabelSettings_q4mve"]
 font_size = 50
@@ -11,6 +15,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = SubResource("Theme_ftatf")
 theme_override_constants/margin_left = 120
 theme_override_constants/margin_top = 80
 theme_override_constants/margin_right = 120
