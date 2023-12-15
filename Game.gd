@@ -8,6 +8,10 @@ var entityArray = Array()
 
 var effectDict = Dictionary()
 
+var gestureQueue = Array()
+var spellQueue = Array()
+var targetQueue = Array()
+
 var ordersDict = Dictionary()
 # What needs to be in a set of orders submitted:
 	#Left hand gesture order
@@ -36,11 +40,10 @@ var monsterTemplate
 var adjectiveCount = 0
 var stabID
 
-var gestureQueue = Array()
-var spellQueue = Array()
-var targetQueue = Array()
-
 var oncePerDuelSpells = Array()
+
+var player_data
+var peers = Array()
 
 var player
 var numPlayers
@@ -52,6 +55,15 @@ var validSpookedGestures = ["N", "P", "W", ">"]
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	player_data = load("res://player.gd")
+	
+	peers.append(multiplayer.get_unique_id())
+	for peer in multiplayer.get_peers():
+		peers.append(peer)
+	peers.sort()
+	player = peers.find(multiplayer.get_unique_id()) + 1
+	print(peers)
+	
 	loadSpells("res://resources/spells", spellArray)
 	
 	spellArray.sort_custom(spellPowerSort)
@@ -94,6 +106,8 @@ func _ready():
 	process_turn()
 
 func process_turn():
+	
+	decodeOrders()
 	
 	var turnLogQueue = []
 	
@@ -244,6 +258,8 @@ func process_turn():
 		elif entityArray[i].is_monster:
 			entityArray[i].target_id = -1
 		
+	ordersDict = {}
+		
 	if numPlayers == 1:
 		turnLogQueue.append(entityArray[activePlayer].name + " has won the duel!")
 		self.get_node("Scroll/UI/EndTurnButton").hide()
@@ -256,14 +272,23 @@ func process_turn():
 		self.get_node("Scroll/UI/LeftHand").hide()
 	else:
 		turn += 1
-		player = 1
+		#player = 1
 		
 		while not entityArray[player].is_active():
-			player += 1
+			#player += 1
+			pass
 	
 	self.get_node("Scroll/UI/TurnReport").render(turnLogQueue)
 	
 	self.renderWizardSection()
+
+func decodeOrders():
+	for key in ordersDict.keys():
+		var order = ordersDict[key]
+		gestureQueue[order.id] = order.gestures
+		for i in order.spells.size():
+			spellQueue[order.id][i] = spellSearch(order.spells[i])
+		targetQueue[order.id] = order.targets
 
 func paralyze_gesture(gesture):
 	match gesture:
@@ -897,7 +922,7 @@ func _on_end_turn_button_pressed():
 	
 	submitOrders(orders)
 	
-	player += 1
+	#player += 1
 	
 	if player >= entityArray.size():
 		process_turn()
@@ -912,7 +937,20 @@ func _on_end_turn_button_pressed():
 
 func submitOrders(orders):
 	print(orders)
-	pass
+	self.rpc("receiveOrders", orders)
+	ordersDict[orders.id] = orders
+	print("There are now " + str(ordersDict.size()) + " sets of received orders")
+	if ordersDict.size() == numPlayers:
+		process_turn()
+	
+@rpc("any_peer", "reliable")
+func receiveOrders(orders):
+	print("orders received")
+	print(orders)
+	ordersDict[orders.id] = orders
+	print("There are now " + str(ordersDict.size()) + " sets of received orders")
+	if ordersDict.size() == numPlayers:
+		process_turn()
 
 func _on_right_hand_gesture_options_item_selected(index):
 	var gesture_ID = self.get_node("Scroll/UI/RightHand/RightHandGestureOptions").get_item_id(index)

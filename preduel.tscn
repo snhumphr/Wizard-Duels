@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://bq2infty2fyl8"]
+
+[ext_resource type="Script" path="res://preduel.gd" id="1_bgej8"]
+
+[node name="Control" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 120
+theme_override_constants/margin_top = 80
+theme_override_constants/margin_right = 120
+theme_override_constants/margin_bottom = 80
+script = ExtResource("1_bgej8")
