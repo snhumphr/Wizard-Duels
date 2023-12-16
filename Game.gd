@@ -299,11 +299,11 @@ func decodeOrders():
 		for effect in order.effect_orders:
 			if effect[2] == "Paralyze":
 				for eff in entityArray[effect[0]].effects:
-					if eff[0].paralysis and eff[0].hand == "choose":
+					if eff[0].paralysis and eff[0].hand == "choose" and eff[0].caster_id == order.id:
 						eff[0].hand = effect[1]
 			elif effect[1] == "Right" or effect[1] == "Left":
 				for eff in entityArray[effect[0]].effects:
-					if eff[0].charm_person:
+					if eff[0].charm_person and eff[0].caster_id == order.id:
 						eff[0].hand = effect[1]
 						eff[0].gesture = effect[2]
 			else:
@@ -538,7 +538,7 @@ func monsterActions(entityArray, turnLogQueue):
 						effect[1] = 0
 				
 				if hexed:
-					turnLogQueue.append(entity.name + " tries to attack " + target_name + ", but " + entity.pronouns[2] + "  hex prevents " + entity.pronouns[1])
+					turnLogQueue.append(entity.name + " tries to attack " + target_name + ", but " + entity.pronouns[2] + " hex prevents " + entity.pronouns[1])
 				elif shield:
 					turnLogQueue.append(entity.name + " attacks " + target_name + ", but " + target.pronouns[2] + " shield protects " + target.pronouns[1] + "!")
 				else:
