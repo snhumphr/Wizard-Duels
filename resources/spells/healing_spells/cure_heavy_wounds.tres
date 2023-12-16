@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=2 format=3 uid="uid://1kbrfm8uaswn"]
+
+[ext_resource type="Script" path="res://spells.gd" id="1_j4cts"]
+
+[resource]
+resource_name = "Cause Light Wounds"
+script = ExtResource("1_j4cts")
+name = "Cure Heavy Wounds"
+gestures = PackedStringArray("D", "F", "P", "W")
+id = 0
+is_spell = true
+is_silent = false
+once_per_turn = false
+once_per_wizard = false
+once_per_duel = false
+mandatory = false
+hex = false
+fire_spell = false
+ice_spell = false
+dispellable = true
+counterable = true
+reflectable = true
+targetable = true
+blockable = false
+hostile = false
+requires_target = false
+can_target_corpses = false
+always_targets_self = false
+permanency_valid = false
+effect = 5
+effect_name = "healed"
+intensity = 2

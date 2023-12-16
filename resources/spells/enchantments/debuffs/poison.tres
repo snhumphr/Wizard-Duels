@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=2 format=3 uid="uid://bxwtgpijofkr"]
+
+[ext_resource type="Script" path="res://spells.gd" id="1_yuy4k"]
+
+[resource]
+resource_name = "Shield"
+script = ExtResource("1_yuy4k")
+name = "Poison"
+gestures = PackedStringArray("D", "W", "W", "F", "W", "D")
+id = 0
+is_spell = true
+is_silent = false
+once_per_turn = false
+once_per_wizard = false
+once_per_duel = false
+mandatory = false
+hex = false
+fire_spell = false
+ice_spell = false
+dispellable = true
+counterable = true
+reflectable = true
+targetable = true
+blockable = false
+hostile = true
+requires_target = false
+can_target_corpses = false
+always_targets_self = false
+permanency_valid = false
+effect = 3
+effect_name = "Poison"
+intensity = 6

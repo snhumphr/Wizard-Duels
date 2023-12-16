@@ -239,6 +239,9 @@ func process_turn():
 					if not effect[0].permanent:
 						effect[1] -= 1
 						if effect[1] <= 0:
+							if effect[0].fatal:
+								turnLogQueue.append(entityArray[i].name + " succumbs to " + effect[0].name.to_lower() + "!")
+								entityArray[i].dead = 2
 							removeEffectList.append(effect[0].name)
 							
 				for effect_name in removeEffectList:
@@ -500,6 +503,12 @@ func castSpells(spellExecutionList, entityArray, turnLogQueue):
 						var spellCheck = checkSpellInterference(spell, t)
 						if spellCheck == "":
 							turnLogQueue.append(t.name + " is healed for " + str(spell.intensity) + " damage.")
+							var cureList = []
+							for effect in t.effects:
+								if effect[0].curable != 0 and spell.intensity >= effect[0].curable:
+									cureList.append(effect[0].name)
+							for item in cureList:
+								t.removeEffect(item)
 							t.take_damage(spell.intensity * -1)
 						else:
 							turnLogQueue.append(spellCheck)
