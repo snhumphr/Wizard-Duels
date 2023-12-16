@@ -61,6 +61,7 @@ func _ready():
 	for peer in multiplayer.get_peers():
 		peers.append(peer)
 	peers.sort()
+	seed(peers.back())
 	player = peers.find(multiplayer.get_unique_id()) + 1
 	#print(peers)
 	
