@@ -9,6 +9,10 @@ class_name Effect
 @export var hand: String = ""
 @export var gesture: String = ""
 
+@export var heal: int = 0
+@export var burn: int = 0
+@export var freeze: int = 0
+
 @export var shield: bool = false
 @export var counterspell: bool = false
 @export var reflect: bool = false

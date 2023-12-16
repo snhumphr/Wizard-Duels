@@ -28,7 +28,7 @@ var ordersDict = Dictionary()
 # Experimental heat/cold rework idea:
 	#Fireball/Fire Storm/Ice Storm no longer deal damage
 	#Instead, they apply 0 duration Burn or Freeze
-	#Burn and Freeze do not stack, and cancel each other out
+	#Burn and Freeze stack with themselves, but cancel each other out
 	#Heat res protects against Burn and cold res protects against Freeze
 	#Applying either status to an elemental destroys them before they can attack
 	#At the end of the turn, having Burn or Freeze on you deals 5 damage
@@ -204,6 +204,31 @@ func process_turn():
 	
 	monsterActions(entityArray, turnLogQueue)
 	
+	for i in range(1, entityArray.size()):
+		var burn = []
+		var freeze = []
+		var heals = []
+		for effect in entityArray[i].effects:
+			if effect[0].burn > 0:
+				burn.append(effect[0].burn)
+			elif effect[0].freeze > 0:
+				freeze.append(effect[0].freeze)
+			elif effect[0].heal > 0:
+				heals.append(effect[0].heal)
+				
+		if burn.size() > 0 and freeze.size() > 0:
+			turnLogQueue.append(entityArray[i].name + " remains unscathed between conflicting heat and cold!")
+		else:
+			for b in burn:
+				entityArray[i].take_damage(b)
+				turnLogQueue.append(entityArray[i].name + " is burned for " + str(b) + " damage.")
+			for f in freeze:
+				entityArray[i].take_damage(f)
+				turnLogQueue.append(entityArray[i].name + " is chilled for " + str(f) + " damage.")
+			for h in heals:
+				entityArray[i].take_damage(-1*h)
+				turnLogQueue.append(entityArray[i].name + " healed for " + str(h) + " hp.")
+	
 	var activePlayer = 0
 	numPlayers = 0
 		
@@ -234,6 +259,8 @@ func process_turn():
 					turnLogQueue.append(entityArray[i].name + " surrenders!")
 					
 		if entityArray[i].is_wizard or entityArray[i].is_monster:
+			entityArray[i].hot = false
+			entityArray[i].cold = false
 			if entityArray[i].is_active():
 				var removeEffectList = []
 				for effect in entityArray[i].effects:
@@ -410,7 +437,6 @@ func castSpells(spellExecutionList, entityArray, turnLogQueue):
 			
 			if not spellFailed:
 				oncePerDuelSpells.append([caster.id, spell.id])
-					
 		#TODO: add more spell failure conditions
 		
 		if not spellFailed: 
@@ -519,14 +545,17 @@ func castSpells(spellExecutionList, entityArray, turnLogQueue):
 					for t in targets:
 						var spellCheck = checkSpellInterference(spell, t)
 						if spellCheck == "":
-							turnLogQueue.append(t.name + " is healed for " + str(spell.intensity) + " damage.")
+							#turnLogQueue.append(t.name + " is healed for " + str(spell.intensity) + " damage.")
 							var cureList = []
 							for effect in t.effects:
 								if effect[0].curable != 0 and spell.intensity >= effect[0].curable:
 									cureList.append(effect[0].name)
 							for item in cureList:
 								t.removeEffect(item)
-							t.take_damage(spell.intensity * -1)
+							var effect = effectDict["Heal"]
+							effect.caster_id = caster.id
+							effect.heal = spell.intensity
+							t.addEffect(effect, 0)
 						else:
 							turnLogQueue.append(spellCheck)
 				Spell.SpellEffect.Kill:
@@ -590,6 +619,8 @@ func checkSpellInterference(spell, target):
 			if effect[0].counterspell:
 				return target.name +  "'s counterspell protects them!"
 		
+		
+	#TODO: below section is outdated
 	if spell.fire_spell: #TODO: Add elemental innate resistance here
 		for effect in target.effects:
 			if effect[0].fire_res and spell.hostile:

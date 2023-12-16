@@ -8,6 +8,9 @@ class_name Wizard
 @export var is_wizard: bool = true
 @export var is_monster: bool = false
 
+@export var hot: bool = false
+@export var cold: bool = false
+
 @export var hp: int = 15
 @export var max_hp: int = 15
 @export var surrendered: bool = false
