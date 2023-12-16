@@ -14,6 +14,12 @@ func init(spellArray):
 		self.add_text(spell.name)
 		for i in range(length-spell.name.length()):
 			self.add_text(" ")
-		self.add_text("-".join(spell.gestures))
+		for i in spell.gestures.size():
+			if spell.gestures[i] == "C":
+				self.add_text("CC")
+			else:
+				self.add_text(spell.gestures[i])
+			if i + 1 < spell.gestures.size():
+				self.add_text("-")
 		self.newline()
 	self.newline()

@@ -62,7 +62,7 @@ func _ready():
 		peers.append(peer)
 	peers.sort()
 	player = peers.find(multiplayer.get_unique_id()) + 1
-	print(peers)
+	#print(peers)
 	
 	loadSpells("res://resources/spells", spellArray)
 	
@@ -958,19 +958,19 @@ func _on_end_turn_button_pressed():
 			renderWizardSection()
 
 func submitOrders(orders):
-	print(orders)
+	#print(orders)
 	self.rpc("receiveOrders", orders)
 	ordersDict[orders.id] = orders
-	print("There are now " + str(ordersDict.size()) + " sets of received orders")
+	#print("There are now " + str(ordersDict.size()) + " sets of received orders")
 	if ordersDict.size() == numPlayers:
 		process_turn()
 	
 @rpc("any_peer", "reliable")
 func receiveOrders(orders):
-	print("orders received")
-	print(orders)
+	#print("orders received")
+	#print(orders)
 	ordersDict[orders.id] = orders
-	print("There are now " + str(ordersDict.size()) + " sets of received orders")
+	#print("There are now " + str(ordersDict.size()) + " sets of received orders")
 	if ordersDict.size() == numPlayers:
 		process_turn()
 
