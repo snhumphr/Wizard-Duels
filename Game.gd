@@ -557,10 +557,15 @@ func monsterActions(entityArray, turnLogQueue):
 						shield = true
 	
 				var hexed = false
+				var charmed = false
 				for effect in entity.effects:
 					if effect[0].hex:
 						hexed = true
 						effect[1] = 0
+						if effect[0].charm_monster:
+							entity.summoner_id = effect[0].caster_id
+							var old_name = entity.name.split(" ")
+							entity.name = entityArray[entity.summoner_id].name + "'s " + old_name[old_name.size()-2] + " " + old_name[old_name.size()-1]
 				
 				if hexed:
 					turnLogQueue.append(entity.name + " tries to attack " + target_name + ", but " + entity.pronouns[2] + " hex prevents " + entity.pronouns[1])
