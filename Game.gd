@@ -211,9 +211,9 @@ func process_turn():
 		for effect in entityArray[i].effects:
 			if effect[0].burn > 0:
 				burn.append(effect[0].burn)
-			elif effect[0].freeze > 0:
+			if effect[0].freeze > 0:
 				freeze.append(effect[0].freeze)
-			elif effect[0].heal > 0:
+			if effect[0].heal > 0:
 				heals.append(effect[0].heal)
 				
 		if burn.size() > 0 and freeze.size() > 0:
