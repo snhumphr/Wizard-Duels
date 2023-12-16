@@ -285,10 +285,30 @@ func process_turn():
 func decodeOrders():
 	for key in ordersDict.keys():
 		var order = ordersDict[key]
+		#TODO: Check the validity of more orders
 		gestureQueue[order.id] = order.gestures
 		for i in order.spells.size():
 			spellQueue[order.id][i] = spellSearch(order.spells[i])
 		targetQueue[order.id] = order.targets
+		for monster in order.monster_orders:
+			if entityArray[monster[0]].is_monster and entityArray[monster[0]].summoner_id == order.id:
+				entityArray[monster[0]].target_id = monster[1]
+			else:
+				printerr("Illegal command")
+				
+		for effect in order.effect_orders:
+			if effect[2] == "Paralyze":
+				for eff in entityArray[effect[0]].effects:
+					if eff[0].paralysis and eff[0].hand == "choose":
+						eff[0].hand = effect[1]
+			elif effect[1] == "Right" or effect[1] == "Left":
+				for eff in entityArray[effect[0]].effects:
+					if eff[0].charm_person:
+						eff[0].hand = effect[1]
+						eff[0].gesture = effect[2]
+			else:
+				printerr("Invalid command")
+			#TODO: Check the validity of these orders too
 
 func paralyze_gesture(gesture):
 	match gesture:
@@ -897,8 +917,7 @@ func _on_end_turn_button_pressed():
 							old_gesture = entityArray[eff[2]].right_hand_gestures.back()
 						elif hand == "Left":
 							old_gesture = entityArray[eff[2]].left_hand_gestures.back()
-						var new_gesture = paralyze_gesture(old_gesture)
-						orders.effect_orders.append([eff[2], hand, new_gesture])
+						orders.effect_orders.append([eff[2], hand, "Paralyze"])
 	
 	var charmList = self.get_node("Scroll/UI/EffectControlPanel").getCharmList()
 	var hand
@@ -925,13 +944,16 @@ func _on_end_turn_button_pressed():
 	#player += 1
 	
 	if player >= entityArray.size():
-		process_turn()
+		#process_turn()
+		pass
 	else:
 		
 		if not entityArray[player].is_wizard:
-			process_turn()
+			#process_turn()
+			pass
 		elif not entityArray[player].is_active():
-			_on_end_turn_button_pressed()
+			pass
+			#_on_end_turn_button_pressed()
 		else:
 			renderWizardSection()
 
