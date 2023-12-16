@@ -1,7 +1,7 @@
 extends MarginContainer
 
 const PORT = 7777
-const DEFAULT_SERVER_IP = "127.0.0.1" # IPv4 localhost
+const DEFAULT_SERVER_IP = "192.168.1.67" # IPv4 LAN
 const MAX_CONNECTIONS = 2
 
 func start_duel():
