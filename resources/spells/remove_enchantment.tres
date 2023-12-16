@@ -1,12 +1,12 @@
-[gd_resource type="Resource" script_class="Spell" load_steps=2 format=3 uid="uid://dl5lp3kyhph8p"]
+[gd_resource type="Resource" script_class="Spell" load_steps=2 format=3 uid="uid://blak8sl4oed64"]
 
-[ext_resource type="Script" path="res://spells.gd" id="1_qlxcx"]
+[ext_resource type="Script" path="res://spells.gd" id="1_il58i"]
 
 [resource]
-resource_name = "Cause Light Wounds"
-script = ExtResource("1_qlxcx")
-name = "Cause Light Wounds"
-gestures = PackedStringArray("W", "F", "P")
+resource_name = "Counterspell A"
+script = ExtResource("1_il58i")
+name = "Remove Enchantment"
+gestures = PackedStringArray("P", "D", "W", "P")
 id = 0
 is_spell = true
 is_silent = false
@@ -27,6 +27,6 @@ requires_target = false
 can_target_corpses = false
 always_targets_self = false
 permanency_valid = false
-effect = 5
-effect_name = "injured"
-intensity = 2
+effect = 4
+effect_name = "Remove Enchantment"
+intensity = 0

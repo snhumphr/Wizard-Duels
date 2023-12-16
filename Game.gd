@@ -490,6 +490,19 @@ func castSpells(spellExecutionList, entityArray, turnLogQueue):
 							t.addEffect(effect, spell.intensity)
 						else:
 							turnLogQueue.append(spellCheck)
+				Spell.SpellEffect.removeEnchantment:
+					for t in targets:
+						var spellCheck = checkSpellInterference(spell, t)
+						if spellCheck == "":
+							var dispelList = []
+							for e in t.effects.size():
+								if t.effects[e][0].dispellable:
+									dispelList.append(t.effects[e][0].name)
+								
+							for effectName in dispelList:
+								t.removeEffect(effectName)
+						else:
+							turnLogQueue.append(spellCheck)
 				Spell.SpellEffect.dealDamage:
 					for t in targets:
 						var spellCheck = checkSpellInterference(spell, t)

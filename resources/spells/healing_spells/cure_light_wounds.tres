@@ -27,6 +27,6 @@ requires_target = false
 can_target_corpses = false
 always_targets_self = false
 permanency_valid = false
-effect = 5
+effect = 6
 effect_name = "healed"
 intensity = 1

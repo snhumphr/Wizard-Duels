@@ -7,6 +7,7 @@ enum SpellEffect {
 	Counter,
 	Summon,
 	applyTempEffect,
+	removeEnchantment,
 	dealDamage,
 	Heal,
 	Kill
