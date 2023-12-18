@@ -1,6 +1,10 @@
 extends CanvasLayer
 
 #TODO: FIX TARGETING BEING RESET TO DEFAULT WHEN YOU CHANGE THE TARGET(?) OF YOUR OTHER HAND
+#TODO: MAGIC MIRROR DOESN'T WORK(TESTED WITH AMNESIA)
+	#Can't reproduce for some reason? strange
+#TODO: MALADROIT NOT WORKING WITH SURRENDER(GESTURE ID'S ARE MISMATCHED?)
+	#Cause: It doesn't update the gesture queue
 
 var spellArray = Array()
 var entityArray = Array()
@@ -955,7 +959,7 @@ func _on_end_turn_button_pressed():
 		for child in monster[0].get_children():
 			if child is OptionButton:
 				var target_id = child.get_selected_id()
-				entityArray[monster[1]].target_id = target_id
+				#entityArray[monster[1]].target_id = target_id 
 				orders.monster_orders.append([monster[1], target_id])
 	
 	var paraList = self.get_node("Scroll/UI/EffectControlPanel").getParaList()
@@ -966,12 +970,8 @@ func _on_end_turn_button_pressed():
 				for effect in entityArray[eff[2]].effects:
 					if eff[1] == effect[0]:
 						var hand = child.get_item_text(child.get_selected_id())
-						effect[0].hand = hand
+						#effect[0].hand = hand 
 						var old_gesture
-						if hand == "Right":
-							old_gesture = entityArray[eff[2]].right_hand_gestures.back()
-						elif hand == "Left":
-							old_gesture = entityArray[eff[2]].left_hand_gestures.back()
 						orders.effect_orders.append([eff[2], hand, "Paralyze"])
 	
 	var charmList = self.get_node("Scroll/UI/EffectControlPanel").getCharmList()
@@ -983,10 +983,10 @@ func _on_end_turn_button_pressed():
 				for effect in entityArray[eff[2]].effects:
 					var text = child.get_item_text(child.get_selected_id())
 					if text.length() > 1:
-						effect[0].hand = text
-						hand = text
+						#effect[0].hand = text
+						hand = text 
 					else:
-						effect[0].gesture = text
+						#effect[0].gesture = text
 						new_gesture = text
 						
 					if hand and new_gesture:
@@ -1041,6 +1041,7 @@ func _on_right_hand_gesture_options_item_selected(index):
 	if maladroit:
 		var leftHand = self.get_node("Scroll/UI/LeftHand/LeftHandGestureOptions")
 		leftHand.select(index)
+		gestureQueue[player][1] = validGestures[gesture_ID]
 	
 	onGestureChange(false)
 	onGestureChange(true)
@@ -1057,6 +1058,7 @@ func _on_left_hand_gesture_options_item_selected(index):
 	if maladroit:
 		var rightHand = self.get_node("Scroll/UI/RightHand/RightHandGestureOptions")
 		rightHand.select(index)
+		gestureQueue[player][0] = validGestures[gesture_ID]
 	
 	onGestureChange(true)
 	onGestureChange(false)

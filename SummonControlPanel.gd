@@ -27,6 +27,12 @@ func render(entityArray, player):
 			monsterList.append([box, entity.id])
 			
 func clearInvalidMonsters(entityArray, player):
+	
+	#for child in self.get_children():
+	#	remove_child(child)
+		
+	#monsterList = []
+	
 	var deletionArray = []
 	for i in monsterList.size():
 		remove_child(monsterList[i][0])
