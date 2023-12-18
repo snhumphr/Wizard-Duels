@@ -1010,7 +1010,8 @@ func _on_end_turn_button_pressed():
 			pass
 			#_on_end_turn_button_pressed()
 		else:
-			renderWizardSection()
+			pass
+			#renderWizardSection()
 
 func submitOrders(orders):
 	#print(orders)
