@@ -28,5 +28,5 @@ can_target_corpses = false
 always_targets_self = false
 permanency_valid = false
 effect = 3
-effect_name = "Burn"
+effect_name = "Fireburn"
 intensity = 0

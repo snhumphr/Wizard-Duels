@@ -1,7 +1,6 @@
 extends CanvasLayer
 
 #TODO: FIX TARGETING BEING RESET TO DEFAULT WHEN YOU CHANGE THE TARGET(?) OF YOUR OTHER HAND
-#TODO: MAKE IT SO THAT BEING TARGETED BY A FIREBALL PROTECTS FROM ICE STORM AND VICE VERSA
 
 var spellArray = Array()
 var entityArray = Array()
@@ -35,7 +34,8 @@ var ordersDict = Dictionary()
 	#Problem: This makes fire/ice damage trigger after healing spells
 	#Solution: Use a similar solution for healing spells, where they apply Heal effects
 	#Problem: Fire Storm mutually cancelling an Ice Elemental still a problem
-
+	#THE ABOVE SYSTEM WAS IMPLEMENTED!
+	
 var monsterTemplate
 var adjectiveCount = 0
 var stabID
@@ -619,8 +619,6 @@ func checkSpellInterference(spell, target):
 			if effect[0].counterspell:
 				return target.name +  "'s counterspell protects them!"
 		
-		
-	#TODO: below section is outdated
 	if spell.fire_spell: #TODO: Add elemental innate resistance here
 		for effect in target.effects:
 			if effect[0].fire_res and spell.hostile:
