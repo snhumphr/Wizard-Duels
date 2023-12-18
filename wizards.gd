@@ -40,7 +40,7 @@ func take_damage(amount):
 func addEffect(effectBase, effectDuration):
 	var effect = effectBase.duplicate()
 	var effectName = effect.name
-	if not hasEffect(effectName):
+	if effect.overlapping or not hasEffect(effectName):
 		effects.append([effect, effectDuration])
 	else:
 		if effect.stackable:

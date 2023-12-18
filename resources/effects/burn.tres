@@ -9,6 +9,7 @@ caster_id = -1
 is_silent = false
 permanent = false
 stackable = false
+overlapping = true
 hand = ""
 gesture = ""
 heal = 0

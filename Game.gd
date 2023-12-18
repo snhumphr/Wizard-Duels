@@ -261,23 +261,18 @@ func process_turn():
 		if entityArray[i].is_wizard or entityArray[i].is_monster:
 			entityArray[i].hot = false
 			entityArray[i].cold = false
-			if entityArray[i].is_active():
-				var removeEffectList = []
-				for effect in entityArray[i].effects:
-					if not effect[0].permanent:
-						effect[1] -= 1
-						if effect[1] <= 0:
-							if effect[0].fatal:
-								turnLogQueue.append(entityArray[i].name + " succumbs to " + effect[0].name.to_lower() + "!")
-								entityArray[i].dead = 2
-							removeEffectList.append(effect[0].name)
+			var removeEffectList = []
+			for effect in entityArray[i].effects:
+				if not effect[0].permanent:
+					effect[1] -= 1
+					if effect[1] <= 0 or not entityArray[i].is_active():
+						if effect[0].fatal:
+							turnLogQueue.append(entityArray[i].name + " succumbs to " + effect[0].name.to_lower() + "!")
+							entityArray[i].dead = 2
+						removeEffectList.append(effect[0].name)
 							
-				for effect_name in removeEffectList:
-					entityArray[i].removeEffect(effect_name)
-				
-			else:
-				for effect in entityArray[i].effects:
-					entityArray[i].removeEffect(effect[0].name)
+			for effect_name in removeEffectList:
+				entityArray[i].removeEffect(effect_name)
 		
 		if entityArray[i].is_wizard and entityArray[i].is_active():
 			numPlayers += 1

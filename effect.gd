@@ -6,6 +6,7 @@ class_name Effect
 @export var is_silent: bool = false
 @export var permanent: bool = false
 @export var stackable: bool = false
+@export var overlapping: bool = false
 @export var hand: String = ""
 @export var gesture: String = ""
 
