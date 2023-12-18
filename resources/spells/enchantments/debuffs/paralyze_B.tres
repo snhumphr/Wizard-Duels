@@ -6,7 +6,7 @@
 resource_name = "Shield"
 script = ExtResource("1_3v2og")
 name = "Paralyze"
-gestures = PackedStringArray("D", "F", "D")
+gestures = PackedStringArray("F", "D", "F", "D")
 id = 0
 is_spell = true
 is_silent = false
