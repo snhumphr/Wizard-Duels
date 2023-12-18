@@ -28,18 +28,18 @@ func render(entityArray, player):
 			
 func clearInvalidMonsters(entityArray, player):
 	
-	#for child in self.get_children():
-	#	remove_child(child)
+	for child in self.get_children():
+		remove_child(child)
 		
-	#monsterList = []
+	monsterList = []
 	
-	var deletionArray = []
-	for i in monsterList.size():
-		remove_child(monsterList[i][0])
-		deletionArray.append(i)
+	#var deletionArray = []
+	#for i in monsterList.size():
+	#	remove_child(monsterList[i][0])
+	#	deletionArray.append(i)
 	
-	for index in deletionArray:
-		monsterList.remove_at(index)
+	#for index in deletionArray:
+	#	monsterList.remove_at(index)
 		#print(str(index))
 			
 func getMonsterList():
