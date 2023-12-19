@@ -171,15 +171,18 @@ func process_turn():
 				gestureQueue[i][1] = "N"
 			#If only one clap gesture is performed, then turn it into a null gesture
 			#This greatly simplifies the gesture analysis code if we assume C only exists with a successful clap
+			
+			#TODO: remove these messages if there's invisibility involved
+			
 			if clap == 2:
 				gestureQueue[i][0] = "C"
 				gestureQueue[i][1] = "C"
-				turnLogQueue.append(entityArray[i].name + " claps " + entityArray[i].pronouns[2] + " hands.")
+				addMessage(entityArray[i].name + " claps " + entityArray[i].pronouns[2] + " hands.",turnLogQueue, entityArray[i])
 			else:
 				for gesture in gestureQueue[i]:
-					var message = gesture_to_text(gesture, entityArray[i])
-					if message != "":
-						turnLogQueue.append(message)
+					var text = gesture_to_text(gesture, entityArray[i])
+					if text != "":
+						addMessage(text, turnLogQueue, entityArray[i])
 		
 	var spellExecutionList = []
 	
@@ -202,7 +205,7 @@ func process_turn():
 			if hexList.size() > 1:
 				for effectName in hexList:
 					entityArray[i].removeEffect(effectName)
-				turnLogQueue.append("The conflicting hexes on " + entityArray[i].name + " cancel each other out!")
+				addMessage("The conflicting hexes on " + entityArray[i].name + " cancel each other out!", turnLogQueue, entityArray[i])
 	
 	monsterActions(entityArray, turnLogQueue)
 	
@@ -219,17 +222,17 @@ func process_turn():
 				heals.append(effect[0].heal)
 				
 		if burn.size() > 0 and freeze.size() > 0:
-			turnLogQueue.append(entityArray[i].name + " remains unscathed between conflicting heat and cold!")
+			addMessage(entityArray[i].name + " remains unscathed between conflicting heat and cold!", turnLogQueue, entityArray[i])
 		else:
 			for b in burn:
 				entityArray[i].take_damage(b)
-				turnLogQueue.append(entityArray[i].name + " is burned for " + str(b) + " damage.")
+				addMessage(entityArray[i].name + " is burned for " + str(b) + " damage.", turnLogQueue, entityArray[i])
 			for f in freeze:
 				entityArray[i].take_damage(f)
-				turnLogQueue.append(entityArray[i].name + " is chilled for " + str(f) + " damage.")
+				addMessage(entityArray[i].name + " is chilled for " + str(f) + " damage.", turnLogQueue, entityArray[i])
 			for h in heals:
 				entityArray[i].take_damage(-1*h)
-				turnLogQueue.append(entityArray[i].name + " healed for " + str(h) + " hp.")
+				addMessage(entityArray[i].name + " healed for " + str(h) + " hp.", turnLogQueue, entityArray[i])
 	
 	var activePlayer = 0
 	numPlayers = 0
@@ -239,17 +242,24 @@ func process_turn():
 		if entityArray[i].is_wizard and entityArray[i].is_active():
 			
 			var spellsDisrupted = false
+			var invisible = false
 			for effect in entityArray[i].effects:
 				if effect[0].anti_spell:
 					spellsDisrupted = true
 			
+			var unseen = not canSee(entityArray[player], entityArray[i])
+			
 			if not spellsDisrupted:
 				entityArray[i].right_hand_gestures.append(gestureQueue[i][0])
+				entityArray[i].right_hidden.append(unseen)
 				entityArray[i].left_hand_gestures.append(gestureQueue[i][1])
+				entityArray[i].left_hidden.append(unseen)
 			else:
 				turnLogQueue.append(entityArray[i].name + "'s magic is disrupted!")
 				entityArray[i].right_hand_gestures.append("N")
 				entityArray[i].left_hand_gestures.append("N")
+				entityArray[i].right_hidden.append(false)
+				entityArray[i].right_hidden.append(false)
 		
 		if entityArray[i].dead == 1:
 			turnLogQueue.append(entityArray[i].name + " perishes!")
@@ -263,6 +273,7 @@ func process_turn():
 		if entityArray[i].is_wizard or entityArray[i].is_monster:
 			var removeEffectList = []
 			for effect in entityArray[i].effects:
+				effect[0].delayed = false
 				if not effect[0].permanent:
 					effect[1] -= 1
 					if effect[1] <= 0 or not entityArray[i].is_active():
@@ -407,7 +418,7 @@ func castSpells(spellExecutionList, entityArray, turnLogQueue):
 						reflected = true
 						break
 				if reflected and spell.reflectable:
-					turnLogQueue.append(target.pronouns[2].capitalize() + " spell reflects back at " + target.pronouns[1] + "!")
+					addMessage(target.pronouns[2].capitalize() + " spell reflects back at " + target.pronouns[1] + "!", turnLogQueue, target)
 					targets.append(caster)
 				else:
 					targets.append(target)
@@ -416,6 +427,9 @@ func castSpells(spellExecutionList, entityArray, turnLogQueue):
 			#TODO: Custom text for missing vs failing to cast
 		
 		if magicDispelled and spell.dispellable:
+			spellFailed = true
+			
+		if spell.targetable and not canSee(caster, targets[0]):
 			spellFailed = true
 			
 		var fire_elemental
@@ -482,7 +496,7 @@ func castSpells(spellExecutionList, entityArray, turnLogQueue):
 			var message = caster.name + verb + spell_name + target_string
 			
 			if not spell.is_silent:
-				turnLogQueue.append(message)
+				addMessage(message, turnLogQueue, caster)
 			
 			match spellExecutionList[i][0].effect:	
 				Spell.SpellEffect.dispelMagic:
@@ -506,7 +520,7 @@ func castSpells(spellExecutionList, entityArray, turnLogQueue):
 						if spellCheck == "":
 							t.addEffect(effectDict["Counterspell"], 0)
 						else:
-							turnLogQueue.append(spellCheck)
+							addMessage(spellCheck, turnLogQueue, t)
 				Spell.SpellEffect.Summon:
 					for t in targets:
 						var spellCheck = checkSpellInterference(spell, t)
@@ -543,19 +557,23 @@ func castSpells(spellExecutionList, entityArray, turnLogQueue):
 								monster.id = entityArray.size()
 								entityArray.append(monster)
 								
-								turnLogQueue.append("A" + adjective + " " + spell.effect_name + " appears" + purpose + "!")
+								addMessage("A" + adjective + " " + spell.effect_name + " appears" + purpose + "!", turnLogQueue, entityArray[summoner])
 								adjectiveCount += 1
 							else:
-								turnLogQueue.append("The summoning fails!")
+								addMessage("The summoning fails!", turnLogQueue, caster)
 				Spell.SpellEffect.applyTempEffect:
 					for t in targets:
 						var spellCheck = checkSpellInterference(spell, t)
 						if spellCheck == "":
 							var effect = effectDict[spell.effect_name]
 							effect.caster_id = caster.id
-							t.addEffect(effect, spell.intensity)
+							if effect.unstable and t.is_monster:
+								turnLogQueue.append(t.name + " is overloaded with magic and explodes!")
+								t.dead = 2
+							else:
+								t.addEffect(effect, spell.intensity)
 						else:
-							turnLogQueue.append(spellCheck)
+							addMessage(spellCheck, turnLogQueue, t)
 				Spell.SpellEffect.removeEnchantment:
 					for t in targets:
 						var spellCheck = checkSpellInterference(spell, t)
@@ -571,20 +589,19 @@ func castSpells(spellExecutionList, entityArray, turnLogQueue):
 							else:
 								t.take_damage(99)
 						else:
-							turnLogQueue.append(spellCheck)
+							addMessage(spellCheck, turnLogQueue, t)
 				Spell.SpellEffect.dealDamage:
 					for t in targets:
 						var spellCheck = checkSpellInterference(spell, t)
 						if spellCheck == "":
 							t.take_damage(spell.intensity)
-							turnLogQueue.append(t.name + " is " + spell.effect_name + " for " + str(spell.intensity) + " damage.")
+							addMessage(t.name + " is " + spell.effect_name + " for " + str(spell.intensity) + " damage.", turnLogQueue, t)
 						else:
-							turnLogQueue.append(spellCheck)
+							addMessage(spellCheck, turnLogQueue, t)
 				Spell.SpellEffect.Heal:
 					for t in targets:
 						var spellCheck = checkSpellInterference(spell, t)
 						if spellCheck == "":
-							#turnLogQueue.append(t.name + " is healed for " + str(spell.intensity) + " damage.")
 							var cureList = []
 							for effect in t.effects:
 								if effect[0].curable != 0 and spell.intensity >= effect[0].curable:
@@ -596,20 +613,24 @@ func castSpells(spellExecutionList, entityArray, turnLogQueue):
 							effect.heal = spell.intensity
 							t.addEffect(effect, 0)
 						else:
-							turnLogQueue.append(spellCheck)
+							addMessage(spellCheck, turnLogQueue, t)
 				Spell.SpellEffect.Kill:
 					for t in targets:
 						var spellCheck = checkSpellInterference(spell, t)
 						if spellCheck == "":
-							turnLogQueue.append(t.name + " is " + spell.effect_name + "!")
+							addMessage(t.name + " is " + spell.effect_name + "!", turnLogQueue, t)
 							t.take_damage(99)
 							t.dead = 2
 						else:
-							turnLogQueue.append(spellCheck)
+							addMessage(spellCheck, turnLogQueue, t)
 				_:
 					printerr("Spell effect not recognized")
 		else:
-			turnLogQueue.append(caster.name + "'s spell fizzles!")
+			addMessage(caster.name + "'s spell fizzles!", turnLogQueue, caster)
+
+func addMessage(message, turnLogQueue, subject):
+	if canSee(entityArray[player], subject):
+		turnLogQueue.append(message)
 
 func monsterActions(entityArray, turnLogQueue):
 	
@@ -686,15 +707,16 @@ func monsterActions(entityArray, turnLogQueue):
 								entity.summoner_id = effect[0].caster_id
 								var old_name = entity.name.split(" ")
 								entity.name = entityArray[entity.summoner_id].name + "'s " + old_name[old_name.size()-2] + " " + old_name[old_name.size()-1]
-					
 					if hexed:
-						turnLogQueue.append(entity.name + " tries to attack " + target_name + ", but " + entity.pronouns[2] + " hex prevents " + entity.pronouns[1])
+						addMessage(entity.name + " tries to attack " + target_name + ", but " + entity.pronouns[2] + " hex prevents " + entity.pronouns[1], turnLogQueue, target)
 					elif shield:
-						turnLogQueue.append(entity.name + " attacks " + target_name + ", but " + target.pronouns[2] + " shield protects " + target.pronouns[1] + "!")
+						addMessage(entity.name + " attacks " + target_name + ", but " + target.pronouns[2] + " shield protects " + target.pronouns[1] + "!", turnLogQueue, target)
+					elif not entity.aoe and not canSee(entity, target):
+						addMessage(entity.name + " attacks " + target_name + ", but misses!", turnLogQueue, target)
 					elif entity.fire and fire_res or entity.ice and cold_res:
-						turnLogQueue.append(entity.name + " attacks " + target_name + ", but " + target.pronouns[0] + " resist!")
+						addMessage(entity.name + " attacks " + target_name + ", but " + target.pronouns[0] + " resist!", turnLogQueue, target)
 					else:
-						turnLogQueue.append(entity.name + " attacks " + target_name + " for "+ str(entity.max_hp) + " damage.")
+						addMessage(entity.name + " attacks " + target_name + " for "+ str(entity.max_hp) + " damage.", turnLogQueue, target)
 						target.take_damage(entity.max_hp)
 
 func checkSpellInterference(spell, target):
@@ -724,6 +746,21 @@ func checkSpellInterference(spell, target):
 			return target.name + " resists the cold!"
 		
 	return ""
+
+func canSee(viewer, subject):
+	
+	if viewer.id == subject.id:
+		return true
+	
+	for effect in viewer.effects:
+		if effect[0].blindness and not effect[0].delayed:
+			return false
+			
+	for effect in subject.effects:
+		if effect[0].invisibility and not effect[0].delayed:
+			return false
+			
+	return true
 
 func loadSpells(path, array):
 	var dir = DirAccess.open(path)

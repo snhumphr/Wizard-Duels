@@ -17,6 +17,8 @@ class_name Wizard
 
 @export var left_hand_gestures: Array = []
 @export var right_hand_gestures: Array = []
+@export var left_hidden: Array = []
+@export var right_hidden: Array = []
 
 func is_alive():
 	return dead <= 1

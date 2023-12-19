@@ -27,9 +27,10 @@ class_name Effect
 @export var hex: bool = false
 @export var dispellable: bool = true
 @export var unstable: bool = false #Whether this effect kills summoned creatures or not
+@export var delayed: bool = false #Whether this effect takes a turn to happen. Only works for blind/invis atm
 
 @export var anti_spell: bool = false
-
+@export var blindness: bool = false
 @export var charm_person: bool = false
 @export var charm_monster: bool = false
 @export var fear: bool = false
