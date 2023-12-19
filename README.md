@@ -12,8 +12,9 @@ If someone else wants to take this version and do something else with it, then y
 -Raise dead is removed\
 -Confusion is replaced with Maladroit, which forces both hands to make the same gesture\
 -Anti-spell is now S-P-F-P rather then S-P-F\
--Paralysis is now cast either by F-D-F or D-F-D instead of by pure F-F-F\
--Similarly, Disease now requires D-S-F-D-F-C instead of D-S-F-F-F-C
+-Paralysis is now cast either by F-D-F or F-D-F-D instead of by pure F-F-F\
+-Similarly, Disease now requires D-S-F-D-F-C instead of D-S-F-F-F-C\
+-Summon Elemental now requires different gestures for fire and ice elementals. As per Fire Storm/Ice Storm, this is done by reversing the S and W of the spells
 
 # Personal changes:
 
