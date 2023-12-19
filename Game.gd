@@ -418,13 +418,9 @@ func castSpells(spellExecutionList, entityArray, turnLogQueue):
 		if magicDispelled and spell.dispellable:
 			spellFailed = true
 			
-		if spell.once_per_turn and not spellFailed:
-			for spell_id in oncePerTurnSpells:
-				if spell_id == spell.id:
-					spellFailed = true
-			if not spellFailed:
-				oncePerTurnSpells.append(spell.id)
-				
+		var fire_elemental
+		var ice_elemental
+			
 		if spell.once_per_duel and not spellFailed:
 			for s in oncePerDuelSpells.size():
 				if oncePerDuelSpells[s][0] == caster.id and oncePerDuelSpells[s][1] == spell.id:
@@ -433,7 +429,38 @@ func castSpells(spellExecutionList, entityArray, turnLogQueue):
 			if not spellFailed:
 				oncePerDuelSpells.append([caster.id, spell.id])
 		#TODO: add more spell failure conditions
-		
+					
+		for e in entityArray:
+			if e.is_monster and e.aoe:
+				if e.fire:
+					fire_elemental = e
+				elif e.ice:
+					ice_elemental = e
+					
+		if spell.once_per_turn and not spellFailed:
+			for spell_id in oncePerTurnSpells:
+				if spell_id == spell.id:
+					spellFailed = true
+			if not spellFailed:
+				oncePerTurnSpells.append(spell.id)
+				if spell.fire_spell and fire_elemental:
+					fire_elemental.dead = 2
+					turnLogQueue.append("The " + fire_elemental.name + " loses it's form in the sudden torrent of it's own element!")
+				if spell.ice_spell and ice_elemental:
+					ice_elemental.dead = 2
+					turnLogQueue.append("The " + ice_elemental.name + " loses it's form in the sudden torrent of it's own element!")
+
+		if not spellFailed and spell.fire_spell and targets.has(ice_elemental):
+			turnLogQueue.append("The " + ice_elemental.name + " melts!")
+			ice_elemental.dead = 2
+			spellFailed = true
+			
+		if not spellFailed and spell.ice_spell and targets.has(fire_elemental):
+			turnLogQueue.append("The " + fire_elemental.name + " is doused!")
+			fire_elemental.dead = 2
+			spellFailed = true
+		#TODO: THIS DEFINITELY NEEDS A CUSTOM FAILURE MESSAGE
+			
 		if not spellFailed: 
 			
 			var verb = " casts "
@@ -510,7 +537,7 @@ func castSpells(spellExecutionList, entityArray, turnLogQueue):
 								turnLogQueue.append("A " + monster.adjectives[adjectiveCount] + " " + spell.effect_name + " appears to serve " + entityArray[summoner].name + "!")
 								adjectiveCount += 1
 							else:
-								turnLogQueue.append(spellCheck)
+								turnLogQueue.append("The summoning fails!")
 				Spell.SpellEffect.applyTempEffect:
 					for t in targets:
 						var spellCheck = checkSpellInterference(spell, t)
@@ -576,6 +603,44 @@ func castSpells(spellExecutionList, entityArray, turnLogQueue):
 			turnLogQueue.append(caster.name + "'s spell fizzles!")
 
 func monsterActions(entityArray, turnLogQueue):
+	
+	var fire_elementals = []
+	var ice_elementals = []
+	
+	for i in range(1, entityArray.size()):
+		var entity = entityArray[i]
+
+		if entity.is_monster and entity.aoe and entity.is_active():
+			if entity.fire:
+				fire_elementals.append(entity)
+			if entity.ice:
+				ice_elementals.append(entity)
+	
+	if fire_elementals.size() > 0 and ice_elementals.size() > 0:
+		for fire_ele in fire_elementals:
+			fire_ele.dead = 2
+		for ice_ele in ice_elementals:
+			ice_ele.dead = 2
+		turnLogQueue.append("The opposing elementals violently annihilate one another!")
+	elif fire_elementals.size() > 1:
+		var highest_hp = 1
+		for f in range(fire_elementals.size()):
+			highest_hp = max(fire_elementals[f].hp, highest_hp)
+			if f > 0:
+				fire_elementals[f].dead = 2
+			else:
+				fire_elementals[0].hp = max(highest_hp, fire_elementals[0].max_hp)
+		turnLogQueue.append("The similar elementals merge into one!")
+	elif ice_elementals.size() > 1:
+		var highest_hp = 1
+		for c in range(ice_elementals.size()):
+			highest_hp = max(ice_elementals[c].hp, highest_hp)
+			if c > 0:
+				ice_elementals[c].dead = 2
+			else:
+				ice_elementals[0].hp = max(highest_hp, ice_elementals[0].max_hp)
+		turnLogQueue.append("The similar elementals merge into one!")
+		
 	for i in range(1, entityArray.size()):
 		var entity = entityArray[i]
 		if entity.is_monster and entity.is_active():
@@ -585,7 +650,7 @@ func monsterActions(entityArray, turnLogQueue):
 					targets = [entityArray[entity.target_id]]
 				else:
 					for enemy in entityArray:
-						if (enemy.is_monster or enemy.is_wizard) and enemy.id != entity.id:
+						if (enemy.is_monster or enemy.is_wizard) and enemy.id != entity.id and enemy.is_active():
 							targets.append(enemy)
 				for target in targets: 
 					var target_name = target.name
@@ -639,15 +704,15 @@ func checkSpellInterference(spell, target):
 		for effect in target.effects:
 			if effect[0].fire_res and spell.hostile:
 				return target.name +  " resists the fire!"
-		if target.fire:
+		if target.is_monster and target.fire:
 			return target.name + " resists the fire!"
 			
 	if spell.ice_spell:
 		for effect in target.effects:
 			if effect[0].cold_res and spell.hostile:
 				return target.name +  " resists the cold!"
-			if target.ice:
-				return target.name + " resists the cold!"
+		if target.is_monster and target.ice:
+			return target.name + " resists the cold!"
 		
 	return ""
 
