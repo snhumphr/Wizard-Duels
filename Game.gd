@@ -519,10 +519,19 @@ func castSpells(spellExecutionList, entityArray, turnLogQueue):
 								
 							if summoner != -1:
 								var monster = monsterTemplate.duplicate()
+								var adjective = " "
+								var purpose = " to serve "
 								if not (spell.fire_spell or spell.ice_spell):
 									monster.summoner_id = summoner
+									adjective = adjective + monster.adjectives[adjectiveCount]
 									monster.name = entityArray[summoner].name + "'s " + monster.adjectives[adjectiveCount] + " " + spell.effect_name
+									purpose += entityArray[summoner].name
 								else:
+									if spell.ice_spell:
+										adjective = "n"
+									else:
+										adjective = ""
+									purpose = ""
 									monster.summoner_id = -1
 									monster.name = spell.effect_name
 									monster.aoe = true
@@ -534,7 +543,7 @@ func castSpells(spellExecutionList, entityArray, turnLogQueue):
 								monster.id = entityArray.size()
 								entityArray.append(monster)
 								
-								turnLogQueue.append("A " + monster.adjectives[adjectiveCount] + " " + spell.effect_name + " appears to serve " + entityArray[summoner].name + "!")
+								turnLogQueue.append("A" + adjective + " " + spell.effect_name + " appears" + purpose + "!")
 								adjectiveCount += 1
 							else:
 								turnLogQueue.append("The summoning fails!")
