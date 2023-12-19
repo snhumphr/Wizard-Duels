@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=2 format=3 uid="uid://26522530hj72"]
+
+[ext_resource type="Script" path="res://spells.gd" id="1_i36kt"]
+
+[resource]
+script = ExtResource("1_i36kt")
+name = "Summon Fire Elemental"
+gestures = PackedStringArray("C", "S", "W", "W", "S")
+id = 0
+is_spell = true
+is_silent = false
+once_per_turn = false
+once_per_wizard = false
+once_per_duel = false
+mandatory = false
+hex = false
+fire_spell = true
+ice_spell = false
+dispellable = true
+counterable = true
+reflectable = true
+targetable = true
+blockable = false
+hostile = false
+requires_target = true
+can_target_corpses = false
+always_targets_self = false
+permanency_valid = false
+effect = 2
+effect_name = "Fire Elemental"
+intensity = 3

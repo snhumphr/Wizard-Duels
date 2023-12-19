@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=2 format=3 uid="uid://3ts78ibpvetw"]
+
+[ext_resource type="Script" path="res://spells.gd" id="1_d8epf"]
+
+[resource]
+script = ExtResource("1_d8epf")
+name = "Summon Ice Elemental"
+gestures = PackedStringArray("C", "W", "S", "S", "W")
+id = 0
+is_spell = true
+is_silent = false
+once_per_turn = false
+once_per_wizard = false
+once_per_duel = false
+mandatory = false
+hex = false
+fire_spell = false
+ice_spell = true
+dispellable = true
+counterable = true
+reflectable = true
+targetable = true
+blockable = false
+hostile = false
+requires_target = true
+can_target_corpses = false
+always_targets_self = false
+permanency_valid = false
+effect = 2
+effect_name = "Ice Elemental"
+intensity = 3

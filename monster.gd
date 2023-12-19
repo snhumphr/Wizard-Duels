@@ -13,9 +13,6 @@ class_name Monster
 @export var fire: bool = false
 @export var ice: bool = false
 
-@export var hot: bool = false
-@export var cold: bool = false
-
 @export var hp: int = 1
 @export var max_hp: int = 1
 @export var dead: int = 0

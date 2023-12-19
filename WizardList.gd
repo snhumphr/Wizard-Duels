@@ -7,6 +7,7 @@ func _ready():
 
 func render(entityArray, player):
 	self.clear()
+	renderNeutrals(entityArray)
 	for i in entityArray.size():
 		var wizard = entityArray[i]
 		if wizard.is_wizard:
@@ -31,10 +32,19 @@ func render(entityArray, player):
 			self.newline()
 			for e in entityArray:
 				if e.is_monster and e.is_active() and e.summoner_id == wizard.id:
-					self.add_text("    " + e.name)
-					for effect in e.effects:
-						self.add_text(" " + effect[0].name + "(" + str(effect[1]) + ")")
-					self.newline()
-					self.add_text("        " + "HP: " + str(e.hp) + "/" + str(e.max_hp))
-					self.newline()
+					renderMonster(e, "    ")
 	self.newline()
+
+func renderNeutrals(entityArray):
+	for entity in entityArray:
+		if entity.is_monster and entity.is_active() and entity.summoner_id == -1:
+			renderMonster(entity, "")
+	
+func renderMonster(monster, padding):
+	self.add_text(padding + monster.name)
+	for effect in monster.effects:
+		self.add_text(" " + effect[0].name + "(" + str(effect[1]) + ")")
+	self.newline()
+	self.add_text("    " + padding + "HP: " + str(monster.hp) + "/" + str(monster.max_hp))
+	self.newline()
+	

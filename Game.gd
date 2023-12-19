@@ -3,8 +3,6 @@ extends CanvasLayer
 #TODO: FIX TARGETING BEING RESET TO DEFAULT WHEN YOU CHANGE THE TARGET(?) OF YOUR OTHER HAND
 #TODO: MAGIC MIRROR DOESN'T WORK(TESTED WITH AMNESIA)
 	#Can't reproduce for some reason? strange
-#TODO: MALADROIT NOT WORKING WITH SURRENDER(GESTURE ID'S ARE MISMATCHED?)
-	#Cause: It doesn't update the gesture queue
 
 var spellArray = Array()
 var entityArray = Array()
@@ -263,8 +261,6 @@ func process_turn():
 					turnLogQueue.append(entityArray[i].name + " surrenders!")
 					
 		if entityArray[i].is_wizard or entityArray[i].is_monster:
-			entityArray[i].hot = false
-			entityArray[i].cold = false
 			var removeEffectList = []
 			for effect in entityArray[i].effects:
 				if not effect[0].permanent:
@@ -493,10 +489,18 @@ func castSpells(spellExecutionList, entityArray, turnLogQueue):
 								summoner = t.id
 							elif t.is_monster:
 								summoner = t.summoner_id
+								
 							if summoner != -1:
 								var monster = monsterTemplate.duplicate()
-								monster.summoner_id = summoner
-								monster.name = entityArray[summoner].name + "'s " + monster.adjectives[adjectiveCount] + " " + spell.effect_name
+								if not (spell.fire_spell or spell.ice_spell):
+									monster.summoner_id = summoner
+									monster.name = entityArray[summoner].name + "'s " + monster.adjectives[adjectiveCount] + " " + spell.effect_name
+								else:
+									monster.summoner_id = -1
+									monster.name = spell.effect_name
+									monster.aoe = true
+									monster.fire = spell.fire_spell
+									monster.ice = spell.ice_spell
 								monster.max_hp = spell.intensity
 								monster.hp = spell.intensity
 								
@@ -575,36 +579,49 @@ func monsterActions(entityArray, turnLogQueue):
 	for i in range(1, entityArray.size()):
 		var entity = entityArray[i]
 		if entity.is_monster and entity.is_active():
-			if entity.target_id > 0:
-				var target = entityArray[entity.target_id]
-				var target_name = target.name
-				if entity.id == target.id:
-					target_name = entity.pronouns[3]
-				var shield = false
-				for effect in target.effects:
-					if effect[0].shield:
-						shield = true
-	
-				var hexed = false
-				var charmed = false
-				for effect in entity.effects:
-					if effect[0].hex:
-						hexed = true
-						effect[1] = 0
-						if effect[0].charm_monster:
-							entity.summoner_id = effect[0].caster_id
-							var old_name = entity.name.split(" ")
-							entity.name = entityArray[entity.summoner_id].name + "'s " + old_name[old_name.size()-2] + " " + old_name[old_name.size()-1]
-				
-				if hexed:
-					turnLogQueue.append(entity.name + " tries to attack " + target_name + ", but " + entity.pronouns[2] + " hex prevents " + entity.pronouns[1])
-				elif shield:
-					turnLogQueue.append(entity.name + " attacks " + target_name + ", but " + target.pronouns[2] + " shield protects " + target.pronouns[1] + "!")
+			if entity.target_id > 0 or entity.aoe:
+				var targets = []
+				if not entity.aoe:
+					targets = [entityArray[entity.target_id]]
 				else:
-					turnLogQueue.append(entity.name + " attacks " + target_name + " for "+ str(entity.max_hp) + " damage.")
-					target.take_damage(entity.max_hp)
-			elif entity.aoe:
-				pass
+					for enemy in entityArray:
+						if (enemy.is_monster or enemy.is_wizard) and enemy.id != entity.id:
+							targets.append(enemy)
+				for target in targets: 
+					var target_name = target.name
+					if entity.id == target.id:
+						target_name = entity.pronouns[3]
+					var shield = false
+					var fire_res = false
+					var cold_res = false
+					for effect in target.effects:
+						if effect[0].shield:
+							shield = true
+						if effect[0].fire_res:
+							fire_res = true
+						if effect[0].cold_res:
+							cold_res = true
+		
+					var hexed = false
+					var charmed = false
+					for effect in entity.effects:
+						if effect[0].hex:
+							hexed = true
+							effect[1] = 0
+							if effect[0].charm_monster:
+								entity.summoner_id = effect[0].caster_id
+								var old_name = entity.name.split(" ")
+								entity.name = entityArray[entity.summoner_id].name + "'s " + old_name[old_name.size()-2] + " " + old_name[old_name.size()-1]
+					
+					if hexed:
+						turnLogQueue.append(entity.name + " tries to attack " + target_name + ", but " + entity.pronouns[2] + " hex prevents " + entity.pronouns[1])
+					elif shield:
+						turnLogQueue.append(entity.name + " attacks " + target_name + ", but " + target.pronouns[2] + " shield protects " + target.pronouns[1] + "!")
+					elif entity.fire and fire_res or entity.ice and cold_res:
+						turnLogQueue.append(entity.name + " attacks " + target_name + ", but " + target.pronouns[0] + " resist!")
+					else:
+						turnLogQueue.append(entity.name + " attacks " + target_name + " for "+ str(entity.max_hp) + " damage.")
+						target.take_damage(entity.max_hp)
 
 func checkSpellInterference(spell, target):
 	
@@ -622,11 +639,15 @@ func checkSpellInterference(spell, target):
 		for effect in target.effects:
 			if effect[0].fire_res and spell.hostile:
 				return target.name +  " resists the fire!"
-		
+		if target.fire:
+			return target.name + " resists the fire!"
+			
 	if spell.ice_spell:
 		for effect in target.effects:
 			if effect[0].cold_res and spell.hostile:
 				return target.name +  " resists the cold!"
+			if target.ice:
+				return target.name + " resists the cold!"
 		
 	return ""
 
