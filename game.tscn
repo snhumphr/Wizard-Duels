@@ -27,7 +27,6 @@ size_flags_vertical = 3
 theme = SubResource("Theme_t54r2")
 
 [node name="UI" type="VBoxContainer" parent="Scroll"]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
