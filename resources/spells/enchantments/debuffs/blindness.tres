@@ -29,4 +29,4 @@ always_targets_self = false
 permanency_valid = false
 effect = 3
 effect_name = "Blindness"
-intensity = 3
+intensity = 4

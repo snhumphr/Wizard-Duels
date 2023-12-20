@@ -3,6 +3,10 @@ extends RichTextLabel
 
 var length = 22
 
+# Future ideas: make alternate gesture versions of the same spell stack
+# Make thunderclap get a strikethrough mark if it's already been used
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass

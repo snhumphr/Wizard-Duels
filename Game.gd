@@ -3,6 +3,7 @@ extends CanvasLayer
 #TODO: FIX TARGETING BEING RESET TO DEFAULT WHEN YOU CHANGE THE TARGET(?) OF YOUR OTHER HAND
 #TODO: MAGIC MIRROR DOESN'T WORK(TESTED WITH AMNESIA)
 	#Can't reproduce for some reason? strange
+#TODO: SOMETIMES THE DEFAULT TARGET IS BEING SENT INSTEAD OF THE MANUALLY INPUT TARGET
 
 var spellArray = Array()
 var entityArray = Array()
@@ -277,7 +278,7 @@ func process_turn():
 				if not effect[0].permanent:
 					effect[1] -= 1
 					if effect[1] <= 0 or not entityArray[i].is_active():
-						if effect[0].fatal:
+						if effect[0].fatal and entityArray[i].is_active():
 							turnLogQueue.append(entityArray[i].name + " succumbs to " + effect[0].name.to_lower() + "!")
 							entityArray[i].dead = 2
 						removeEffectList.append(effect[0].name)
@@ -703,7 +704,7 @@ func monsterActions(entityArray, turnLogQueue):
 						if effect[0].hex:
 							hexed = true
 							effect[1] = 0
-							if effect[0].charm_monster:
+							if effect[0].charm_monster and entity.summoner_id != -1:
 								entity.summoner_id = effect[0].caster_id
 								var old_name = entity.name.split(" ")
 								entity.name = entityArray[entity.summoner_id].name + "'s " + old_name[old_name.size()-2] + " " + old_name[old_name.size()-1]
