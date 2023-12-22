@@ -11,12 +11,24 @@
 [sub_resource type="Theme" id="Theme_t54r2"]
 default_font = ExtResource("2_oflhb")
 
-[node name="Game" type="CanvasLayer"]
-follow_viewport_enabled = true
+[node name="Game" type="Control"]
+layout_mode = 3
+anchor_right = 1.0
+anchor_bottom = 1.0
 script = ExtResource("1_3r2fk")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0196078, 0.0862745, 0.313726, 1)
 
 [node name="Scroll" type="ScrollContainer" parent="."]
 clip_contents = false
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

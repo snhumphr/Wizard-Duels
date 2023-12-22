@@ -4,6 +4,9 @@ const PORT = 7777
 const DEFAULT_SERVER_IP = "192.168.1.67" # IPv4 LAN
 const MAX_CONNECTIONS = 2
 
+func _ready():
+	pass
+
 func start_duel():
 	get_tree().change_scene_to_file("res://preduel.tscn")
 
