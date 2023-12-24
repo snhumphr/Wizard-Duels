@@ -10,7 +10,7 @@ default_font = ExtResource("1_dudxa")
 font_size = 50
 
 [node name="Menu" type="MarginContainer"]
-anchors_preset = -1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_horizontal = 3
@@ -22,28 +22,50 @@ script = ExtResource("1_rtr2h")
 layout_mode = 2
 color = Color(0.0196078, 0.0862745, 0.313726, 1)
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="MenuItems" type="VBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="Title" type="Label" parent="VBoxContainer"]
+[node name="Title" type="Label" parent="MenuItems"]
 layout_mode = 2
 size_flags_vertical = 0
 text = "Wizard Duels"
 label_settings = SubResource("LabelSettings_q4mve")
 horizontal_alignment = 1
 
-[node name="HostButton" type="Button" parent="VBoxContainer"]
+[node name="HostBar" type="HBoxContainer" parent="MenuItems"]
+layout_mode = 2
+
+[node name="HostButton" type="Button" parent="MenuItems/HostBar"]
 layout_mode = 2
 text = "Start a Duel as Host"
 
-[node name="JoinButton" type="Button" parent="VBoxContainer"]
+[node name="NumWizButton" type="OptionButton" parent="MenuItems/HostBar"]
+layout_mode = 2
+
+[node name="JoinBar" type="HBoxContainer" parent="MenuItems"]
+layout_mode = 2
+
+[node name="JoinButton" type="Button" parent="MenuItems/JoinBar"]
 layout_mode = 2
 text = "Join an existing Duel"
 
-[node name="Quit" type="Button" parent="VBoxContainer"]
+[node name="IpAddressField" type="TextEdit" parent="MenuItems/JoinBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Quit" type="Button" parent="MenuItems"]
 layout_mode = 2
 text = "Exit"
 
-[connection signal="pressed" from="VBoxContainer/HostButton" to="." method="_on_host_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/JoinButton" to="." method="_on_join_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/Quit" to="." method="_on_quit_pressed"]
+[node name="WaitingLobby" type="VBoxContainer" parent="."]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Label" parent="WaitingLobby"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Waiting for other duelists to arrive..."
+
+[connection signal="pressed" from="MenuItems/HostBar/HostButton" to="." method="_on_host_button_pressed"]
+[connection signal="pressed" from="MenuItems/JoinBar/JoinButton" to="." method="_on_join_button_pressed"]
+[connection signal="pressed" from="MenuItems/Quit" to="." method="_on_quit_pressed"]
