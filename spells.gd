@@ -17,7 +17,7 @@ enum SpellEffect {
 @export var gestures: PackedStringArray
 @export var id: int
 
-@export var description: String
+@export var description: String = "ERROR: NO DESCRIPTION FOUND"
 
 @export var is_spell: bool = true
 @export var is_silent: bool = false

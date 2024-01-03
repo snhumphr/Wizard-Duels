@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://yrv8myggdj1h"]
+[gd_scene load_steps=10 format=3 uid="uid://yrv8myggdj1h"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_3r2fk"]
 [ext_resource type="Script" path="res://SpellList.gd" id="2_cadle"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://WizardList.gd" id="3_laiom"]
 [ext_resource type="Script" path="res://EffectControlPanel.gd" id="5_8i5um"]
 [ext_resource type="Script" path="res://SummonControlPanel.gd" id="5_p744m"]
+[ext_resource type="Script" path="res://SpellInfoTab.gd" id="8_80j1a"]
 
 [sub_resource type="Theme" id="Theme_t54r2"]
 default_font = ExtResource("2_oflhb")
@@ -126,6 +127,12 @@ custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Submit Turn"
+
+[node name="SpellInfoTab" type="RichTextLabel" parent="Scroll/UI/MainColumn"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+text = "AWOOOO"
+script = ExtResource("8_80j1a")
 
 [connection signal="item_selected" from="Scroll/UI/MainColumn/RightHand/RightHandGestureOptions" to="." method="_on_right_hand_gesture_options_item_selected"]
 [connection signal="item_selected" from="Scroll/UI/MainColumn/RightHand/RightHandSpellOptions" to="." method="_on_right_hand_spell_options_item_selected"]

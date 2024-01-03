@@ -4,11 +4,6 @@ var length = 22
 
 func init(spellArray):
 	
-	setupSpellList(spellArray)
-	#self.get_node("SpellList").init(spellArray)
-
-func setupSpellList(spellArray):
-	
 	var titleBox = HBoxContainer.new()
 	self.add_child(titleBox)
 	var title = Label.new()
@@ -32,6 +27,7 @@ func setupSpellList(spellArray):
 		var spellButton = Button.new()
 		spellButton.set_text(spell)
 		line.add_child(spellButton)
+		spellButton.pressed.connect(_on_spell_button_pressed.bind(spellButton.get_text()))
 		
 		var text = ""
 		for i in range(length-spell.length()):
@@ -49,7 +45,6 @@ func setupSpellList(spellArray):
 		var gestures = Label.new()
 		gestures.set_text(text)
 		line.add_child(gestures)
-		#self.newline()
 
-func addLine():
-	pass
+func _on_spell_button_pressed(spell):
+	get_tree().call_group("spellinfo", "displaySpellInfo", spell)

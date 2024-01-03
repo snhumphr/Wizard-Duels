@@ -8,6 +8,7 @@ script = ExtResource("1_dj4t4")
 name = "Cause Heavy Wounds"
 gestures = PackedStringArray("W", "P", "F", "D")
 id = 0
+description = "ERROR: NO DESCRIPTION FOUND"
 is_spell = true
 is_silent = false
 once_per_turn = false

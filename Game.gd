@@ -79,7 +79,9 @@ func _ready():
 			stabID = i
 	spellArray.sort_custom(spellSort)
 	
+	var spellInfoTab = self.get_node("Scroll/UI/MainColumn/SpellInfoTab")
 	self.get_node("Scroll/UI/SpellList").init(spellArray)
+	self.get_node("Scroll/UI/MainColumn/SpellInfoTab").init(spellArray)
 	
 	loadEffects("res://resources/effects", effectDict)
 	
