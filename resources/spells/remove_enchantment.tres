@@ -3,11 +3,12 @@
 [ext_resource type="Script" path="res://spells.gd" id="1_il58i"]
 
 [resource]
-resource_name = "Counterspell A"
+resource_name = "Remove Enchantment"
 script = ExtResource("1_il58i")
 name = "Remove Enchantment"
 gestures = PackedStringArray("P", "D", "W", "P")
 id = 0
+description = "An unravelling dweomer that removes all persistent magical effects from the target creature, whether they are benign or malign. If used on a summoned creature, then it destroys them at the end of the turn, as they cannot survive the destruction of the enchantment that created them."
 is_spell = true
 is_silent = false
 once_per_turn = false

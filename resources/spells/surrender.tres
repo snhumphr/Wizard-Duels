@@ -8,6 +8,7 @@ script = ExtResource("1_mfo1s")
 name = "Surrender"
 gestures = PackedStringArray("PP")
 id = 0
+description "According to the rules of the engagement, proferring both palms at once, no matter the circumstances, results in forfeiting the duel. This still provides a shield effect, however, and less fool-hardy wizards may even choose to surrender rather then perish."
 is_spell = false
 is_silent = true
 once_per_turn = false

@@ -3,11 +3,12 @@
 [ext_resource type="Script" path="res://spells.gd" id="1_x0qd8"]
 
 [resource]
-resource_name = "Cause Light Wounds"
+resource_name = "Cure Light Wounds"
 script = ExtResource("1_x0qd8")
 name = "Cure Light Wounds"
 gestures = PackedStringArray("D", "F", "W")
 id = 0
+description = "Mends the target creature's injuries, restoring 1 hp(up to their hp maximum). If cast immediately on a target with 0 hp, this can even save them from death."
 is_spell = true
 is_silent = false
 once_per_turn = false
