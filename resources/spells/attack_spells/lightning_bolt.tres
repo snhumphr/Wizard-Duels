@@ -8,6 +8,7 @@ script = ExtResource("1_tf1vi")
 name = "Lightning Bolt"
 gestures = PackedStringArray("D", "F", "F", "D", "D")
 id = 0
+description = "Evokes a coruscating arc of electricity which deals 5 damage to the target creature."
 is_spell = true
 is_silent = false
 once_per_turn = false

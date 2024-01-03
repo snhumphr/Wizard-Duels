@@ -8,6 +8,7 @@ script = ExtResource("1_ypsh1")
 name = "Ice Storm"
 gestures = PackedStringArray("W", "S", "S", "CC")
 id = 0
+description = "Batters the battlefield with freezing hail, dealing 5 [color=#739BD0]ice[/color] damage to all creatures on the battlefield(including the caster and their allies). Ice damage does nothing to those with cold resistance, but negates fire magic directed at the same target. An ice storm destroys a fire elemental instantly, but in that case does not take effect. It also destroys ice elementals before they can attack, but still does damage normally. Multiple ice storms cast on the same turn do not stack."
 is_spell = true
 is_silent = false
 once_per_turn = true

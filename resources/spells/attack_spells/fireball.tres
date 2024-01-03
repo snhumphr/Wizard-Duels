@@ -8,6 +8,7 @@ script = ExtResource("1_el0rd")
 name = "Fireball"
 gestures = PackedStringArray("F", "S", "S", "D", "D")
 id = 0
+description = "Creates a blazing orb which deals 5 [color=#A9423F]fire[/color] damage to the target creature. Fire damage does nothing to those with heat resistance, but negates ice magic directed at the same target."
 is_spell = true
 is_silent = false
 once_per_turn = false

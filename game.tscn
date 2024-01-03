@@ -129,7 +129,7 @@ size_flags_horizontal = 0
 text = "Submit Turn"
 
 [node name="SpellInfoTab" type="RichTextLabel" parent="Scroll/UI/MainColumn"]
-custom_minimum_size = Vector2(0, 20)
+custom_minimum_size = Vector2(0, 300)
 layout_mode = 2
 text = "AWOOOO"
 script = ExtResource("8_80j1a")

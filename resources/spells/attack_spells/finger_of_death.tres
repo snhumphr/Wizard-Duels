@@ -3,11 +3,12 @@
 [ext_resource type="Script" path="res://spells.gd" id="1_o7dd4"]
 
 [resource]
-resource_name = "Fireball"
+resource_name = "Finger of Death"
 script = ExtResource("1_o7dd4")
 name = "Finger of Death"
 gestures = PackedStringArray("P", "W", "P", "F", "S", "S", "S", "D", "D")
 id = 0
+description = "A fell enchantment that, with a crook of a finger, kills the targeted creature no matter their remaining hp. Cannot be counterspelled, but can still be reflected or dispelled."
 is_spell = true
 is_silent = false
 once_per_turn = false
