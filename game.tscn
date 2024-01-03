@@ -41,92 +41,97 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = SubResource("Theme_t54r2")
 
-[node name="UI" type="VBoxContainer" parent="Scroll"]
+[node name="UI" type="HBoxContainer" parent="Scroll"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="SpellList" type="RichTextLabel" parent="Scroll/UI"]
+[node name="SpellList" type="VBoxContainer" parent="Scroll/UI"]
 layout_mode = 2
-fit_content = true
+size_flags_horizontal = 0
+size_flags_vertical = 0
 script = ExtResource("2_cadle")
 
-[node name="TurnReport" type="RichTextLabel" parent="Scroll/UI"]
+[node name="MainColumn" type="VBoxContainer" parent="Scroll/UI"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TurnReport" type="RichTextLabel" parent="Scroll/UI/MainColumn"]
 layout_mode = 2
 fit_content = true
 script = ExtResource("3_dgo7r")
 
-[node name="WizardList" type="RichTextLabel" parent="Scroll/UI"]
+[node name="WizardList" type="RichTextLabel" parent="Scroll/UI/MainColumn"]
 layout_mode = 2
 fit_content = true
 script = ExtResource("3_laiom")
 
-[node name="RightHand" type="HBoxContainer" parent="Scroll/UI"]
+[node name="RightHand" type="HBoxContainer" parent="Scroll/UI/MainColumn"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Scroll/UI/RightHand"]
+[node name="Label" type="Label" parent="Scroll/UI/MainColumn/RightHand"]
 layout_mode = 2
 text = "Right Hand:"
 
-[node name="RightHandGestureOptions" type="OptionButton" parent="Scroll/UI/RightHand"]
+[node name="RightHandGestureOptions" type="OptionButton" parent="Scroll/UI/MainColumn/RightHand"]
 layout_mode = 2
 
-[node name="RightHandSpellOptions" type="OptionButton" parent="Scroll/UI/RightHand"]
+[node name="RightHandSpellOptions" type="OptionButton" parent="Scroll/UI/MainColumn/RightHand"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 
-[node name="RightHandTargetingOptions" type="OptionButton" parent="Scroll/UI/RightHand"]
+[node name="RightHandTargetingOptions" type="OptionButton" parent="Scroll/UI/MainColumn/RightHand"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 
-[node name="LeftHand" type="HBoxContainer" parent="Scroll/UI"]
+[node name="LeftHand" type="HBoxContainer" parent="Scroll/UI/MainColumn"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Scroll/UI/LeftHand"]
+[node name="Label" type="Label" parent="Scroll/UI/MainColumn/LeftHand"]
 layout_mode = 2
-text = "Left Hand:  "
+text = "Left Hand: "
 
-[node name="LeftHandGestureOptions" type="OptionButton" parent="Scroll/UI/LeftHand"]
+[node name="LeftHandGestureOptions" type="OptionButton" parent="Scroll/UI/MainColumn/LeftHand"]
 layout_mode = 2
 
-[node name="LeftHandSpellOptions" type="OptionButton" parent="Scroll/UI/LeftHand"]
+[node name="LeftHandSpellOptions" type="OptionButton" parent="Scroll/UI/MainColumn/LeftHand"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 
-[node name="LeftHandTargetingOptions" type="OptionButton" parent="Scroll/UI/LeftHand"]
+[node name="LeftHandTargetingOptions" type="OptionButton" parent="Scroll/UI/MainColumn/LeftHand"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 
-[node name="DefaultHostileTargetPanel" type="HBoxContainer" parent="Scroll/UI"]
+[node name="DefaultHostileTargetPanel" type="HBoxContainer" parent="Scroll/UI/MainColumn"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Scroll/UI/DefaultHostileTargetPanel"]
+[node name="Label" type="Label" parent="Scroll/UI/MainColumn/DefaultHostileTargetPanel"]
 layout_mode = 2
 text = "Set default hostile target: "
 
-[node name="DefaultHostileTargetOptions" type="OptionButton" parent="Scroll/UI/DefaultHostileTargetPanel"]
+[node name="DefaultHostileTargetOptions" type="OptionButton" parent="Scroll/UI/MainColumn/DefaultHostileTargetPanel"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 
-[node name="EffectControlPanel" type="VBoxContainer" parent="Scroll/UI"]
+[node name="EffectControlPanel" type="VBoxContainer" parent="Scroll/UI/MainColumn"]
 layout_mode = 2
 script = ExtResource("5_8i5um")
 
-[node name="SummonControlPanel" type="VBoxContainer" parent="Scroll/UI"]
+[node name="SummonControlPanel" type="VBoxContainer" parent="Scroll/UI/MainColumn"]
 layout_mode = 2
 script = ExtResource("5_p744m")
 
-[node name="EndTurnButton" type="Button" parent="Scroll/UI"]
+[node name="EndTurnButton" type="Button" parent="Scroll/UI/MainColumn"]
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Submit Turn"
 
-[connection signal="item_selected" from="Scroll/UI/RightHand/RightHandGestureOptions" to="." method="_on_right_hand_gesture_options_item_selected"]
-[connection signal="item_selected" from="Scroll/UI/RightHand/RightHandSpellOptions" to="." method="_on_right_hand_spell_options_item_selected"]
-[connection signal="item_selected" from="Scroll/UI/RightHand/RightHandTargetingOptions" to="." method="_on_right_hand_targeting_options_item_selected"]
-[connection signal="item_selected" from="Scroll/UI/LeftHand/LeftHandGestureOptions" to="." method="_on_left_hand_gesture_options_item_selected"]
-[connection signal="item_selected" from="Scroll/UI/LeftHand/LeftHandSpellOptions" to="." method="_on_left_hand_spell_options_item_selected"]
-[connection signal="item_selected" from="Scroll/UI/LeftHand/LeftHandTargetingOptions" to="." method="_on_left_hand_targeting_options_item_selected"]
-[connection signal="requestValidTargets" from="Scroll/UI/SummonControlPanel" to="." method="_on_summon_control_panel_request_valid_targets"]
-[connection signal="pressed" from="Scroll/UI/EndTurnButton" to="." method="_on_end_turn_button_pressed"]
+[connection signal="item_selected" from="Scroll/UI/MainColumn/RightHand/RightHandGestureOptions" to="." method="_on_right_hand_gesture_options_item_selected"]
+[connection signal="item_selected" from="Scroll/UI/MainColumn/RightHand/RightHandSpellOptions" to="." method="_on_right_hand_spell_options_item_selected"]
+[connection signal="item_selected" from="Scroll/UI/MainColumn/RightHand/RightHandTargetingOptions" to="." method="_on_right_hand_targeting_options_item_selected"]
+[connection signal="item_selected" from="Scroll/UI/MainColumn/LeftHand/LeftHandGestureOptions" to="." method="_on_left_hand_gesture_options_item_selected"]
+[connection signal="item_selected" from="Scroll/UI/MainColumn/LeftHand/LeftHandSpellOptions" to="." method="_on_left_hand_spell_options_item_selected"]
+[connection signal="item_selected" from="Scroll/UI/MainColumn/LeftHand/LeftHandTargetingOptions" to="." method="_on_left_hand_targeting_options_item_selected"]
+[connection signal="requestValidTargets" from="Scroll/UI/MainColumn/SummonControlPanel" to="." method="_on_summon_control_panel_request_valid_targets"]
+[connection signal="pressed" from="Scroll/UI/MainColumn/EndTurnButton" to="." method="_on_end_turn_button_pressed"]

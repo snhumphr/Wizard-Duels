@@ -1,19 +1,21 @@
-extends RichTextLabel
-
+extends VBoxContainer
 
 var length = 22
 
-# Future ideas:
-# Make thunderclap get a strikethrough mark if it's already been used
-
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass
-
 func init(spellArray):
-	self.add_text("List of Spells:")
-	self.newline()
+	
+	setupSpellList(spellArray)
+	#self.get_node("SpellList").init(spellArray)
+
+func setupSpellList(spellArray):
+	
+	var titleBox = HBoxContainer.new()
+	self.add_child(titleBox)
+	var title = Label.new()
+	title.set_text("List of Spells:")
+	titleBox.add_child(title)
+	#self.add_text("List of Spells:")
+	#self.newline()
 	
 	var spellDict = {}
 	
@@ -24,33 +26,30 @@ func init(spellArray):
 			spellDict[spell.name].append(spell.gestures)
 	
 	for spell in spellDict.keys():
-		self.add_text(spell)
+		var line = HBoxContainer.new()
+		self.add_child(line)
+		
+		var spellButton = Button.new()
+		spellButton.set_text(spell)
+		line.add_child(spellButton)
+		
+		var text = ""
 		for i in range(length-spell.length()):
-			self.add_text(" ")
+			text += " "
 		for s in range(spellDict[spell].size()):
 			if s > 0:
-				self.add_text(" or ")
+				text += " or "
 			for i in spellDict[spell][s].size():
 				if spellDict[spell][s][i] == "C":
-					self.add_text("CC")
+					text += "CC"
 				else:
-					self.add_text(spellDict[spell][s][i])
+					text += spellDict[spell][s][i]
 				if i + 1 < spellDict[spell][s].size():
-					self.add_text("-")
-		self.newline()
-	self.newline()
-	
-	for spell in spellArray:
-		break
-		self.add_text(spell.name)
-		for i in range(length-spell.name.length()):
-			self.add_text(" ")
-		for i in spell.gestures.size():
-			if spell.gestures[i] == "C":
-				self.add_text("CC")
-			else:
-				self.add_text(spell.gestures[i])
-			if i + 1 < spell.gestures.size():
-				self.add_text("-")
-		self.newline()
-	self.newline()
+					text += "-"
+		var gestures = Label.new()
+		gestures.set_text(text)
+		line.add_child(gestures)
+		#self.newline()
+
+func addLine():
+	pass

@@ -50,7 +50,7 @@ func renderMonster(monster, padding):
 	self.newline()
 	self.add_text("    " + padding + "HP: " + str(monster.hp) + "/" + str(monster.max_hp))
 	self.newline()
-	
+
 func renderGestures(gesture_list, hidden_list, is_player):
 	for i in gesture_list.size():
 		if i > 0:
