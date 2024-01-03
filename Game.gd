@@ -1010,6 +1010,17 @@ func findValidTargets(spell, caster):
 			elif spell.hostile and isTargetHostile(entityArray[i], caster):
 				preferredTargets.append(entityArray[i])
 	
+	var defaultHostileTargetId = self.get_node("Scroll/UI/DefaultHostileTargetPanel/DefaultHostileTargetOptions").get_selected_id()
+	var defaultHostileTargetIndex = -1
+	
+	for i in range(preferredTargets.size()):
+		if preferredTargets[i].id == defaultHostileTargetId:
+			defaultHostileTargetIndex = i
+	
+	if defaultHostileTargetIndex != -1:
+		var temp = preferredTargets[0]
+		preferredTargets[0] = preferredTargets[defaultHostileTargetIndex]
+		preferredTargets[defaultHostileTargetIndex] = temp
 	#randomize()
 	#preferredTargets.shuffle()
 	
@@ -1039,6 +1050,19 @@ func renderWizardSection():
 	
 	self.get_node("Scroll/UI/LeftHand/LeftHandGestureOptions").clear()
 	self.get_node("Scroll/UI/RightHand/RightHandGestureOptions").clear()
+	
+	var defaultTargetOptions = self.get_node("Scroll/UI/DefaultHostileTargetPanel/DefaultHostileTargetOptions")
+	var oldTargetId = defaultTargetOptions.get_selected_id()
+	defaultTargetOptions.clear()
+	for i in range(1, entityArray.size()):
+		if isTargetHostile(entityArray[i], entityArray[player]):
+			defaultTargetOptions.add_item(entityArray[i].name, i)
+	
+	var oldTargetIndex = defaultTargetOptions.get_item_index(oldTargetId)
+	if oldTargetIndex != -1:
+		defaultTargetOptions.select(oldTargetIndex)
+	else:
+		defaultTargetOptions.select(defaultTargetOptions.get_selectable_item())
 	
 	if player < entityArray.size():
 		var spooked = false

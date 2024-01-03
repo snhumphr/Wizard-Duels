@@ -97,6 +97,17 @@ layout_mode = 2
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 
+[node name="DefaultHostileTargetPanel" type="HBoxContainer" parent="Scroll/UI"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Scroll/UI/DefaultHostileTargetPanel"]
+layout_mode = 2
+text = "Set default hostile target: "
+
+[node name="DefaultHostileTargetOptions" type="OptionButton" parent="Scroll/UI/DefaultHostileTargetPanel"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+
 [node name="EffectControlPanel" type="VBoxContainer" parent="Scroll/UI"]
 layout_mode = 2
 script = ExtResource("5_8i5um")
