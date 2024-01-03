@@ -8,6 +8,7 @@ script = ExtResource("1_bjho6")
 name = "Shield"
 gestures = PackedStringArray("P")
 id = 0
+description = "Summons a protective barrier around the target creature, protecting them from monster attacks, missiles and stabs for that turn."
 is_spell = true
 is_silent = false
 once_per_turn = false

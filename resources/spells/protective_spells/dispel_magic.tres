@@ -8,6 +8,7 @@ script = ExtResource("1_x15w2")
 name = "Dispel Magic"
 gestures = PackedStringArray("C", "D", "P", "W")
 id = 0
+description = "A highly disruptive working that prevents any other spells from being cast that turn, destroys all summoned monsters and removes all ongoing magical effects. It also applies a shielding effect(as the Shield spell) to all creatures for that turn, as well as preventing spells from affecting them(as Counterspell)"
 is_spell = true
 is_silent = false
 once_per_turn = true
