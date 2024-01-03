@@ -14,6 +14,7 @@ var gestureQueue = Array()
 var spellQueue = Array()
 var targetQueue = Array()
 
+var namesDict = Dictionary()
 var ordersDict = Dictionary()
 # What needs to be in a set of orders submitted:
 	#Left hand gesture order
@@ -66,7 +67,6 @@ func _ready():
 	peers.sort()
 	seed(peers.back())
 	player = peers.find(multiplayer.get_unique_id()) + 1
-	#print(peers)
 	
 	loadSpells("res://resources/spells", spellArray)
 	
@@ -90,9 +90,13 @@ func _ready():
 	emptySpace.is_wizard = false
 	emptySpace.is_monster = false
 	
+	var wizTemplate = load("res://resources/wizards/wizard_template.tres")
 	entityArray.append(emptySpace)
-	entityArray.append(load("res://resources/wizards/wizard_one.tres"))
-	entityArray.append(load("res://resources/wizards/wizard_two.tres"))
+		
+	for i in peers.size():
+		var new_wizard = wizTemplate.duplicate()
+		new_wizard.name = GlobalDataSingle.namesDict[peers[i]]
+		entityArray.append(new_wizard)
 	
 	monsterTemplate = load("res://resources/monsters/base.tres")
 	monsterTemplate.adjectives.shuffle()
@@ -108,6 +112,10 @@ func _ready():
 		targetQueue.append([-1, -1])
 
 	process_turn()
+
+@rpc("any_peer", "reliable", "call_local")
+func receiveName(name:String, id:int):
+	namesDict[id] = name
 
 func process_turn():
 	
@@ -773,7 +781,6 @@ func loadSpells(path, array):
 				loadSpells(path + "/" + file_name, spellArray)
 			else:
 				spellArray.append(load(path + "/" + file_name))
-				#print("Added spell: " + file_name)
 			file_name = dir.get_next()
 		dir.list_dir_end()
 	else:
@@ -1147,19 +1154,15 @@ func _on_end_turn_button_pressed():
 			#renderWizardSection()
 
 func submitOrders(orders):
-	#print(orders)
 	self.rpc("receiveOrders", orders)
 	ordersDict[orders.id] = orders
-	#print("There are now " + str(ordersDict.size()) + " sets of received orders")
+
 	if ordersDict.size() == numPlayers:
 		process_turn()
 	
 @rpc("any_peer", "reliable")
 func receiveOrders(orders):
-	#print("orders received")
-	#print(orders)
 	ordersDict[orders.id] = orders
-	#print("There are now " + str(ordersDict.size()) + " sets of received orders")
 	if ordersDict.size() == numPlayers:
 		process_turn()
 

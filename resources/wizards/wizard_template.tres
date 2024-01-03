@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="Wizard" load_steps=2 format=3 uid="uid://1dnju0tpmdsh"]
+
+[ext_resource type="Script" path="res://wizards.gd" id="1_d3fda"]
+
+[resource]
+script = ExtResource("1_d3fda")
+id = 0
+name = "Wizard"
+pronouns = ["they", "them", "their", "themselves"]
+is_wizard = true
+is_monster = false
+hp = 15
+max_hp = 15
+surrendered = false
+dead = 0
+effects = []
+left_hand_gestures = []
+right_hand_gestures = []
+left_hidden = []
+right_hidden = []
