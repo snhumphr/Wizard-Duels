@@ -126,10 +126,6 @@ func _ready():
 
 	process_turn()
 
-@rpc("any_peer", "reliable", "call_local")
-func receiveName(name:String, id:int):
-	namesDict[id] = name
-
 func process_turn():
 	
 	decodeOrders()
