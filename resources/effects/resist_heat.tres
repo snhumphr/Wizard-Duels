@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_5yedi")
-name = "Resist Fire"
+name = "Resist Heat"
 is_silent = false
 permanent = true
 shield = false

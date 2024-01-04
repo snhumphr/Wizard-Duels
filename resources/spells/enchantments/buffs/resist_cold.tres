@@ -3,11 +3,12 @@
 [ext_resource type="Script" path="res://spells.gd" id="1_plp2v"]
 
 [resource]
-resource_name = "Shield"
+resource_name = "Resist Cold"
 script = ExtResource("1_plp2v")
-name = "Resist Ice"
+name = "Resist Cold"
 gestures = PackedStringArray("S", "S", "F", "P")
 id = 0
+description = "A useful enchantment that infuses the target creature with innate warmth, protecting them from cold effects.\n\nThis effect lasts indefinitely, but can still be removed or dispelled by magic.\n\nCasting this spell on an ice elemental will destroy it, while it has no effect on a fire elemental"
 is_spell = true
 is_silent = false
 once_per_turn = false
@@ -28,5 +29,5 @@ can_target_corpses = false
 always_targets_self = false
 permanency_valid = false
 effect = 3
-effect_name = "Resist Ice"
+effect_name = "Resist Cold"
 intensity = 0

@@ -131,7 +131,7 @@ text = "Submit Turn"
 [node name="SpellInfoTab" type="RichTextLabel" parent="Scroll/UI/MainColumn"]
 custom_minimum_size = Vector2(0, 300)
 layout_mode = 2
-text = "AWOOOO"
+bbcode_enabled = true
 script = ExtResource("8_80j1a")
 
 [connection signal="item_selected" from="Scroll/UI/MainColumn/RightHand/RightHandGestureOptions" to="." method="_on_right_hand_gesture_options_item_selected"]

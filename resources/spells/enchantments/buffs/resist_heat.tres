@@ -3,11 +3,12 @@
 [ext_resource type="Script" path="res://spells.gd" id="1_sgxwl"]
 
 [resource]
-resource_name = "Shield"
+resource_name = "Resist Heat"
 script = ExtResource("1_sgxwl")
-name = "Resist Fire"
+name = "Resist Heat"
 gestures = PackedStringArray("W", "W", "F", "P")
 id = 0
+description = "A useful enchantment that infuses the target creature with innate coolness, protecting them from heat effects.\n\nThis effect lasts indefinitely, but can still be removed or dispelled by magic.\n\nCasting this spell on a ifre elemental will destroy it, while it has no effect on an ice elemental"
 is_spell = true
 is_silent = false
 once_per_turn = false
@@ -28,5 +29,5 @@ can_target_corpses = false
 always_targets_self = false
 permanency_valid = false
 effect = 3
-effect_name = "Resist Fire"
+effect_name = "Resist Heat"
 intensity = 0

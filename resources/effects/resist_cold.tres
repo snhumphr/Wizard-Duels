@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_waldg")
-name = "Resist Ice"
+name = "Resist Cold"
 is_silent = false
 permanent = true
 shield = false

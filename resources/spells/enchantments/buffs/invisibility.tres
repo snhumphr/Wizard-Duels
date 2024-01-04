@@ -3,10 +3,11 @@
 [ext_resource type="Script" path="res://spells.gd" id="1_cs6h4"]
 
 [resource]
-resource_name = "Shield"
+resource_name = "Invisibility"
 script = ExtResource("1_cs6h4")
 name = "Invisibility"
 gestures = PackedStringArray("P", "P", "WW", "SS")
+description = "Turns the target creature invisible for 3 turns, masking their gestures and making any spells or monsters that target them automatically miss.\n\nThis spell does not take effect immediately, however, leaving the caster vulnerable on the turn they complete the spell.\n\nThis enchantment is highly unstable, and any summoned creature targeted with it will die instantly, before attacking."
 id = 0
 is_spell = true
 is_silent = false
