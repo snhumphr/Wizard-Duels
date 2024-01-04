@@ -13,4 +13,8 @@ func init(spellArray):
 			assert(spellDict[spell.name] == spell.description)
 
 func displaySpellInfo(spell):
-	self.set_text(spellDict[spell])
+	var info = "\n\n"
+	info += spell
+	info += "\n\n"
+	info += spellDict[spell]
+	self.set_text(info)

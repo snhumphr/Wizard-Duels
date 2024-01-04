@@ -7,9 +7,7 @@ script = ExtResource("1_am072")
 name = "Summon Troll"
 gestures = PackedStringArray("F", "P", "S", "F", "W")
 id = 0
-description = "Summons a troll under the control of the creature targeted, or to their own controller if a summon was targeted.
-\n\nTrolls have 3 hp and can attack a creature of their controller's choice each turn for 3 damage.
-\n\nSummoned creatures cannot attack on the turn they are summoned, but also cannot be targeted on that turn."
+description = "Summons a troll under the control of the creature targeted, or to their own controller if a summon was targeted.\n\nTrolls have 3 hp and can attack a creature of their controller's choice each turn for 3 damage.\n\nSummoned creatures cannot attack on the turn they are summoned, but also cannot be targeted on that turn."
 is_spell = true
 once_per_turn = false
 once_per_wizard = false
