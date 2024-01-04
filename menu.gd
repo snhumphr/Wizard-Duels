@@ -59,7 +59,7 @@ func newWizard(id: int):
 	if multiplayer.is_server() and multiplayer.get_peers().size() + 1 == max_connections:
 		self.rpc("start_duel")
 
-@rpc("any_peer", "reliable", "call_local")
+@rpc("any_peer", "reliable", "call_remote")
 func receive_name(name, id):
 	GlobalDataSingle.namesDict[id] = name
 

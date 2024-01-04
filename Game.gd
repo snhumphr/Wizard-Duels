@@ -104,6 +104,8 @@ func _ready():
 	var wizTemplate = load("res://resources/wizards/wizard_template.tres")
 	entityArray.append(emptySpace)
 		
+	print(GlobalDataSingle.namesDict)
+		
 	for i in peers.size():
 		var new_wizard = wizTemplate.duplicate()
 		new_wizard.name = GlobalDataSingle.namesDict[peers[i]]
