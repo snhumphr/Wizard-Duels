@@ -3,11 +3,12 @@
 [ext_resource type="Script" path="res://spells.gd" id="1_yuy4k"]
 
 [resource]
-resource_name = "Shield"
+resource_name = "Poison"
 script = ExtResource("1_yuy4k")
 name = "Poison"
 gestures = PackedStringArray("D", "W", "W", "F", "W", "D")
 id = 0
+description = "Afflicts the target with a deadly poison that spells certain death in 6 turns.\n\nUnlike it's lesser cousin, it can only be dispelled or removed, not cured."
 is_spell = true
 is_silent = false
 once_per_turn = false

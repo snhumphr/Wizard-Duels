@@ -3,11 +3,12 @@
 [ext_resource type="Script" path="res://spells.gd" id="1_v3ous"]
 
 [resource]
-resource_name = "Shield"
+resource_name = "Anti-spell"
 script = ExtResource("1_v3ous")
 name = "Anti-spell"
 gestures = PackedStringArray("S", "P", "F", "P")
 id = 0
+description = "Momentarily severs the flow of magic in the target wizard's hands, preventing this turn's gestures from being used in future spells.\n\nThis also means any gestures from before this turn are unusable, but it does not affect any spells the target completes this turn."
 is_spell = true
 is_silent = false
 once_per_turn = false

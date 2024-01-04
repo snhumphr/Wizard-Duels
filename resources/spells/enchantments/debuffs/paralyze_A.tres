@@ -3,11 +3,12 @@
 [ext_resource type="Script" path="res://spells.gd" id="1_31xo1"]
 
 [resource]
-resource_name = "Shield"
+resource_name = "Paralyze"
 script = ExtResource("1_31xo1")
 name = "Paralyze"
 gestures = PackedStringArray("F", "D", "F")
 id = 0
+description = "An annoying hex that paralyzes a hand of the caster's choice next turn, affecting the gestures.\n\nReapplying paralysis to an already paralyzed opponent is possible, but always affects the same hand as before.\n\nOnly one hex can be applied to a target in a turn: Otherwise they cancel each other out and have no effect.\n\nAs a hex, casting it on a monster prevents them from attacking that round."
 is_spell = true
 is_silent = false
 once_per_turn = false

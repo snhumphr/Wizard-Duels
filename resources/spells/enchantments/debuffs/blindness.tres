@@ -3,11 +3,12 @@
 [ext_resource type="Script" path="res://spells.gd" id="1_eps16"]
 
 [resource]
-resource_name = "Shield"
+resource_name = "Blindness"
 script = ExtResource("1_eps16")
 name = "Blindness"
 gestures = PackedStringArray("D", "W", "F", "F", "DD")
 id = 0
+description = "Blinds the target creature invisible for 3 turns, leaving them unable to see anything that doesn't directly affect them and causing their targeted spells to always miss.\n\nThis spell does not take effect immediately, however, leaving the target unhindered on the turn the spell is cast.\n\nThis enchantment is highly unstable, and any summoned creature targeted with it will die instantly, before attacking."
 is_spell = true
 is_silent = false
 once_per_turn = false

@@ -7,6 +7,9 @@ script = ExtResource("1_386vx")
 name = "Summon Ogre"
 gestures = PackedStringArray("P", "S", "F", "W")
 id = 0
+description = "Summons an ogre under the control of the creature targeted, or to their own controller if a summon was targeted.
+\n\nOgres have 2 hp and can attack a creature of their controller's choice each turn for 2 damage.
+\n\nSummoned creatures cannot attack on the turn they are summoned, but also cannot be targeted on that turn."
 is_spell = true
 once_per_turn = false
 once_per_wizard = false

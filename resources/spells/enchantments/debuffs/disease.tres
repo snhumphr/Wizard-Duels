@@ -3,11 +3,12 @@
 [ext_resource type="Script" path="res://spells.gd" id="1_i73gf"]
 
 [resource]
-resource_name = "Shield"
+resource_name = "Disease"
 script = ExtResource("1_i73gf")
 name = "Disease"
 gestures = PackedStringArray("D", "S", "F", "D", "F", "CC")
 id = 0
+description = "Afflicts the target with a wasting disease that spells certain death in 6 turns.\n\nHowever, the disease can be cured by Cure Heavy Wounds, as well as removed or dispelled normally."
 is_spell = true
 is_silent = false
 once_per_turn = false

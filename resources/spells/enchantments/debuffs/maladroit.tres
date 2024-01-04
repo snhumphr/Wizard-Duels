@@ -3,11 +3,12 @@
 [ext_resource type="Script" path="res://spells.gd" id="1_airio"]
 
 [resource]
-resource_name = "Shield"
+resource_name = "Maladroit"
 script = ExtResource("1_airio")
 name = "Maladroit"
 gestures = PackedStringArray("D", "S", "F")
 id = 0
+description = "A confusing hex that forces both of the target wizard's hands to make the same gesture next turn.\n\nOnly one hex can be applied to a target in a turn: Otherwise they cancel each other out and have no effect.\n\nAs a hex, casting it on a monster prevents them from attacking that round."
 is_spell = true
 is_silent = false
 once_per_turn = false

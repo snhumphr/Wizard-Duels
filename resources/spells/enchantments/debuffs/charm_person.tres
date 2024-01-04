@@ -3,11 +3,12 @@
 [ext_resource type="Script" path="res://spells.gd" id="1_ilwoo"]
 
 [resource]
-resource_name = "Shield"
+resource_name = "Charm Person"
 script = ExtResource("1_ilwoo")
 name = "Charm Person"
 gestures = PackedStringArray("P", "S", "D", "F")
 id = 0
+description = "An insidious hex that allows the caster to control one of the next gestures that the target wizard makes.\n\nThis choice is made next turn, and can be any gesture but N(no gesture).\n\nOnly one hex can be applied to a target in a turn: Otherwise they cancel each other out and have no effect.\n\nAs a hex, casting it on a monster prevents them from attacking that round."
 is_spell = true
 is_silent = false
 once_per_turn = false

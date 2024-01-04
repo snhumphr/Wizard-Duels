@@ -3,11 +3,12 @@
 [ext_resource type="Script" path="res://spells.gd" id="1_srqdh"]
 
 [resource]
-resource_name = "Shield"
+resource_name = "Fear"
 script = ExtResource("1_srqdh")
 name = "Fear"
 gestures = PackedStringArray("S", "W", "D")
 id = 0
+description = "A frightful hex that prevents the target wizard from making any gestures besides N, W, P and > next turn.\n\nOnly one hex can be applied to a target in a turn: Otherwise they cancel each other out and have no effect.\n\nAs a hex, casting it on a monster prevents them from attacking that round."
 is_spell = true
 is_silent = false
 once_per_turn = false
