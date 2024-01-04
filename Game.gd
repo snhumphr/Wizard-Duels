@@ -9,7 +9,6 @@ extends Control
 #TODO: Fix desync involving maladroit and default targeting overriding later targets
 #TODO: Fix bug involving 3 wizards, invisibility and paralysis on the bottom wizard's left hand
 	#The paralyzed wizard is different then the invisibility one
-#TODO: Fix bug where all wizards are given the same name
 #TODO: Fix bug where you can set default target to dead creatures
 #TODO: Fix bug where double paralysis doesn't cancel each other out
 #TODO: Fix bug where two healing spells don't stack
@@ -1064,7 +1063,7 @@ func renderWizardSection():
 	var oldTargetId = defaultTargetOptions.get_selected_id()
 	defaultTargetOptions.clear()
 	for i in range(1, entityArray.size()):
-		if isTargetHostile(entityArray[i], entityArray[player]):
+		if entityArray[i].is_active() and isTargetHostile(entityArray[i], entityArray[player]):
 			defaultTargetOptions.add_item(entityArray[i].name, i)
 	
 	var oldTargetIndex = defaultTargetOptions.get_item_index(oldTargetId)
