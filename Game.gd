@@ -6,6 +6,13 @@ extends Control
 #TODO: SOMETIMES THE DEFAULT TARGET IS BEING SENT INSTEAD OF THE MANUALLY INPUT TARGET
 #TODO: AFTER A DUEL, GIVE THE OPTION TO EXPORT THE ENTIRE GAME'S TURNLOG TO A TXT FILE
 #TODO: MAKE SURE THAT IF YOU REMOVE ENCHANTMENT + HEAL A SUMMON, IT STILL DIES
+#TODO: Fix desync involving maladroit and default targeting overriding later targets
+#TODO: Fix bug involving 3 wizards, invisibility and paralysis on the bottom wizard's left hand
+	#The paralyzed wizard is different then the invisibility one
+#TODO: Fix bug where all wizards are given the same name
+#TODO: Fix bug where you can set default target to dead creatures
+#TODO: Fix bug where double paralysis doesn't cancel each other out
+#TODO: Fix bug where two healing spells don't stack
 
 var spellArray = Array()
 var entityArray = Array()
