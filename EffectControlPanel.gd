@@ -21,6 +21,7 @@ func render(entityArray, player, validCharmGestures):
 					button.add_item("Left")
 					button.add_item("Right")
 					box.add_child(button)
+					button.add_to_group("buttons")
 					
 					var label_two = Label.new()
 					box.add_child(label_two)
@@ -38,6 +39,7 @@ func render(entityArray, player, validCharmGestures):
 					button_one.add_item("Left")
 					button_one.add_item("Right")
 					box.add_child(button_one)
+					button_one.add_to_group("buttons")
 					
 					var label_two = Label.new()
 					box.add_child(label_two)
@@ -47,6 +49,7 @@ func render(entityArray, player, validCharmGestures):
 					for gesture in validCharmGestures:
 						button_two.add_item(gesture)
 					box.add_child(button_two)
+					button_two.add_to_group("buttons")
 
 func clearEffects():
 	for effect in paraList:

@@ -3,15 +3,29 @@ extends Control
 #TODO: FIX TARGETING BEING RESET TO DEFAULT WHEN YOU CHANGE THE TARGET(?) OF YOUR OTHER HAND
 #TODO: MAGIC MIRROR DOESN'T WORK(TESTED WITH AMNESIA)
 	#Can't reproduce for some reason? strange
-#TODO: SOMETIMES THE DEFAULT TARGET IS BEING SENT INSTEAD OF THE MANUALLY INPUT TARGET
 #TODO: AFTER A DUEL, GIVE THE OPTION TO EXPORT THE ENTIRE GAME'S TURNLOG TO A TXT FILE
 #TODO: MAKE SURE THAT IF YOU REMOVE ENCHANTMENT + HEAL A SUMMON, IT STILL DIES
+	#Should be fixed by making remove enchantment set them to dead = 1 instead of dealing 99 damage
+	#Dispel magic doesn't need this to happen because it prevents healing spells and monster attacks anyways
+		#But could be nice for internal consistency I guess
 #TODO: Fix desync involving maladroit and default targeting overriding later targets
+	#It doesn't, somehow the local value of the buttons is overriding the submitted order version
+	#I don't know how this happens, but a workaround is disabling any input after submitting a turn
+		#This is probably prudent anyways, because re-submitting orders could lead to weirdness
+		#if the turn starts processing just as a resubmission happens
 #TODO: Fix bug involving 3 wizards, invisibility and paralysis on the bottom wizard's left hand
 	#The paralyzed wizard is different then the invisibility one
 #TODO: Fix bug where you can set default target to dead creatures
+	#Should be fixed
 #TODO: Fix bug where double paralysis doesn't cancel each other out
+	#Tricky problem, because the following needs to happen:
+		#Two paralyzes applied on the same turn should cancel
+		#Two paralyzes applied on different turns shouldn't
+		#Should be fixed
+		#Also, see if other hexes need to gain the overlapping tag as well
+			#They did, but this should be fixed now
 #TODO: Fix bug where two healing spells don't stack
+	#Should be fixed by setting the heal effect to allow overlapping
 
 var spellArray = Array()
 var entityArray = Array()
@@ -335,7 +349,13 @@ func process_turn():
 	self.get_node("Scroll/UI/MainColumn/TurnReport").render(turnLogQueue)
 	
 	self.renderWizardSection()
+	
+	#self.get_node("Scroll/UI/MainColumn/EndTurnButton").set_disabled(false)
+	setAllButtonsTo(false)
 
+func setAllButtonsTo(value):
+	get_tree().set_group("buttons", "disabled", value)
+	
 func decodeOrders():
 	for key in ordersDict.keys():
 		var order = ordersDict[key]
@@ -355,6 +375,8 @@ func decodeOrders():
 				for eff in entityArray[effect[0]].effects:
 					if eff[0].paralysis and eff[0].hand == "choose" and eff[0].caster_id == order.id:
 						eff[0].hand = effect[1]
+						#eff[0].stackable = true
+						#eff[0].overlapping = false
 			elif effect[1] == "Right" or effect[1] == "Left":
 				for eff in entityArray[effect[0]].effects:
 					if eff[0].charm_person and eff[0].caster_id == order.id:
@@ -446,7 +468,7 @@ func castSpells(spellExecutionList, entityArray, turnLogQueue):
 		if magicDispelled and spell.dispellable:
 			spellFailed = true
 			
-		if spell.targetable and not canSee(caster, targets[0]):
+		if spell.targetable and targets.size() > 0 and not canSee(caster, targets[0]):
 			spellFailed = true
 			
 		var fire_elemental
@@ -604,7 +626,7 @@ func castSpells(spellExecutionList, entityArray, turnLogQueue):
 								for effectName in dispelList:
 									t.removeEffect(effectName)
 							else:
-								t.take_damage(99)
+								t.dead = 1
 						else:
 							addMessage(spellCheck, turnLogQueue, t)
 				Spell.SpellEffect.dealDamage:
@@ -1105,6 +1127,8 @@ func renderWizardSection():
 	self.get_node("Scroll/UI/MainColumn/SummonControlPanel").render(entityArray, player)
 
 func _on_end_turn_button_pressed():
+	
+	setAllButtonsTo(true)
 	
 	var orders = {}
 	orders.id = player

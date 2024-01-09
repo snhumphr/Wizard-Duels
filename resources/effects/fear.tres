@@ -5,8 +5,16 @@
 [resource]
 script = ExtResource("1_ct65h")
 name = "Fear"
+caster_id = -1
 is_silent = false
 permanent = false
+stackable = false
+overlapping = true
+hand = ""
+gesture = ""
+heal = 0
+burn = 0
+freeze = 0
 shield = false
 counterspell = false
 reflect = false
@@ -19,7 +27,9 @@ curable = 0
 hex = true
 dispellable = true
 unstable = false
+delayed = false
 anti_spell = false
+blindness = false
 charm_person = false
 charm_monster = false
 fear = true

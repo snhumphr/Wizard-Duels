@@ -20,6 +20,7 @@ func render(entityArray, player):
 			box.add_child(label)
 			label.set_text("Order " + entity.name + " to attack: ")
 			var button = OptionButton.new()
+			button.add_to_group("buttons")
 			box.add_child(button)
 				
 			requestValidTargets.emit(entity, button)
