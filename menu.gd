@@ -62,6 +62,12 @@ func newWizard(id: int):
 
 @rpc("any_peer", "reliable", "call_remote")
 func receive_name(name, id):
+	
+	if not GlobalDataSingle.namesDict.has(id):
+		var label = Label.new()
+		label.set_text(name + " is waiting for the duel to begin")
+		self.get_node("WaitingLobby").add_child(label)
+	
 	GlobalDataSingle.namesDict[id] = name
 
 @rpc("authority", "reliable", "call_local")
