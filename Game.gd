@@ -4,28 +4,8 @@ extends Control
 #TODO: MAGIC MIRROR DOESN'T WORK(TESTED WITH AMNESIA)
 	#Can't reproduce for some reason? strange
 #TODO: AFTER A DUEL, GIVE THE OPTION TO EXPORT THE ENTIRE GAME'S TURNLOG TO A TXT FILE
-#TODO: MAKE SURE THAT IF YOU REMOVE ENCHANTMENT + HEAL A SUMMON, IT STILL DIES
-	#Should be fixed by making remove enchantment set them to dead = 1 instead of dealing 99 damage
-	#Dispel magic doesn't need this to happen because it prevents healing spells and monster attacks anyways
-		#But could be nice for internal consistency I guess
-#TODO: Fix desync involving maladroit and default targeting overriding later targets
-	#It doesn't, somehow the local value of the buttons is overriding the submitted order version
-	#I don't know how this happens, but a workaround is disabling any input after submitting a turn
-		#This is probably prudent anyways, because re-submitting orders could lead to weirdness
-		#if the turn starts processing just as a resubmission happens
 #TODO: Fix bug involving 3 wizards, invisibility and paralysis on the bottom wizard's left hand
 	#The paralyzed wizard is different then the invisibility one
-#TODO: Fix bug where you can set default target to dead creatures
-	#Should be fixed
-#TODO: Fix bug where double paralysis doesn't cancel each other out
-	#Tricky problem, because the following needs to happen:
-		#Two paralyzes applied on the same turn should cancel
-		#Two paralyzes applied on different turns shouldn't
-		#Should be fixed
-		#Also, see if other hexes need to gain the overlapping tag as well
-			#They did, but this should be fixed now
-#TODO: Fix bug where two healing spells don't stack
-	#Should be fixed by setting the heal effect to allow overlapping
 
 var spellArray = Array()
 var entityArray = Array()
@@ -198,9 +178,7 @@ func process_turn():
 				gestureQueue[i][1] = "N"
 			#If only one clap gesture is performed, then turn it into a null gesture
 			#This greatly simplifies the gesture analysis code if we assume C only exists with a successful clap
-			
-			#TODO: remove these messages if there's invisibility involved
-			
+						
 			if clap == 2:
 				gestureQueue[i][0] = "C"
 				gestureQueue[i][1] = "C"
@@ -438,7 +416,7 @@ func castSpells(spellExecutionList: Array, entityArray: Array, turnLogQueue: Arr
 		var caster = entityArray[spellExecutionList[i][1]]
 		var target = entityArray[spellExecutionList[i][2]]
 		
-		var spellFailed = false
+		var spellFailed = ""
 		var targets = []
 		
 		if target.is_wizard or target.is_monster:
@@ -458,26 +436,25 @@ func castSpells(spellExecutionList: Array, entityArray: Array, turnLogQueue: Arr
 				else:
 					targets.append(target)
 		else:
-			spellFailed = true
-			#TODO: Custom text for missing vs failing to cast
+			spellFailed = caster.name + "'s spell misses!"
+			#TODO: Custom text for missing with a stab rather then a spell
 		
 		if magicDispelled and spell.dispellable:
-			spellFailed = true
+			spellFailed = caster.name + "'s spell fizzles out!"
 			
 		if spell.targetable and targets.size() > 0 and not canSee(caster, targets[0]):
-			spellFailed = true
+			spellFailed = caster.name + "'s blindly cast spell misses!"
 			
 		var fire_elemental
 		var ice_elemental
 			
-		if spell.once_per_duel and not spellFailed:
+		if spell.once_per_duel and spellFailed == "":
 			for s in oncePerDuelSpells.size():
 				if oncePerDuelSpells[s][0] == caster.id and oncePerDuelSpells[s][1] == spell.id:
-					spellFailed = true
+					spellFailed = caster.name + "'s spell lacks the necessary charge!"
 			
-			if not spellFailed:
+			if spellFailed == "":
 				oncePerDuelSpells.append([caster.id, spell.id])
-		#TODO: add more spell failure conditions
 					
 		for e in entityArray:
 			if e.is_monster and e.aoe:
@@ -486,11 +463,12 @@ func castSpells(spellExecutionList: Array, entityArray: Array, turnLogQueue: Arr
 				elif e.ice:
 					ice_elemental = e
 					
-		if spell.once_per_turn and not spellFailed:
+		if spell.once_per_turn and spellFailed == "":
 			for spell_id in oncePerTurnSpells:
 				if spell_id == spell.id:
-					spellFailed = true
-			if not spellFailed:
+					spellFailed = "The two similar spells merge together!"
+					#TODO: Custom text for merging stab rather then spell
+			if spellFailed == "":
 				oncePerTurnSpells.append(spell.id)
 				if spell.fire_spell and fire_elemental:
 					fire_elemental.dead = 2
@@ -499,18 +477,17 @@ func castSpells(spellExecutionList: Array, entityArray: Array, turnLogQueue: Arr
 					ice_elemental.dead = 2
 					turnLogQueue.append("The " + ice_elemental.name + " loses it's form in the sudden torrent of it's own element!")
 
-		if not spellFailed and spell.fire_spell and targets.has(ice_elemental):
+		if spellFailed == "" and spell.fire_spell and targets.has(ice_elemental):
 			turnLogQueue.append("The " + ice_elemental.name + " melts!")
 			ice_elemental.dead = 2
-			spellFailed = true
+			spellFailed = "The fire spell is doused!"
 			
-		if not spellFailed and spell.ice_spell and targets.has(fire_elemental):
+		if spellFailed == "" and spell.ice_spell and targets.has(fire_elemental):
 			turnLogQueue.append("The " + fire_elemental.name + " is doused!")
 			fire_elemental.dead = 2
-			spellFailed = true
-		#TODO: THIS DEFINITELY NEEDS A CUSTOM FAILURE MESSAGE
+			spellFailed = "The ice spell melts!"
 			
-		if not spellFailed: 
+		if spellFailed == "": 
 			
 			var verb = " casts "
 			var target_string = ""
@@ -661,7 +638,7 @@ func castSpells(spellExecutionList: Array, entityArray: Array, turnLogQueue: Arr
 				_:
 					printerr("Spell effect not recognized")
 		else:
-			addMessage(caster.name + "'s spell fizzles!", turnLogQueue, caster)
+			addMessage(spellFailed, turnLogQueue, caster)
 
 func addMessage(message: String, turnLogQueue: Array, subject: Entity):
 	if canSee(entityArray[player], subject):
@@ -766,7 +743,7 @@ func checkSpellInterference(spell: Spell, target: Entity):
 			if effect[0].counterspell:
 				return target.name +  "'s counterspell protects them!"
 		
-	if spell.fire_spell: #TODO: Add elemental innate resistance here
+	if spell.fire_spell:
 		for effect in target.effects:
 			if effect[0].fire_res and spell.hostile:
 				return target.name +  " resists the fire!"
