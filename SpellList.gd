@@ -2,7 +2,7 @@ extends VBoxContainer
 
 var length = 22
 
-func init(spellArray):
+func init(spellArray: Array):
 	
 	var titleBox = HBoxContainer.new()
 	self.add_child(titleBox)
@@ -46,5 +46,5 @@ func init(spellArray):
 		gestures.set_text(text)
 		line.add_child(gestures)
 
-func _on_spell_button_pressed(spell):
+func _on_spell_button_pressed(spell: String):
 	get_tree().call_group("spellinfo", "displaySpellInfo", spell)

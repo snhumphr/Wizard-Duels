@@ -5,7 +5,7 @@ extends RichTextLabel
 func _ready():
 	pass # Replace with function body.
 
-func render(turn_queue):
+func render(turn_queue: Array):
 	self.clear()
 	for item in turn_queue:
 		self.add_text(item)

@@ -5,7 +5,7 @@ extends RichTextLabel
 func _ready():
 	pass # Replace with function body.
 
-func render(entityArray, player):
+func render(entityArray: Array, player: int):
 	self.clear()
 	renderNeutrals(entityArray)
 	var is_player = false
@@ -38,12 +38,12 @@ func render(entityArray, player):
 					renderMonster(e, "    ")
 	self.newline()
 
-func renderNeutrals(entityArray):
+func renderNeutrals(entityArray: Array):
 	for entity in entityArray:
 		if entity.is_monster and entity.is_active() and entity.summoner_id == -1:
 			renderMonster(entity, "")
 	
-func renderMonster(monster, padding):
+func renderMonster(monster: Monster, padding: String):
 	self.add_text(padding + monster.name)
 	for effect in monster.effects:
 		self.add_text(" " + effect[0].name + "(" + str(effect[1]) + ")")
@@ -51,7 +51,7 @@ func renderMonster(monster, padding):
 	self.add_text("    " + padding + "HP: " + str(monster.hp) + "/" + str(monster.max_hp))
 	self.newline()
 
-func renderGestures(gesture_list, hidden_list, is_player):
+func renderGestures(gesture_list: Array, hidden_list: Array, is_player: bool):
 	for i in gesture_list.size():
 		if i > 0:
 			self.add_text("-")

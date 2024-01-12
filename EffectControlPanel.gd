@@ -3,7 +3,7 @@ extends VBoxContainer
 var paraList = []
 var charmList = []
 
-func render(entityArray, player, validCharmGestures):
+func render(entityArray: Array, player: int, validCharmGestures: Array):
 	clearEffects()
 	for entity in entityArray:
 		if entity.is_wizard and entity.is_active():

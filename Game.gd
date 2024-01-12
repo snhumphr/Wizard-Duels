@@ -68,7 +68,6 @@ var stabID
 
 var oncePerDuelSpells = Array()
 
-var player_data
 var peers = Array()
 
 var player
@@ -81,7 +80,6 @@ var validSpookedGestures = ["N", "P", "W", ">"]
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	player_data = load("res://player.gd")
 	
 	peers.append(multiplayer.get_unique_id())
 	for peer in multiplayer.get_peers():
@@ -665,7 +663,7 @@ func castSpells(spellExecutionList: Array, entityArray: Array, turnLogQueue: Arr
 		else:
 			addMessage(caster.name + "'s spell fizzles!", turnLogQueue, caster)
 
-func addMessage(message: String, turnLogQueue : Array, subject): #TODO: Needs static typing
+func addMessage(message: String, turnLogQueue: Array, subject: Entity):
 	if canSee(entityArray[player], subject):
 		turnLogQueue.append(message)
 
@@ -756,7 +754,7 @@ func monsterActions(entityArray: Array, turnLogQueue: Array):
 						addMessage(entity.name + " attacks " + target_name + " for "+ str(entity.max_hp) + " damage.", turnLogQueue, target)
 						target.take_damage(entity.max_hp)
 
-func checkSpellInterference(spell: Spell, target): #TODO: Needs static typing
+func checkSpellInterference(spell: Spell, target: Entity):
 	
 	if spell.blockable:
 		for effect in target.effects:
@@ -784,7 +782,7 @@ func checkSpellInterference(spell: Spell, target): #TODO: Needs static typing
 		
 	return ""
 
-func canSee(viewer, subject): #TODO: Needs static typing
+func canSee(viewer: Entity, subject: Entity):
 	
 	if viewer.id == subject.id:
 		return true
@@ -832,7 +830,7 @@ func spellSort(spellA: Spell, spellB: Spell):
 	else:
 		return false
 
-func spellOrderSort(spellA, spellB): #TODO: Needs static typing
+func spellOrderSort(spellA: Array, spellB: Array):
 	if spellA[0].effect < spellB[0].effect:
 		return true
 	elif spellA[0].effect == spellB[0].effect and spellA[0].effect_name == "Reflect":
@@ -1054,7 +1052,7 @@ func findValidTargets(spell: Spell, caster: Wizard):
 	
 	return [validTargets, preferredTargets[0].id]
 
-func isTargetHostile(target, caster: Wizard): #TODO: Needs static typing
+func isTargetHostile(target, caster: Wizard):
 	
 	if target.is_wizard and target.id != caster.id:
 		return true
@@ -1266,7 +1264,7 @@ func _on_right_hand_targeting_options_item_selected(index: int):
 func _on_left_hand_targeting_options_item_selected(index: int):
 	onTargetChange(true)
 
-func _on_summon_control_panel_request_valid_targets(monster, button): #TODO: Needs static typing
+func _on_summon_control_panel_request_valid_targets(monster: Monster, button: Button):
 	var attack = spellSearch(stabID)
 	var targets = findValidTargets(attack, entityArray[monster.summoner_id])
 	

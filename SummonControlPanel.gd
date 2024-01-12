@@ -4,7 +4,7 @@ var monsterList = []
 
 signal requestValidTargets
 
-func render(entityArray, player):
+func render(entityArray: Array, player: int):
 	
 	clearInvalidMonsters(entityArray, player)
 	
@@ -27,7 +27,7 @@ func render(entityArray, player):
 				
 			monsterList.append([box, entity.id])
 			
-func clearInvalidMonsters(entityArray, player):
+func clearInvalidMonsters(entityArray: Array, player: int):
 	
 	for child in self.get_children():
 		remove_child(child)
