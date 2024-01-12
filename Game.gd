@@ -117,8 +117,6 @@ func _ready():
 	var wizTemplate = load("res://resources/wizards/wizard_template.tres")
 	entityArray.append(emptySpace)
 		
-	print(GlobalDataSingle.namesDict)
-		
 	for i in peers.size():
 		var new_wizard = wizTemplate.duplicate()
 		new_wizard.name = GlobalDataSingle.namesDict[peers[i]]
@@ -353,7 +351,7 @@ func process_turn():
 	#self.get_node("Scroll/UI/MainColumn/EndTurnButton").set_disabled(false)
 	setAllButtonsTo(false)
 
-func setAllButtonsTo(value):
+func setAllButtonsTo(value: bool):
 	get_tree().set_group("buttons", "disabled", value)
 	
 func decodeOrders():
@@ -386,7 +384,7 @@ func decodeOrders():
 				printerr("Invalid command")
 			#TODO: Check the validity of these orders too
 
-func paralyze_gesture(gesture):
+func paralyze_gesture(gesture: String):
 	match gesture:
 		"S":
 			return "D"
@@ -397,7 +395,7 @@ func paralyze_gesture(gesture):
 		_:
 			return gesture
 
-func gesture_to_text(gesture, wizard):
+func gesture_to_text(gesture: String, wizard: Wizard):
 	
 	var message = wizard.name
 	var pronouns = wizard.pronouns
@@ -420,7 +418,7 @@ func gesture_to_text(gesture, wizard):
 	
 	return message
 
-func castSpells(spellExecutionList, entityArray, turnLogQueue):
+func castSpells(spellExecutionList: Array, entityArray: Array, turnLogQueue: Array):
 	#sort spells by the order their effects resolves:
 	#1: dispel magic goes off
 	#1.5: counterspells goes off
@@ -667,11 +665,11 @@ func castSpells(spellExecutionList, entityArray, turnLogQueue):
 		else:
 			addMessage(caster.name + "'s spell fizzles!", turnLogQueue, caster)
 
-func addMessage(message, turnLogQueue, subject):
+func addMessage(message: String, turnLogQueue : Array, subject): #TODO: Needs static typing
 	if canSee(entityArray[player], subject):
 		turnLogQueue.append(message)
 
-func monsterActions(entityArray, turnLogQueue):
+func monsterActions(entityArray: Array, turnLogQueue: Array):
 	
 	var fire_elementals = []
 	var ice_elementals = []
@@ -758,7 +756,7 @@ func monsterActions(entityArray, turnLogQueue):
 						addMessage(entity.name + " attacks " + target_name + " for "+ str(entity.max_hp) + " damage.", turnLogQueue, target)
 						target.take_damage(entity.max_hp)
 
-func checkSpellInterference(spell, target):
+func checkSpellInterference(spell: Spell, target): #TODO: Needs static typing
 	
 	if spell.blockable:
 		for effect in target.effects:
@@ -786,7 +784,7 @@ func checkSpellInterference(spell, target):
 		
 	return ""
 
-func canSee(viewer, subject):
+func canSee(viewer, subject): #TODO: Needs static typing
 	
 	if viewer.id == subject.id:
 		return true
@@ -801,7 +799,7 @@ func canSee(viewer, subject):
 			
 	return true
 
-func loadSpells(path, array):
+func loadSpells(path: String, array: Array): 
 	var dir = DirAccess.open(path)
 	if dir:
 		dir.list_dir_begin()
@@ -816,7 +814,7 @@ func loadSpells(path, array):
 	else:
 		printerr("An error occurred when trying to access the path.")
 
-func loadEffects(path, dict):
+func loadEffects(path: String, dict: Dictionary):
 	var dir = DirAccess.open(path)
 	if dir:
 		dir.list_dir_begin()
@@ -828,13 +826,13 @@ func loadEffects(path, dict):
 			file_name = dir.get_next()
 		dir.list_dir_end()
 
-func spellSort(spellA, spellB):
+func spellSort(spellA: Spell, spellB: Spell):
 	if spellA.id < spellB.id:
 		return true
 	else:
 		return false
 
-func spellOrderSort(spellA, spellB):
+func spellOrderSort(spellA, spellB): #TODO: Needs static typing
 	if spellA[0].effect < spellB[0].effect:
 		return true
 	elif spellA[0].effect == spellB[0].effect and spellA[0].effect_name == "Reflect":
@@ -844,7 +842,7 @@ func spellOrderSort(spellA, spellB):
 	else:
 		return false
 		
-func spellPowerSort(spellA, spellB):
+func spellPowerSort(spellA: Spell, spellB: Spell):
 	if spellA.gestures.size() < spellB.gestures.size():
 		return true
 	elif spellA.gestures.size() == spellB.gestures.size():
@@ -855,17 +853,17 @@ func spellPowerSort(spellA, spellB):
 	else:
 		return false
 
-func spellCompare(spell, targetID):
+func spellCompare(spell: Spell, targetID: int):
 	return spell.id < targetID
 
-func spellSearch(targetID):
+func spellSearch(targetID: int):
 	var spell = spellArray[spellArray.bsearch_custom(targetID, spellCompare)]
 	if spell.id == targetID:
 		return spell
 	else:
 		return null
 
-func analyzeGestures(wizard_index, isLeft):
+func analyzeGestures(wizard_index: int, isLeft: bool):
 	
 	var left_gestures = "".join(entityArray[wizard_index].left_hand_gestures)
 	left_gestures += gestureQueue[wizard_index][1]
@@ -918,7 +916,7 @@ func analyzeGestures(wizard_index, isLeft):
 	
 	return spellOptionsArray
 
-func onGestureChange(isLeft):
+func onGestureChange(isLeft: bool):
 	var spellOptionsArray = analyzeGestures(player, isLeft)
 	var spellOptions
 	if isLeft:
@@ -937,7 +935,7 @@ func onGestureChange(isLeft):
 		spellOptions.set_disabled(true)
 		onSpellChange(isLeft)
 
-func onSpellChange(isLeft):
+func onSpellChange(isLeft: bool):
 	
 	var mainHand
 	var offHand
@@ -966,7 +964,7 @@ func onSpellChange(isLeft):
 			
 	recalculateTarget(isLeft)
 
-func onTargetChange(isLeft):
+func onTargetChange(isLeft: bool):
 	var rightSpell = spellSearch(self.get_node("Scroll/UI/MainColumn/RightHand/RightHandSpellOptions").get_selected_id())
 	
 	var rightTarget = self.get_node("Scroll/UI/MainColumn/RightHand/RightHandTargetingOptions")
@@ -978,7 +976,7 @@ func onTargetChange(isLeft):
 		else:
 			leftTarget.select(leftTarget.get_item_index(rightTarget.get_selected_id()))
 
-func recalculateTarget(isLeft):
+func recalculateTarget(isLeft: bool):
 	
 	var mainHand
 	var mainTarget
@@ -1016,7 +1014,7 @@ func recalculateTarget(isLeft):
 		if validTargets[1] == -1:
 			mainTarget.set_disabled(true)
 
-func findValidTargets(spell, caster):
+func findValidTargets(spell: Spell, caster: Wizard):
 	
 	var startIndex = 0
 	var validTargets = []
@@ -1056,7 +1054,7 @@ func findValidTargets(spell, caster):
 	
 	return [validTargets, preferredTargets[0].id]
 
-func isTargetHostile(target, caster):
+func isTargetHostile(target, caster: Wizard): #TODO: Needs static typing
 	
 	if target.is_wizard and target.id != caster.id:
 		return true
@@ -1209,7 +1207,7 @@ func _on_end_turn_button_pressed():
 			pass
 			#renderWizardSection()
 
-func submitOrders(orders):
+func submitOrders(orders: Dictionary):
 	self.rpc("receiveOrders", orders)
 	ordersDict[orders.id] = orders
 
@@ -1217,12 +1215,12 @@ func submitOrders(orders):
 		process_turn()
 	
 @rpc("any_peer", "reliable")
-func receiveOrders(orders):
+func receiveOrders(orders: Dictionary):
 	ordersDict[orders.id] = orders
 	if ordersDict.size() == numPlayers:
 		process_turn()
 
-func _on_right_hand_gesture_options_item_selected(index):
+func _on_right_hand_gesture_options_item_selected(index: int):
 	var gesture_ID = self.get_node("Scroll/UI/MainColumn/RightHand/RightHandGestureOptions").get_item_id(index)
 	gestureQueue[player][0] = validGestures[gesture_ID]
 	
@@ -1239,7 +1237,7 @@ func _on_right_hand_gesture_options_item_selected(index):
 	onGestureChange(false)
 	onGestureChange(true)
 
-func _on_left_hand_gesture_options_item_selected(index):
+func _on_left_hand_gesture_options_item_selected(index: int):
 	var gesture_ID = self.get_node("Scroll/UI/MainColumn/LeftHand/LeftHandGestureOptions").get_item_id(index)
 	gestureQueue[player][1] = validGestures[gesture_ID]
 	
@@ -1256,19 +1254,19 @@ func _on_left_hand_gesture_options_item_selected(index):
 	onGestureChange(true)
 	onGestureChange(false)
 
-func _on_right_hand_spell_options_item_selected(index):
+func _on_right_hand_spell_options_item_selected(index: int):
 	onSpellChange(false)
 
-func _on_left_hand_spell_options_item_selected(index):
+func _on_left_hand_spell_options_item_selected(index: int):
 	onSpellChange(true)
 	
-func _on_right_hand_targeting_options_item_selected(index):
+func _on_right_hand_targeting_options_item_selected(index: int):
 	onTargetChange(false)
 
-func _on_left_hand_targeting_options_item_selected(index):
+func _on_left_hand_targeting_options_item_selected(index: int):
 	onTargetChange(true)
 
-func _on_summon_control_panel_request_valid_targets(monster, button):
+func _on_summon_control_panel_request_valid_targets(monster, button): #TODO: Needs static typing
 	var attack = spellSearch(stabID)
 	var targets = findValidTargets(attack, entityArray[monster.summoner_id])
 	

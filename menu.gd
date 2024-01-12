@@ -30,7 +30,7 @@ func _ready():
 	else:
 		setGameStartButtonsDisabled(true)
 
-func setGameStartButtonsDisabled(value):
+func setGameStartButtonsDisabled(value: bool):
 	self.get_node("MenuItems/HostBar/HostButton").set_disabled(value)
 	self.get_node("MenuItems/JoinBar/JoinButton").set_disabled(value)
 
@@ -61,7 +61,7 @@ func newWizard(id: int):
 		self.rpc("start_duel")
 
 @rpc("any_peer", "reliable", "call_remote")
-func receive_name(name, id):
+func receive_name(name: String, id: int):
 	
 	if not GlobalDataSingle.namesDict.has(id):
 		var label = Label.new()
