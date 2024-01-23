@@ -6,8 +6,7 @@ extends Control
 #TODO: AFTER A DUEL, GIVE THE OPTION TO EXPORT THE ENTIRE GAME'S TURNLOG TO A TXT FILE
 #TODO: Fix bug involving 3 wizards, invisibility and paralysis on the bottom wizard's left hand
 	#The paralyzed wizard is different then the invisibility one
-#TODO: Investigate issue where one player dying in a 3 wizard melee causes their game to hang
-#TODO: Fix typo in Blindness description
+	#This may have been fixed by the visibility patch earlier? Unclear
 
 var spellArray = Array()
 var entityArray = Array()
@@ -310,18 +309,22 @@ func process_turn():
 		self.get_node("Scroll/UI/MainColumn/EndTurnButton").hide()
 		self.get_node("Scroll/UI/MainColumn/RightHand").hide()
 		self.get_node("Scroll/UI/MainColumn/LeftHand").hide()
+		self.get_node("Scroll/UI/MainColumn/DefaultHostileTargetPanel").hide()
 	elif numPlayers == 0:
 		turnLogQueue.append("All wizards have been eliminated. The duel ends in a draw.")
 		self.get_node("Scroll/UI/MainColumn/EndTurnButton").hide()
 		self.get_node("Scroll/UI/MainColumn/RightHand").hide()
 		self.get_node("Scroll/UI/MainColumn/LeftHand").hide()
+		self.get_node("Scroll/UI/MainColumn/DefaultHostileTargetPanel").hide()
 	else:
 		turn += 1
 		#player = 1
 		
-		while not entityArray[player].is_active():
-			#player += 1
-			pass
+		if not entityArray[player].is_active():
+			self.get_node("Scroll/UI/MainColumn/EndTurnButton").hide()
+			self.get_node("Scroll/UI/MainColumn/RightHand").hide()
+			self.get_node("Scroll/UI/MainColumn/LeftHand").hide()
+			self.get_node("Scroll/UI/MainColumn/DefaultHostileTargetPanel").hide()
 	
 	self.get_node("Scroll/UI/MainColumn/TurnReport").render(turnLogQueue)
 	
