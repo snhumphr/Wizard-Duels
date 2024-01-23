@@ -6,7 +6,6 @@ extends Control
 #TODO: AFTER A DUEL, GIVE THE OPTION TO EXPORT THE ENTIRE GAME'S TURNLOG TO A TXT FILE
 #TODO: Fix bug involving 3 wizards, invisibility and paralysis on the bottom wizard's left hand
 	#The paralyzed wizard is different then the invisibility one
-#TODO: Swap the Paralyze description to the \n\n format
 #TODO: Investigate issue where one player dying in a 3 wizard melee causes their game to hang
 #TODO: Fix typo in Blindness description
 
