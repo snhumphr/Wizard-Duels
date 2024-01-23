@@ -7,7 +7,6 @@ extends Control
 #TODO: Fix bug involving 3 wizards, invisibility and paralysis on the bottom wizard's left hand
 	#The paralyzed wizard is different then the invisibility one
 #TODO: Swap the Paralyze description to the \n\n format
-#TODO: Make Blindness actually hide your opponent's gestures
 #TODO: Investigate issue where one player dying in a 3 wizard melee causes their game to hang
 #TODO: Fix typo in Blindness description
 
@@ -251,7 +250,6 @@ func process_turn():
 		if entityArray[i].is_wizard and entityArray[i].is_active():
 			
 			var spellsDisrupted = false
-			var invisible = false
 			for effect in entityArray[i].effects:
 				if effect[0].anti_spell:
 					spellsDisrupted = true
@@ -269,6 +267,8 @@ func process_turn():
 				entityArray[i].left_hand_gestures.append("N")
 				entityArray[i].right_hidden.append(false)
 				entityArray[i].right_hidden.append(false)
+		
+	for i in range(1, entityArray.size()):
 		
 		if entityArray[i].dead == 1:
 			turnLogQueue.append(entityArray[i].name + " perishes!")
