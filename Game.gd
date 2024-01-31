@@ -122,7 +122,10 @@ func process_turn():
 	
 	var turnLogQueue = []
 	
-	turnLogQueue.append("It is turn " + str(turn+1))
+	if turn > 0:
+		turnLogQueue.append("Turn " + str(turn) + ":")
+	else:
+		turnLogQueue.append("The duel begins!")
 	
 	for i in range(1, entityArray.size()):
 		
@@ -326,7 +329,7 @@ func process_turn():
 			self.get_node("Scroll/UI/MainColumn/LeftHand").hide()
 			self.get_node("Scroll/UI/MainColumn/DefaultHostileTargetPanel").hide()
 	
-	self.get_node("Scroll/UI/MainColumn/TurnReport").render(turnLogQueue)
+	self.get_node("Scroll/UI/MainColumn/TurnPanel/TurnReport").render(turnLogQueue)
 	
 	self.renderWizardSection()
 	

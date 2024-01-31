@@ -57,9 +57,19 @@ script = ExtResource("2_cadle")
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="TurnReport" type="RichTextLabel" parent="Scroll/UI/MainColumn"]
+[node name="TurnPanel" type="Control" parent="Scroll/UI/MainColumn"]
+custom_minimum_size = Vector2(0, 400)
+layout_direction = 3
 layout_mode = 2
-fit_content = true
+
+[node name="TurnReport" type="RichTextLabel" parent="Scroll/UI/MainColumn/TurnPanel"]
+layout_direction = 2
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+scroll_following = true
 script = ExtResource("3_dgo7r")
 
 [node name="WizardList" type="RichTextLabel" parent="Scroll/UI/MainColumn"]

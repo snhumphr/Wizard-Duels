@@ -6,7 +6,10 @@ func _ready():
 	pass # Replace with function body.
 
 func render(turn_queue: Array):
-	self.clear()
-	for item in turn_queue:
-		self.add_text(item)
+	#self.clear()
+	for i in turn_queue.size():
+		var message = turn_queue[i]
+		if i > 0:
+			message = "    " + message
+		self.append_text(message)
 		self.newline()
