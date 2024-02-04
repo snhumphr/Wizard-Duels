@@ -4,18 +4,19 @@
 
 [resource]
 script = ExtResource("1_asf0e")
-id = -1
-name = "Goblin"
 summoner_id = -1
-pronouns = ["they", "them", "their", "themselves"]
 adjectives = ["warty", "stinky", "ugly", "repugnant", "nasty", "spooky", "scary", "sinister", "evil", "malicious", "lumpy", "loathsome", "fulminating", "incarnadine", "grody", "gross", "greedy", "ominous", "accursed", "rude"]
 is_wizard = false
 is_monster = true
 fire = false
 ice = false
-hp = 1
-max_hp = 1
-dead = 0
 aoe = false
 target_id = -1
+id = -1
+name = "Goblin"
+pronouns = ["they", "them", "their", "themselves"]
+hp = 1
+max_hp = 1
+surrendered = false
+dead = 0
 effects = []
