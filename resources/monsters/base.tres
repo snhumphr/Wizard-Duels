@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_asf0e")
 summoner_id = -1
-adjectives = ["warty", "stinky", "ugly", "repugnant", "nasty", "spooky", "scary", "sinister", "evil", "malicious", "lumpy", "loathsome", "fulminating", "incarnadine", "grody", "gross", "greedy", "ominous", "accursed", "rude"]
+adjectives = Array[String](["warty", "stinky", "ugly", "repugnant", "nasty", "spooky", "scary", "sinister", "evil", "malicious", "lumpy", "loathsome", "fulminating", "incarnadine", "grody", "gross", "greedy", "ominous", "accursed", "rude", "illegal", "melancholy", "sanguine", "vile", "noxious", "antediluvian", "miasmatic", "menacing", "scabrous", "eerie"])
 is_wizard = false
 is_monster = true
 fire = false
