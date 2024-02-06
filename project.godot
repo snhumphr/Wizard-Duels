@@ -21,7 +21,6 @@ GlobalDataSingle="*res://global_data_single.gd"
 
 [display]
 
-window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
 [dotnet]

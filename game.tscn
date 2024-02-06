@@ -30,32 +30,47 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.0196078, 0.0862745, 0.313726, 1)
 
-[node name="Scroll" type="ScrollContainer" parent="."]
-clip_contents = false
+[node name="Scroll" type="BoxContainer" parent="."]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = SubResource("Theme_t54r2")
 
-[node name="UI" type="HBoxContainer" parent="Scroll"]
+[node name="UI" type="HSplitContainer" parent="Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+dragger_visibility = 1
+
+[node name="SpellZone" type="VBoxContainer" parent="Scroll/UI"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SpellInfoTab" type="RichTextLabel" parent="Scroll/UI/SpellZone"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+size_flags_vertical = 0
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+script = ExtResource("8_80j1a")
+
+[node name="SpellScroll" type="ScrollContainer" parent="Scroll/UI/SpellZone"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+vertical_scroll_mode = 2
 
-[node name="SpellList" type="VBoxContainer" parent="Scroll/UI"]
+[node name="SpellList" type="VBoxContainer" parent="Scroll/UI/SpellZone/SpellScroll"]
 layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
 script = ExtResource("2_cadle")
 
 [node name="MainColumn" type="VBoxContainer" parent="Scroll/UI"]
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 0
+size_flags_vertical = 0
 
 [node name="TurnPanel" type="Control" parent="Scroll/UI/MainColumn"]
 custom_minimum_size = Vector2(0, 400)
@@ -137,12 +152,6 @@ custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Submit Turn"
-
-[node name="SpellInfoTab" type="RichTextLabel" parent="Scroll/UI/MainColumn"]
-custom_minimum_size = Vector2(0, 300)
-layout_mode = 2
-bbcode_enabled = true
-script = ExtResource("8_80j1a")
 
 [connection signal="item_selected" from="Scroll/UI/MainColumn/RightHand/RightHandGestureOptions" to="." method="_on_right_hand_gesture_options_item_selected"]
 [connection signal="item_selected" from="Scroll/UI/MainColumn/RightHand/RightHandSpellOptions" to="." method="_on_right_hand_spell_options_item_selected"]
