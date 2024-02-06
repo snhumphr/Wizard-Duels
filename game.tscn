@@ -39,17 +39,18 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = SubResource("Theme_t54r2")
 
-[node name="UI" type="HSplitContainer" parent="Scroll"]
+[node name="UI" type="Control" parent="Scroll"]
 layout_mode = 2
 size_flags_horizontal = 3
-dragger_visibility = 1
 
 [node name="SpellZone" type="VBoxContainer" parent="Scroll/UI"]
-layout_mode = 2
-size_flags_horizontal = 3
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.4
+anchor_bottom = 1.0
 
 [node name="SpellInfoTab" type="RichTextLabel" parent="Scroll/UI/SpellZone"]
-custom_minimum_size = Vector2(0, 200)
+custom_minimum_size = Vector2(400, 200)
 layout_mode = 2
 size_flags_vertical = 0
 bbcode_enabled = true
@@ -68,7 +69,11 @@ layout_mode = 2
 script = ExtResource("2_cadle")
 
 [node name="MainColumn" type="VBoxContainer" parent="Scroll/UI"]
-layout_mode = 2
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.6
+anchor_right = 1.0
+anchor_bottom = 1.0
 size_flags_horizontal = 0
 size_flags_vertical = 0
 
