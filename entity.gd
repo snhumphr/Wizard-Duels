@@ -3,14 +3,14 @@ class_name Entity
 
 @export var id: int
 @export var name: String = ""
-@export var pronouns: Array = ["they", "them", "their", "themselves"]
+@export var pronouns: Array[String] = ["they", "them", "their", "themselves"]
 
 @export var hp: int = 15
 @export var max_hp: int = 15
 @export var surrendered: bool = false
 @export var dead: int = 0
 
-@export var effects: Array = []
+@export var effects: Array[Array] = []
 
 func is_alive():
 	return dead <= 1

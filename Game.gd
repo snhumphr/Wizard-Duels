@@ -7,6 +7,7 @@ extends Control
 #TODO: Fix bug involving 3 wizards, invisibility and paralysis on the bottom wizard's left hand
 	#The paralyzed wizard is different then the invisibility one
 	#This may have been fixed by the visibility patch earlier? Unclear
+	#This still happens, and might be related to anti-spell
 
 var spellArray = Array()
 var entityArray = Array()
@@ -312,12 +313,14 @@ func process_turn():
 		self.get_node("Scroll/UI/MainColumn/EndTurnButton").hide()
 		self.get_node("Scroll/UI/MainColumn/RightHand").hide()
 		self.get_node("Scroll/UI/MainColumn/LeftHand").hide()
+		self.get_node("Scroll/UI/MainColumn/SummonControlPanel").hide()
 		self.get_node("Scroll/UI/MainColumn/DefaultHostileTargetPanel").hide()
 	elif numPlayers == 0:
 		turnLogQueue.append("All wizards have been eliminated. The duel ends in a draw.")
 		self.get_node("Scroll/UI/MainColumn/EndTurnButton").hide()
 		self.get_node("Scroll/UI/MainColumn/RightHand").hide()
 		self.get_node("Scroll/UI/MainColumn/LeftHand").hide()
+		self.get_node("Scroll/UI/MainColumn/SummonControlPanel").hide()
 		self.get_node("Scroll/UI/MainColumn/DefaultHostileTargetPanel").hide()
 	else:
 		turn += 1
@@ -327,6 +330,7 @@ func process_turn():
 			self.get_node("Scroll/UI/MainColumn/EndTurnButton").hide()
 			self.get_node("Scroll/UI/MainColumn/RightHand").hide()
 			self.get_node("Scroll/UI/MainColumn/LeftHand").hide()
+			self.get_node("Scroll/UI/MainColumn/SummonControlPanel").hide()
 			self.get_node("Scroll/UI/MainColumn/DefaultHostileTargetPanel").hide()
 	
 	self.get_node("Scroll/UI/MainColumn/TurnPanel/TurnReport").render(turnLogQueue)
