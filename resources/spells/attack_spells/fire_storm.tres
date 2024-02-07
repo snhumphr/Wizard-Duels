@@ -8,7 +8,7 @@ script = ExtResource("1_ah2wg")
 name = "Fire Storm"
 gestures = PackedStringArray("S", "W", "W", "CC")
 id = 0
-description = "Wreathes the battlefield in sheets of fire, dealing 5 [color=#A9423F]fire[/color] damage to all creatures on the battlefield(including the caster and their allies).\n\nFire damage does nothing to those with heat resistance, but negates ice magic directed at the same target.\n\nA fire storm destroys an ice elemental instantly, but in that case does not take effect.\n\nIt also destroys fire elementals before they can attack, but still does damage normally.\n\nMultiple fire storms cast on the same turn do not stack."
+description = "Wreathes the battlefield in sheets of fire, dealing 5 fire damage to all creatures on the battlefield(including the caster and their allies).\n\nFire damage does nothing to those with heat resistance, but negates ice magic directed at the same target.\n\nA fire storm destroys an ice elemental instantly, but in that case does not take effect.\n\nIt also destroys fire elementals before they can attack, but still does damage normally.\n\nMultiple fire storms cast on the same turn do not stack."
 is_spell = true
 is_silent = false
 once_per_turn = true
