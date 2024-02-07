@@ -6,7 +6,7 @@ signal requestValidTargets
 
 func render(entityArray: Array, player: int):
 	
-	clearInvalidMonsters(entityArray, player)
+	clearMonsters()
 	
 	for i in entityArray.size():
 		assert(i == entityArray[i].id)
@@ -27,21 +27,12 @@ func render(entityArray: Array, player: int):
 				
 			monsterList.append([box, entity.id])
 			
-func clearInvalidMonsters(entityArray: Array, player: int):
+func clearMonsters():
 	
 	for child in self.get_children():
 		remove_child(child)
 		
 	monsterList = []
-	
-	#var deletionArray = []
-	#for i in monsterList.size():
-	#	remove_child(monsterList[i][0])
-	#	deletionArray.append(i)
-	
-	#for index in deletionArray:
-	#	monsterList.remove_at(index)
-		#print(str(index))
 			
 func getMonsterList():
 	return monsterList

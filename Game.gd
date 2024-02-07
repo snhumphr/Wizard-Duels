@@ -202,7 +202,7 @@ func process_turn():
 				if spell != null and not(s > 0 and spell.is_two_handed()):
 					spellExecutionList.append([spell, i, targetQueue[i][s]]) #spell, caster, target
 
-	castSpells(spellExecutionList, entityArray, turnLogQueue)
+	castSpells(spellExecutionList, turnLogQueue)
 	
 	for i in range(1, entityArray.size()):
 		if entityArray[i].is_active():
@@ -216,7 +216,7 @@ func process_turn():
 					entityArray[i].removeEffect(effectName)
 				addMessage("The conflicting hexes on " + entityArray[i].name + " cancel each other out!", turnLogQueue, entityArray[i])
 	
-	monsterActions(entityArray, turnLogQueue)
+	monsterActions(turnLogQueue)
 	
 	for i in range(1, entityArray.size()):
 		var burn = []
@@ -406,7 +406,7 @@ func gesture_to_text(gesture: String, wizard: Wizard):
 	
 	return message
 
-func castSpells(spellExecutionList: Array, entityArray: Array, turnLogQueue: Array):
+func castSpells(spellExecutionList: Array, turnLogQueue: Array):
 	#sort spells by the order their effects resolves:
 	#1: dispel magic goes off
 	#1.5: counterspells goes off
@@ -656,7 +656,7 @@ func addMessage(message: String, turnLogQueue: Array, subject: Entity):
 	if canSee(entityArray[player], subject):
 		turnLogQueue.append(message)
 
-func monsterActions(entityArray: Array, turnLogQueue: Array):
+func monsterActions(turnLogQueue: Array):
 	
 	var fire_elementals = []
 	var ice_elementals = []
@@ -722,7 +722,6 @@ func monsterActions(entityArray: Array, turnLogQueue: Array):
 							cold_res = true
 		
 					var hexed = false
-					var charmed = false
 					for effect in entity.effects:
 						if effect[0].hex:
 							hexed = true
@@ -795,7 +794,7 @@ func loadSpells(path: String, array: Array):
 			if dir.current_is_dir():
 				loadSpells(path + "/" + file_name, spellArray)
 			else:
-				spellArray.append(load(path + "/" + file_name))
+				array.append(load(path + "/" + file_name))
 			file_name = dir.get_next()
 		dir.list_dir_end()
 	else:
@@ -1003,10 +1002,8 @@ func recalculateTarget(isLeft: bool):
 
 func findValidTargets(spell: Spell, caster: Wizard):
 	
-	var startIndex = 0
 	var validTargets = []
 	var preferredTargets = []
-	var defaultTarget = 0
 	
 	if not spell.targetable:
 		return [[],-1]
@@ -1152,7 +1149,6 @@ func _on_end_turn_button_pressed():
 					if eff[1] == effect[0]:
 						var hand = child.get_item_text(child.get_selected_id())
 						#effect[0].hand = hand 
-						var old_gesture
 						orders.effect_orders.append([eff[2], hand, "Paralyze"])
 	
 	var charmList = self.get_node("Scroll/UI/MainColumn/EffectControlPanel").getCharmList()
@@ -1241,16 +1237,16 @@ func _on_left_hand_gesture_options_item_selected(index: int):
 	onGestureChange(true)
 	onGestureChange(false)
 
-func _on_right_hand_spell_options_item_selected(index: int):
+func _on_right_hand_spell_options_item_selected(_index: int):
 	onSpellChange(false)
 
-func _on_left_hand_spell_options_item_selected(index: int):
+func _on_left_hand_spell_options_item_selected(_index: int):
 	onSpellChange(true)
 	
-func _on_right_hand_targeting_options_item_selected(index: int):
+func _on_right_hand_targeting_options_item_selected(_index: int):
 	onTargetChange(false)
 
-func _on_left_hand_targeting_options_item_selected(index: int):
+func _on_left_hand_targeting_options_item_selected(_index: int):
 	onTargetChange(true)
 
 func _on_summon_control_panel_request_valid_targets(monster: Monster, button: Button):

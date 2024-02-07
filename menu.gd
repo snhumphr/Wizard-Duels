@@ -54,7 +54,7 @@ func swapToWizCustom():
 	self.get_node("MenuItems").set_visible(false)
 	self.get_node("WaitingLobby").set_visible(false)
 	
-func newWizard(id: int):
+func newWizard(_id: int):
 	self.rpc("receive_name", wizardName, multiplayer.get_unique_id())
 	await get_tree().create_timer(2.0).timeout
 	if multiplayer.is_server() and multiplayer.get_peers().size() + 1 == max_connections:
