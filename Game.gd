@@ -80,8 +80,8 @@ func _ready():
 			stabID = i
 	spellArray.sort_custom(spellSort)
 	
-	self.get_node("Scroll/UI/SpellZone/SpellScroll/SpellList").init(spellArray)
-	self.get_node("Scroll/UI/SpellZone/SpellInfoTab").init(spellArray)
+	get_singleton_group("spellList").init(spellArray)
+	get_singleton_group("spellInfoTab").init(spellArray)
 	
 	loadEffects("res://resources/effects", effectDict)
 	
@@ -115,6 +115,14 @@ func _ready():
 		targetQueue.append([-1, -1])
 
 	process_turn()
+
+func get_singleton_group(group_name: String):
+	var group = get_tree().get_nodes_in_group(group_name)
+	if group.size() == 1:
+		return group[0]
+	else:
+		printerr("Error: Group " + group_name + " is not a singleton group!")
+		return null
 
 func process_turn():
 	
@@ -309,30 +317,33 @@ func process_turn():
 		
 	if numPlayers == 1:
 		turnLogQueue.append(entityArray[activePlayer].name + " has won the duel!")
-		self.get_node("Scroll/UI/MainColumn/EndTurnButton").hide()
-		self.get_node("Scroll/UI/MainColumn/RightHand").hide()
-		self.get_node("Scroll/UI/MainColumn/LeftHand").hide()
-		self.get_node("Scroll/UI/MainColumn/SummonControlPanel").hide()
-		self.get_node("Scroll/UI/MainColumn/DefaultHostileTargetPanel").hide()
+		get_singleton_group("endTurnButton").hide()
+		get_singleton_group("rightHand").hide()
+		get_singleton_group("leftHand").hide()
+		get_singleton_group("summonControlPanel").hide()
+		get_singleton_group("effectControlPanel").hide()
+		get_singleton_group("defaultHostileTarget").hide()
 	elif numPlayers == 0:
 		turnLogQueue.append("All wizards have been eliminated. The duel ends in a draw.")
-		self.get_node("Scroll/UI/MainColumn/EndTurnButton").hide()
-		self.get_node("Scroll/UI/MainColumn/RightHand").hide()
-		self.get_node("Scroll/UI/MainColumn/LeftHand").hide()
-		self.get_node("Scroll/UI/MainColumn/SummonControlPanel").hide()
-		self.get_node("Scroll/UI/MainColumn/DefaultHostileTargetPanel").hide()
+		get_singleton_group("endTurnButton").hide()
+		get_singleton_group("rightHand").hide()
+		get_singleton_group("leftHand").hide()
+		get_singleton_group("summonControlPanel").hide()
+		get_singleton_group("effectControlPanel").hide()
+		get_singleton_group("defaultHostileTarget").hide()
 	else:
 		turn += 1
 		#player = 1
 		
 		if not entityArray[player].is_active():
-			self.get_node("Scroll/UI/MainColumn/EndTurnButton").hide()
-			self.get_node("Scroll/UI/MainColumn/RightHand").hide()
-			self.get_node("Scroll/UI/MainColumn/LeftHand").hide()
-			self.get_node("Scroll/UI/MainColumn/SummonControlPanel").hide()
-			self.get_node("Scroll/UI/MainColumn/DefaultHostileTargetPanel").hide()
+			get_singleton_group("endTurnButton").hide()
+			get_singleton_group("rightHand").hide()
+			get_singleton_group("leftHand").hide()
+			get_singleton_group("summonControlPanel").hide()
+			get_singleton_group("effectControlPanel").hide()
+			get_singleton_group("defaultHostileTarget").hide()
 	
-	self.get_node("Scroll/UI/MainColumn/TurnPanel/TurnReport").render(turnLogQueue)
+	get_singleton_group("turnReport").render(turnLogQueue)
 	
 	self.renderWizardSection()
 	
@@ -906,9 +917,9 @@ func onGestureChange(isLeft: bool):
 	var spellOptionsArray = analyzeGestures(player, isLeft)
 	var spellOptions
 	if isLeft:
-		spellOptions = self.get_node("Scroll/UI/MainColumn/LeftHand/LeftHandSpellOptions")
+		spellOptions = get_singleton_group("leftSpell")
 	else:
-		spellOptions = self.get_node("Scroll/UI/MainColumn/RightHand/RightHandSpellOptions")
+		spellOptions = get_singleton_group("rightSpell")
 	spellOptions.clear()
 	for i in spellOptionsArray.size():
 		spellOptions.add_item(spellOptionsArray[i].name, spellOptionsArray[i].id)
@@ -927,11 +938,12 @@ func onSpellChange(isLeft: bool):
 	var offHand
 	
 	if isLeft:
-		mainHand = self.get_node("Scroll/UI/MainColumn/LeftHand/LeftHandSpellOptions")
-		offHand = self.get_node("Scroll/UI/MainColumn/RightHand/RightHandSpellOptions")
+		
+		mainHand = get_singleton_group("leftSpell")
+		offHand = get_singleton_group("rightSpell")
 	else:
-		mainHand = self.get_node("Scroll/UI/MainColumn/RightHand/RightHandSpellOptions")
-		offHand = self.get_node("Scroll/UI/MainColumn/LeftHand/LeftHandSpellOptions")
+		mainHand = get_singleton_group("rightSpell")
+		offHand = get_singleton_group("leftSpell")
 	
 	var mainSpell = spellSearch(mainHand.get_selected_id())
 	var offSpell = spellSearch(offHand.get_selected_id())
@@ -951,10 +963,10 @@ func onSpellChange(isLeft: bool):
 	recalculateTarget(isLeft)
 
 func onTargetChange(isLeft: bool):
-	var rightSpell = spellSearch(self.get_node("Scroll/UI/MainColumn/RightHand/RightHandSpellOptions").get_selected_id())
+	var rightSpell = spellSearch(get_singleton_group("rightSpell").get_selected_id())
 	
-	var rightTarget = self.get_node("Scroll/UI/MainColumn/RightHand/RightHandTargetingOptions")
-	var leftTarget = self.get_node("Scroll/UI/MainColumn/LeftHand/LeftHandTargetingOptions")
+	var rightTarget = get_singleton_group("rightTarget")
+	var leftTarget = get_singleton_group("lefttTarget")
 	
 	if rightSpell != null and rightSpell.is_two_handed():
 		if isLeft:
@@ -973,17 +985,17 @@ func recalculateTarget(isLeft: bool):
 	var offSpell
 	
 	if isLeft:
-		mainHand = self.get_node("Scroll/UI/MainColumn/LeftHand/LeftHandSpellOptions")
-		mainTarget = self.get_node("Scroll/UI/MainColumn/LeftHand/LeftHandTargetingOptions")
+		mainHand = get_singleton_group("leftSpell")
+		mainTarget = get_singleton_group("leftTarget")
 		
-		offHand = self.get_node("Scroll/UI/MainColumn/RightHand/RightHandSpellOptions")
-		offTarget = self.get_node("Scroll/UI/MainColumn/RightHand/RightHandTargetingOptions")
+		offHand = get_singleton_group("rightSpell")
+		offTarget = get_singleton_group("rightTarget")
 	else:
-		mainHand = self.get_node("Scroll/UI/MainColumn/RightHand/RightHandSpellOptions")
-		mainTarget = self.get_node("Scroll/UI/MainColumn/RightHand/RightHandTargetingOptions")
+		mainHand = get_singleton_group("rightSpell")
+		mainTarget = get_singleton_group("rightTarget")
 		
-		offHand = self.get_node("Scroll/UI/MainColumn/LeftHand/LeftHandSpellOptions")
-		offTarget = self.get_node("Scroll/UI/MainColumn/LeftHand/LeftHandTargetingOptions")
+		offHand = get_singleton_group("leftSpell")
+		offTarget = get_singleton_group("leftTarget")
 		
 	if mainHand.get_selected_id() == -1:
 		mainTarget.clear()
@@ -1022,7 +1034,7 @@ func findValidTargets(spell: Spell, caster: Wizard):
 			elif spell.hostile and isTargetHostile(entityArray[i], caster):
 				preferredTargets.append(entityArray[i])
 	
-	var defaultHostileTargetId = self.get_node("Scroll/UI/MainColumn/DefaultHostileTargetPanel/DefaultHostileTargetOptions").get_selected_id()
+	var defaultHostileTargetId = get_singleton_group("defaultHostileTarget").get_selected_id()
 	var defaultHostileTargetIndex = -1
 	
 	for i in range(preferredTargets.size()):
@@ -1048,22 +1060,22 @@ func isTargetHostile(target, caster: Wizard):
 		return false
 
 func renderWizardSection():
-	self.get_node("Scroll/UI/MainColumn/WizardList").render(entityArray, player)
+	get_singleton_group("wizardList").render(entityArray, player)
 	
-	self.get_node("Scroll/UI/MainColumn/LeftHand/LeftHandSpellOptions").clear()
-	self.get_node("Scroll/UI/MainColumn/RightHand/RightHandSpellOptions").clear()
-	self.get_node("Scroll/UI/MainColumn/LeftHand/LeftHandSpellOptions").set_disabled(true)
-	self.get_node("Scroll/UI/MainColumn/RightHand/RightHandSpellOptions").set_disabled(true)
+	get_singleton_group("leftSpell").clear()
+	get_singleton_group("rightSpell").clear()
+	get_singleton_group("leftSpell").set_disabled(true)
+	get_singleton_group("rightSpell").set_disabled(true)
 	
-	self.get_node("Scroll/UI/MainColumn/LeftHand/LeftHandTargetingOptions").clear()
-	self.get_node("Scroll/UI/MainColumn/RightHand/RightHandTargetingOptions").clear()
-	self.get_node("Scroll/UI/MainColumn/LeftHand/LeftHandTargetingOptions").set_disabled(true)
-	self.get_node("Scroll/UI/MainColumn/RightHand/RightHandTargetingOptions").set_disabled(true)
+	get_singleton_group("leftTarget").clear()
+	get_singleton_group("rightTarget").clear()
+	get_singleton_group("leftTarget").set_disabled(true)
+	get_singleton_group("rightTarget").set_disabled(true)
 	
-	self.get_node("Scroll/UI/MainColumn/LeftHand/LeftHandGestureOptions").clear()
-	self.get_node("Scroll/UI/MainColumn/RightHand/RightHandGestureOptions").clear()
+	get_singleton_group("leftGesture").clear()
+	get_singleton_group("rightGesture").clear()
 	
-	var defaultTargetOptions = self.get_node("Scroll/UI/MainColumn/DefaultHostileTargetPanel/DefaultHostileTargetOptions")
+	var defaultTargetOptions = get_singleton_group("defaultHostileTarget")
 	var oldTargetId = defaultTargetOptions.get_selected_id()
 	defaultTargetOptions.clear()
 	for i in range(1, entityArray.size()):
@@ -1089,24 +1101,24 @@ func renderWizardSection():
 			for i in validGestures.size():
 				var gesture = validGestures[i]
 				if not spooked or validSpookedGestures.has(gesture):
-					self.get_node("Scroll/UI/MainColumn/LeftHand/LeftHandGestureOptions").add_item(gesture, i)
-					self.get_node("Scroll/UI/MainColumn/RightHand/RightHandGestureOptions").add_item(gesture, i)
+					get_singleton_group("leftGesture").add_item(gesture, i)
+					get_singleton_group("rightGesture").add_item(gesture, i)
 		else:
 			for i in validGestures.size():
 				var gesture = validGestures[i]
 				if gesture == entityArray[player].right_hand_gestures.back():
-					self.get_node("Scroll/UI/MainColumn/RightHand/RightHandGestureOptions").add_item(gesture, i)
-					self.get_node("Scroll/UI/MainColumn/RightHand/RightHandGestureOptions").select(0)
+					get_singleton_group("rightGesture").add_item(gesture, i)
+					get_singleton_group("rightGesture").select(0)
 					gestureQueue[player][0] = gesture
 				if gesture == entityArray[player].left_hand_gestures.back():
-					self.get_node("Scroll/UI/MainColumn/LeftHand/LeftHandGestureOptions").add_item(gesture, i)
-					self.get_node("Scroll/UI/MainColumn/LeftHand/LeftHandGestureOptions").select(0)
+					get_singleton_group("leftGesture").add_item(gesture, i)
+					get_singleton_group("leftGesture").select(0)
 					gestureQueue[player][1] = gesture
 			onGestureChange(false)
 			onGestureChange(true)
 				
-	self.get_node("Scroll/UI/MainColumn/EffectControlPanel").render(entityArray, player, validCharmGestures)
-	self.get_node("Scroll/UI/MainColumn/SummonControlPanel").render(entityArray, player)
+	get_singleton_group("effectControlPanel").render(entityArray, player, validCharmGestures)
+	get_singleton_group("summonControlPanel").render(entityArray, player)
 
 func _on_end_turn_button_pressed():
 	
@@ -1116,22 +1128,22 @@ func _on_end_turn_button_pressed():
 	orders.id = player
 	orders.gestures = gestureQueue[player]
 	orders.spells = [null, null]
-	orders.spells[0] = self.get_node("Scroll/UI/MainColumn/RightHand/RightHandSpellOptions").get_selected_id()
-	orders.spells[1] = self.get_node("Scroll/UI/MainColumn/LeftHand/LeftHandSpellOptions").get_selected_id()
+	orders.spells[0] = get_singleton_group("rightSpell").get_selected_id()
+	orders.spells[1] = get_singleton_group("leftSpell").get_selected_id()
 	orders.targets = [null, null]
-	orders.targets[0] = self.get_node("Scroll/UI/MainColumn/RightHand/RightHandTargetingOptions").get_selected_id()
-	orders.targets[1] = self.get_node("Scroll/UI/MainColumn/LeftHand/LeftHandTargetingOptions").get_selected_id()
+	orders.targets[0] = get_singleton_group("rightTarget").get_selected_id()
+	orders.targets[1] = get_singleton_group("leftTarget").get_selected_id()
 	orders.effect_orders = []
 	orders.monster_orders = []
 	
 	if true:
-		spellQueue[player][0] = spellSearch(self.get_node("Scroll/UI/MainColumn/RightHand/RightHandSpellOptions").get_selected_id())
-		spellQueue[player][1] = spellSearch(self.get_node("Scroll/UI/MainColumn/LeftHand/LeftHandSpellOptions").get_selected_id())
+		spellQueue[player][0] = spellSearch(get_singleton_group("rightSpell").get_selected_id())
+		spellQueue[player][1] = spellSearch(get_singleton_group("leftSpell").get_selected_id())
 		
-		targetQueue[player][0] = self.get_node("Scroll/UI/MainColumn/RightHand/RightHandTargetingOptions").get_selected_id()
-		targetQueue[player][1] = self.get_node("Scroll/UI/MainColumn/LeftHand/LeftHandTargetingOptions").get_selected_id()
+		targetQueue[player][0] = get_singleton_group("rightTarget").get_selected_id()
+		targetQueue[player][1] = get_singleton_group("leftTarget").get_selected_id()
 	
-	var monsterList = self.get_node("Scroll/UI/MainColumn/SummonControlPanel").getMonsterList()
+	var monsterList = get_singleton_group("summonControlPanel").getMonsterList()
 	
 	for monster in monsterList:
 		for child in monster[0].get_children():
@@ -1140,7 +1152,7 @@ func _on_end_turn_button_pressed():
 				#entityArray[monster[1]].target_id = target_id 
 				orders.monster_orders.append([monster[1], target_id])
 	
-	var paraList = self.get_node("Scroll/UI/MainColumn/EffectControlPanel").getParaList()
+	var paraList = get_singleton_group("effectControlPanel").getParaList()
 	
 	for eff in paraList:
 		for child in eff[0].get_children():
@@ -1151,7 +1163,7 @@ func _on_end_turn_button_pressed():
 						#effect[0].hand = hand 
 						orders.effect_orders.append([eff[2], hand, "Paralyze"])
 	
-	var charmList = self.get_node("Scroll/UI/MainColumn/EffectControlPanel").getCharmList()
+	var charmList = get_singleton_group("effectControlPanel").getCharmList()
 	var hand
 	var new_gesture
 	for eff in charmList:
@@ -1204,7 +1216,7 @@ func receiveOrders(orders: Dictionary):
 		process_turn()
 
 func _on_right_hand_gesture_options_item_selected(index: int):
-	var gesture_ID = self.get_node("Scroll/UI/MainColumn/RightHand/RightHandGestureOptions").get_item_id(index)
+	var gesture_ID = get_singleton_group("rightGesture").get_item_id(index)
 	gestureQueue[player][0] = validGestures[gesture_ID]
 	
 	var maladroit = false
@@ -1213,7 +1225,7 @@ func _on_right_hand_gesture_options_item_selected(index: int):
 			maladroit = true
 	
 	if maladroit:
-		var leftHand = self.get_node("Scroll/UI/MainColumn/LeftHand/LeftHandGestureOptions")
+		var leftHand = get_singleton_group("leftGesture")
 		leftHand.select(index)
 		gestureQueue[player][1] = validGestures[gesture_ID]
 	
@@ -1221,7 +1233,7 @@ func _on_right_hand_gesture_options_item_selected(index: int):
 	onGestureChange(true)
 
 func _on_left_hand_gesture_options_item_selected(index: int):
-	var gesture_ID = self.get_node("Scroll/UI/MainColumn/LeftHand/LeftHandGestureOptions").get_item_id(index)
+	var gesture_ID = get_singleton_group("leftGesture").get_item_id(index)
 	gestureQueue[player][1] = validGestures[gesture_ID]
 	
 	var maladroit = false
@@ -1230,7 +1242,7 @@ func _on_left_hand_gesture_options_item_selected(index: int):
 			maladroit = true
 	
 	if maladroit:
-		var rightHand = self.get_node("Scroll/UI/MainColumn/RightHand/RightHandGestureOptions")
+		var rightHand = get_singleton_group("rightGesture")
 		rightHand.select(index)
 		gestureQueue[player][0] = validGestures[gesture_ID]
 	

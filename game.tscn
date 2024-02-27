@@ -49,7 +49,7 @@ anchors_preset = -1
 anchor_right = 0.4
 anchor_bottom = 1.0
 
-[node name="SpellInfoTab" type="RichTextLabel" parent="Scroll/UI/SpellZone"]
+[node name="SpellInfoTab" type="RichTextLabel" parent="Scroll/UI/SpellZone" groups=["spellInfoTab"]]
 layout_mode = 2
 size_flags_vertical = 0
 bbcode_enabled = true
@@ -63,7 +63,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 vertical_scroll_mode = 2
 
-[node name="SpellList" type="VBoxContainer" parent="Scroll/UI/SpellZone/SpellScroll"]
+[node name="SpellList" type="VBoxContainer" parent="Scroll/UI/SpellZone/SpellScroll" groups=["spellList"]]
 layout_mode = 2
 script = ExtResource("2_cadle")
 
@@ -81,7 +81,7 @@ custom_minimum_size = Vector2(0, 400)
 layout_direction = 3
 layout_mode = 2
 
-[node name="TurnReport" type="RichTextLabel" parent="Scroll/UI/MainColumn/TurnPanel"]
+[node name="TurnReport" type="RichTextLabel" parent="Scroll/UI/MainColumn/TurnPanel" groups=["turnReport"]]
 layout_direction = 2
 layout_mode = 1
 anchors_preset = -1
@@ -91,44 +91,44 @@ grow_horizontal = 2
 scroll_following = true
 script = ExtResource("3_dgo7r")
 
-[node name="WizardList" type="RichTextLabel" parent="Scroll/UI/MainColumn"]
+[node name="WizardList" type="RichTextLabel" parent="Scroll/UI/MainColumn" groups=["wizardList"]]
 layout_mode = 2
 fit_content = true
 script = ExtResource("3_laiom")
 
-[node name="RightHand" type="HBoxContainer" parent="Scroll/UI/MainColumn"]
+[node name="RightHand" type="HBoxContainer" parent="Scroll/UI/MainColumn" groups=["rightHand"]]
 layout_mode = 2
 
 [node name="Label" type="Label" parent="Scroll/UI/MainColumn/RightHand"]
 layout_mode = 2
 text = "Right Hand:"
 
-[node name="RightHandGestureOptions" type="OptionButton" parent="Scroll/UI/MainColumn/RightHand" groups=["buttons"]]
+[node name="RightHandGestureOptions" type="OptionButton" parent="Scroll/UI/MainColumn/RightHand" groups=["buttons", "rightGesture"]]
 layout_mode = 2
 
-[node name="RightHandSpellOptions" type="OptionButton" parent="Scroll/UI/MainColumn/RightHand" groups=["buttons"]]
+[node name="RightHandSpellOptions" type="OptionButton" parent="Scroll/UI/MainColumn/RightHand" groups=["buttons", "rightSpell"]]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 
-[node name="RightHandTargetingOptions" type="OptionButton" parent="Scroll/UI/MainColumn/RightHand" groups=["buttons"]]
+[node name="RightHandTargetingOptions" type="OptionButton" parent="Scroll/UI/MainColumn/RightHand" groups=["buttons", "rightTarget"]]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 
-[node name="LeftHand" type="HBoxContainer" parent="Scroll/UI/MainColumn"]
+[node name="LeftHand" type="HBoxContainer" parent="Scroll/UI/MainColumn" groups=["leftHand"]]
 layout_mode = 2
 
 [node name="Label" type="Label" parent="Scroll/UI/MainColumn/LeftHand"]
 layout_mode = 2
 text = "Left Hand: "
 
-[node name="LeftHandGestureOptions" type="OptionButton" parent="Scroll/UI/MainColumn/LeftHand" groups=["buttons"]]
+[node name="LeftHandGestureOptions" type="OptionButton" parent="Scroll/UI/MainColumn/LeftHand" groups=["buttons", "leftGesture"]]
 layout_mode = 2
 
-[node name="LeftHandSpellOptions" type="OptionButton" parent="Scroll/UI/MainColumn/LeftHand" groups=["buttons"]]
+[node name="LeftHandSpellOptions" type="OptionButton" parent="Scroll/UI/MainColumn/LeftHand" groups=["buttons", "leftSpell"]]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 
-[node name="LeftHandTargetingOptions" type="OptionButton" parent="Scroll/UI/MainColumn/LeftHand" groups=["buttons"]]
+[node name="LeftHandTargetingOptions" type="OptionButton" parent="Scroll/UI/MainColumn/LeftHand" groups=["buttons", "leftTarget"]]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 
@@ -139,19 +139,19 @@ layout_mode = 2
 layout_mode = 2
 text = "Set default hostile target: "
 
-[node name="DefaultHostileTargetOptions" type="OptionButton" parent="Scroll/UI/MainColumn/DefaultHostileTargetPanel" groups=["buttons"]]
+[node name="DefaultHostileTargetOptions" type="OptionButton" parent="Scroll/UI/MainColumn/DefaultHostileTargetPanel" groups=["buttons", "defaultHostileTarget"]]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 
-[node name="EffectControlPanel" type="VBoxContainer" parent="Scroll/UI/MainColumn"]
+[node name="EffectControlPanel" type="VBoxContainer" parent="Scroll/UI/MainColumn" groups=["effectControlPanel"]]
 layout_mode = 2
 script = ExtResource("5_8i5um")
 
-[node name="SummonControlPanel" type="VBoxContainer" parent="Scroll/UI/MainColumn"]
+[node name="SummonControlPanel" type="VBoxContainer" parent="Scroll/UI/MainColumn" groups=["summonControlPanel"]]
 layout_mode = 2
 script = ExtResource("5_p744m")
 
-[node name="EndTurnButton" type="Button" parent="Scroll/UI/MainColumn" groups=["buttons"]]
+[node name="EndTurnButton" type="Button" parent="Scroll/UI/MainColumn" groups=["buttons", "endTurnButton"]]
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 0
