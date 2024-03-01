@@ -59,8 +59,8 @@ var turn = 0
 var validGestures = ["N", "P", "W", "S", "D", "F", "C", ">"]
 var validCharmGestures =  ["P", "W", "S", "D", "F", "C", ">"]
 var validSpookedGestures = ["N", "P", "W", ">"]
-
 # Called when the node enters the scene tree for the first time.
+
 func _ready():
 	
 	peers.append(multiplayer.get_unique_id())

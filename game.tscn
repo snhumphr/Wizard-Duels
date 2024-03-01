@@ -46,10 +46,11 @@ size_flags_horizontal = 3
 [node name="SpellZone" type="VBoxContainer" parent="Scroll/UI"]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 0.4
+anchor_right = 0.5
 anchor_bottom = 1.0
 
 [node name="SpellInfoTab" type="RichTextLabel" parent="Scroll/UI/SpellZone" groups=["spellInfoTab"]]
+visible = false
 layout_mode = 2
 size_flags_vertical = 0
 bbcode_enabled = true
@@ -63,8 +64,20 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 vertical_scroll_mode = 2
 
-[node name="SpellList" type="VBoxContainer" parent="Scroll/UI/SpellZone/SpellScroll" groups=["spellList"]]
+[node name="TabContainer" type="TabContainer" parent="Scroll/UI/SpellZone/SpellScroll"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+tab_alignment = 1
+current_tab = 1
+
+[node name="Rules" type="RichTextLabel" parent="Scroll/UI/SpellZone/SpellScroll/TabContainer"]
+layout_mode = 2
+
+[node name="Spell List" type="ItemList" parent="Scroll/UI/SpellZone/SpellScroll/TabContainer" groups=["spellList"]]
+layout_mode = 2
+size_flags_horizontal = 3
+auto_height = true
 script = ExtResource("2_cadle")
 
 [node name="MainColumn" type="VBoxContainer" parent="Scroll/UI"]

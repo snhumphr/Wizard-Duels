@@ -1,63 +1,44 @@
-extends VBoxContainer
+extends ItemList
 
 var length = 22
 
 func init(spellArray: Array):
 	
-	var titleBox = HBoxContainer.new()
-	self.add_child(titleBox)
-	var title = Label.new()
-	title.set_text("List of Spells:")
-	titleBox.add_child(title)
-	#self.add_text("List of Spells:")
-	#self.newline()
-	
 	var spellDict = {}
 	var descDict = {}
+	var gesturesDict = {}
 	
 	for spell in spellArray:
 		if not spellDict.has(spell.name):
-			spellDict[spell.name] = [spell.gestures]
+			spellDict[spell.name] = spell
+			gesturesDict[spell.name] = [spell.gestures]
 			descDict[spell.name] = spell.description
 		else:
-			spellDict[spell.name].append(spell.gestures)
+			gesturesDict[spell.name].append(spell.gestures)
 	
-	for spell in spellDict.keys():
-		var line = HBoxContainer.new()
-		self.add_child(line)
+	for s in spellDict.keys().size():
 		
-		#var spellButton = Button.new()
-		#spellButton.set_text(spell)
-		#line.add_child(spellButton)
-		#spellButton.pressed.connect(_on_spell_button_pressed.bind(spellButton.get_text()))
+		var spell = spellDict[spellDict.keys()[s]]
+		var gestures = gesturesDict[spell.name]
+		var desc = descDict[spell.name]
+		var text = spell.name
 		
-		var desc = descDict[spell]
-		var text = "[hint=" + desc + "]"
-		
-		
-		text += spell
-		for i in range(length-spell.length()):
+		for i in range(length-text.length()):
 			text += " "
-		for s in range(spellDict[spell].size()):
-			if s > 0:
+		for g in range(gesturesDict[spell.name].size()):
+			if g > 0:
 				text += " or "
-			for i in spellDict[spell][s].size():
-				if spellDict[spell][s][i] == "C":
+			for i in gestures[g].size():
+				if gestures[g][i] == "C":
 					text += "CC"
 				else:
-					text += spellDict[spell][s][i]
-				if i + 1 < spellDict[spell][s].size():
+					text += gestures[g][i]
+				if i + 1 < gestures[g].size():
 					text += "-"
-		text += "[/hint]"
 		
-		var gestures = RichTextLabel.new()
-		gestures.custom_minimum_size = Vector2(500, 35)
-		gestures.set_fit_content(true)
-		gestures.set_use_bbcode(true)
-		gestures.set_text("")
-		gestures.append_text(text)
 		
-		line.add_child(gestures)
+		var index = self.add_item(text)
+		self.set_item_tooltip(index, desc)
 
 func _on_spell_button_pressed(spell: String):
 	get_tree().call_group("spellinfo", "displaySpellInfo", spell)
