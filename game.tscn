@@ -69,18 +69,14 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 tab_alignment = 1
-current_tab = 1
 
 [node name="Rules" type="RichTextLabel" parent="Scroll/UI/SpellZone/SpellScroll/TabContainer"]
 layout_mode = 2
-text = "Whether for honour, ambition or daredevil thrills, you are a wizard who is engaging in a duel(or a melee, if there are two or more enemy wizards) with other wizards.
-Your opponents, however, know the exact same spells that you do: Only skill will determine the victor.
+text = "Whether for honour, ambition or daredevil thrills, you are a wizard who is engaging in a duel(or a melee, if there are two or more enemy wizards) with other wizards. Your opponents, however, know the exact same spells that you do: Only skill will determine the victor.
 
-Victory in the Duel is achieved when all other wizards are either dead, or have surrendered.
-Surrendering is obviously more desirable then death, but many wizards cannot bear to pass up their chance of victory.
+Victory in the Duel is achieved when all other wizards are either dead, or have surrendered. Surrendering is obviously more desirable then death, but many wizards cannot bear to pass up their chance of victory.
 
-In the world of Wizard Duels, magic is accomplished through precise sequences of hand gestures. Each gesture is represented by a single letter.
-Each hand must make a single gesture each turn, chosen from the following eight options:
+In the world of Wizard Duels, magic is accomplished through precise sequences of hand gestures. Each gesture is represented by a single letter. Each hand must make a single gesture each turn, chosen from the following eight options:
 
 Basic gestures:
 
@@ -96,41 +92,27 @@ N: The Null gesture. It is not part of any spells.
 >: The knife. Is not part of any spells per se, but can be used to stab for 1 damage once per turn(Wizards only carry a single knife)
 C: The Clap. If only one hand tries to perform a Clap, it instead performs the Null gesture(N)
 
-Each spell consists of one or more gestures: When every gesture in the chain is completed, with no other gestures in between, the spell is automatically cast.
+Each spell consists of one or more gestures, represented as a 'chain' in the format X-Y-Z. The dashes represent turns, and the letters represent gestures. Thus, the chain for Missile(S-D) means that on one turn you must snap your fingers(S) and on the next you must point your digit(D). When every gesture in the chain is completed, with no other gestures in between, the spell is automatically cast.
 
-Gestures usually require that all their gestures are performed with a single hand: gesturing S-F with your left hand and F-D with your right hand cannot cast Missile(S-D).
-Some two-handed spells exist, that require that certain gestures in the chain be performed with multiple hands simultaneously.
-One example is Magic Mirror(CC-WW), which requires that both hands clap(C) and then wave(W), in order to cast the spell.
+Spells usually require that all their gestures are performed with a single hand: gesturing S-F with your left hand and F-D with your right hand cannot cast Missile(S-D). Some two-handed spells exist, that require that certain gestures in the chain be performed with multiple hands simultaneously. These two-handed gesture combinations are represented with multiple letters before a dash, in the format XX-YY-Z. One example is Magic Mirror(CC-WW), which requires that both hands clap(C) and then wave(W), in order to cast the spell.
 
-The final gesture of a spell can only be used to complete one spell, even if multiple spells could possibly be completed that turn.
-So gesturing D-P-P with your right hand can be used to cast only one of Amnesia(D-P-P) or Shield(P) that turn.
-Normally in such cases, the wizard chooses which of the possible spells is cast.
-However, if their chosen spell becomes impossible to cast(like if a Charm Person spell changes the gesture), then instead the longest possible spell is cast, at the default target.
-Also, the surrender \"spell\", which happens if a wizard proffers both palms at once, always takes precedence:
-You cannot choose to cast two Amnesias(D-P-P) with both the left and the right hands, you MUST Surrender(PP).
+The final gesture of a spell can only be used to complete one spell, even if multiple spells could possibly be completed that turn. So gesturing D-P-P with your right hand can be used to cast only one of Amnesia(D-P-P) or Shield(P) that turn. Normally in such cases, the wizard chooses which of the possible spells is cast. However, if their chosen spell becomes impossible to cast(like if a Charm Person spell changes the gesture), then instead the longest possible spell is cast, at the default target. Friendly spells, such as protective spells, summoning spells and healing spells, default to targeting the caster. Any other spells are considered hostile, and default to targeting the creature set as \"default hostile target\" that turn. So if you gestured D-P-> with your right hand, but the last gesture was charmed into a P, then your knife stab would be interrupted and you would instead cast Amnesia(D-P-P). Also, the surrender \"spell\", which happens if a wizard proffers both palms at once, always takes precedence: You cannot choose to cast two Amnesias(D-P-P) with both the left and the right hands, you MUST Surrender(PP).
 
-However, non-final gestures can be used in multiple spells, and recognizing this fact is the key to efficient casting.
-As an example, Protection(W-W-P) and Counterspell(W-P-P) ordinarily require six gestures to cast both of them in sequence(W-W-P-W-P-P).
-However, since those six gestures overlap in the center, a clever wizard can instead cast Protection and then Counterspell immediately afterwards(W-W-P-P).
-Some spells even always incorporate smaller spells inside them: Charm Person(P-S-D-F) contains Missile(S-D), so you always cast Missile on the third gesture of Charm Person.
+However, non-final gestures can be used in multiple spells, and recognizing this fact is the key to efficient casting. As an example, Protection(W-W-P) and Counterspell(W-P-P) ordinarily require six gestures to cast both of them in sequence(W-W-P-W-P-P). However, since those six gestures overlap in the center, a clever wizard can instead cast Protection and then Counterspell immediately afterwards(W-W-P-P). Some spells even always incorporate smaller spells inside them: Charm Person(P-S-D-F) contains Missile(S-D), so you always cast Missile on the third gesture of Charm Person.
 
-Most spells require a target to be cast: This target is chosen at the same moment that the wizard chooses which spell to cast.
-Any wizard on the field(including the caster), as well as any summoned monster, can be targeted with spells.
-Most spells that require targets can be targeting at 'empty space', resulting in the spell accomplishing no effect at all.
-Spells that do not require a target either affect all creatures on the field indiscriminately, or can only affect the caster.
+Most spells require a target to be cast: This target is chosen at the same moment that the wizard chooses which spell to cast. Any wizard on the field(including the caster), as well as any summoned monster, can be targeted with spells. Most spells that require targets can be targeting at 'empty space', resulting in the spell accomplishing no effect at all. Spells that do not require a target either affect all creatures on the field indiscriminately, or can only affect the caster.
 
-Friendly spells, such as protective spells, summoning spells and healing spells, default to targeting the caster.
-Any other spells are considered hostile, and default to targeting the creature set as \"default hostile target\" that turn.
+Each creature(whether wizard or summoned monster) has a set amount of hit points(or 'hp'). Taking a point of damage subtracts a point of hp(to a minimum of 0), whereas healing a point of damage adds a point of hp(to a maximum of the creature's starting hp). If a creature ends the turn at 0 hp, then they die. However, note that since healing happens after damage, even a weak healing spell can save a creature from otherwise lethal damage. Death is permanent, and dead creatures cannot be targeted by spells in future turns(although any spells which target a creature on the turn they die still take effect).
 
-Each creature(whether wizard or summoned monster) has a set amount of hit points(or 'hp').
-Taking a point of damage subtracts a point of hp(to a minimum of 0), whereas healing a point of damage adds a point of hp(to a maximum of the creature's starting hp)
-If a creature ends the turn at 0 hp, then they die. However, note that since healing happens after damage, even a weak healing spell can save a creature from otherwise lethal damage.
-Death is permanent, and dead creatures cannot be targeted by spells in future turns(although any spells which target a creature on the turn they die still take effect).
+Some spells may apply status effects. Status effects have a duration, ranging from instantaneous(only affect the turn they're cast), a fixed duration(wearing off at the end of X number of turns) to permanent until dispelled. Usually, if a status effect already in effect would be re-applied, the longer duration effect overwrites the lesser one. But some effects, like Paralyze, can instead have their duration refreshed by a repeat application.
+ 
+Summoned monsters cannot target or be targeted on the turn they are summoned, but on subsequent turns their controlling wizard can direct them to attack any living creature, or to attack nothing at all. Monsters cannot attack if they are affected by a hex-type spell(Like Amnesia or Charm Person) that turn, and their attacks are blocked by Shield or Protection. A monster's attack deals damage equal to their maximum hp.
 
-TODO: Talk about status effects and durations"
+These basic rules can be superceded by individual spell rules: For example, a Magic Mirror spell can change the target of a spell from the intended target. True mastery of Wizard Duels relies on knowing the effects and interactions between the different spells, which is contained in the 'Spells' tab of the informational(left) side of the window."
 fit_content = true
 
-[node name="Spell List" type="ItemList" parent="Scroll/UI/SpellZone/SpellScroll/TabContainer" groups=["spellList"]]
+[node name="Spells" type="ItemList" parent="Scroll/UI/SpellZone/SpellScroll/TabContainer" groups=["spellList"]]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 auto_height = true
